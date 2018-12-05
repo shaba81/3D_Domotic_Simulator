@@ -79,7 +79,8 @@ public class MyGdxGame implements ApplicationListener {
 		// non-directional ) light.
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 1.0f));
-
+		
+		Gdx.input.setCursorCatched(true);
 		Gdx.input.setInputProcessor(new InputProcessor() {
 			private int dragX, dragY;
 			float rotateSpeed = 0.05f;
@@ -195,35 +196,6 @@ public class MyGdxGame implements ApplicationListener {
 		}
 	}
 
-	// public void moveCamera() {
-	//
-	// if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-	// camera.position.x += camera.direction.x * speed;
-	// camera.position.z += camera.direction.z * speed;
-	// }
-	// if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-	// camera.position.x -= camera.direction.x * speed;
-	// camera.position.z -= camera.direction.z * speed;
-	// }
-	// if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-	// camera.position.x += camera.direction.z * speed;
-	// camera.position.z -= camera.direction.x * speed;
-	// }
-	// if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-	// camera.position.x -= camera.direction.z * speed;
-	// camera.position.z += camera.direction.x * speed;
-	// }
-	// if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-	//
-	// vect.rotate(1f, 0, 1, 0);
-	// camera.lookAt(vect);
-	//
-	// }
-	// if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-	// camera.direction.rotate(-1f, 0, 1, 0);
-	// }
-	// }
-
 	public void walk(float timeElapsed) {
 		float speed = movementSpeed;
 		if ((forward | back) & (right | left)) {
@@ -279,13 +251,9 @@ public class MyGdxGame implements ApplicationListener {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		walk(Gdx.graphics.getDeltaTime());
-
-		// You need to call update on the animation controller so it will advance the
-		// animation. Pass in frame delta
 		OpenDoor();
+		
 		controller.update(Gdx.graphics.getDeltaTime());
-		// Like spriteBatch, just with models! pass in the box Instance and the
-		// environment
 		modelBatch.begin(camera);
 		modelBatch.render(modelInstance, environment);
 		modelBatch.end();
