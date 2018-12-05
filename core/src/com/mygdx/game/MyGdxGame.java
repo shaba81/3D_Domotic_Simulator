@@ -5,6 +5,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationDesc;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationListener;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.UBJsonReader;
 
 public class MyGdxGame implements ApplicationListener {
@@ -27,7 +29,12 @@ public class MyGdxGame implements ApplicationListener {
 	private ModelInstance modelInstance;
 	private Environment environment;
 	private AnimationController controller;
-	private float speed = 0.3f;
+
+	private float movementSpeed = 25f;
+	private boolean forward = false;
+	private boolean back = false;
+	private boolean left = false;
+	private boolean right = false;
 
 	@Override
 	public void create() {
@@ -58,8 +65,9 @@ public class MyGdxGame implements ApplicationListener {
 		// Now create an instance. Instance holds the positioning data, etc of an
 		// instance of your model
 		modelInstance = new ModelInstance(model);
-		
+
 		controller = new AnimationController(modelInstance);
+		controller.allowSameAnimation = true;
 
 		modelInstance.transform.scale(0.1f, 0.1f, 0.1f);
 		modelInstance.transform.translate(0, -40, 0);
@@ -71,6 +79,96 @@ public class MyGdxGame implements ApplicationListener {
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 1.0f));
 
+		Gdx.input.setInputProcessor(new InputProcessor() {
+			private int dragX, dragY;
+			float rotateSpeed = 0.05f;
+
+			@Override
+			public boolean mouseMoved(int screenX, int screenY) {
+				Vector3 direction = camera.direction.cpy();
+
+				// rotating on the y axis
+				float x = dragX - screenX;
+				// change this Vector3.y with cam.up if you have a dynamic up.
+				camera.rotate(Vector3.Y, x * rotateSpeed);
+
+				// rotating on the x and z axis is different
+				float y = (float) Math.sin((double) (dragY - screenY) / 180f);
+				if (Math.abs(camera.direction.y + y * (rotateSpeed * 5.0f)) < 0.9) {
+					camera.direction.y += y * (rotateSpeed * 5.0f);
+				}
+
+				camera.update();
+				dragX = screenX;
+				dragY = screenY;
+				return true;
+			}
+
+			@Override
+			public boolean keyDown(int keycode) {
+				if (keycode == Input.Keys.W) {
+					forward = true;
+				}
+				if (keycode == Input.Keys.A) {
+					left = true;
+				}
+				if (keycode == Input.Keys.S) {
+					back = true;
+				}
+				if (keycode == Input.Keys.D) {
+					right = true;
+				}
+				return false;
+			}
+
+			@Override
+			public boolean keyUp(int keycode) {
+				if (keycode == Input.Keys.W) {
+					forward = false;
+				}
+				if (keycode == Input.Keys.A) {
+					left = false;
+				}
+				if (keycode == Input.Keys.S) {
+					back = false;
+				}
+				if (keycode == Input.Keys.D) {
+					right = false;
+				}
+				return false;
+			}
+
+			@Override
+			public boolean keyTyped(char character) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean touchDragged(int screenX, int screenY, int pointer) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean scrolled(int amount) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+		});
 	}
 
 	@Override
@@ -78,15 +176,15 @@ public class MyGdxGame implements ApplicationListener {
 		modelBatch.dispose();
 		model.dispose();
 	}
-	
+
 	public void OpenDoor() {
 
 		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-			
+
 			controller.setAnimation("Plane.001|Door", 1, new AnimationListener() {
 				@Override
 				public void onEnd(AnimationController.AnimationDesc animation) {
-					//controller.queue("other anim",-1,1f,null,0f);
+					// controller.queue("other anim",-1,1f,null,0f);
 				}
 
 				@Override
@@ -96,31 +194,79 @@ public class MyGdxGame implements ApplicationListener {
 		}
 	}
 
-	public void moveCamera() {
+	// public void moveCamera() {
+	//
+	// if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+	// camera.position.x += camera.direction.x * speed;
+	// camera.position.z += camera.direction.z * speed;
+	// }
+	// if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+	// camera.position.x -= camera.direction.x * speed;
+	// camera.position.z -= camera.direction.z * speed;
+	// }
+	// if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+	// camera.position.x += camera.direction.z * speed;
+	// camera.position.z -= camera.direction.x * speed;
+	// }
+	// if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+	// camera.position.x -= camera.direction.z * speed;
+	// camera.position.z += camera.direction.x * speed;
+	// }
+	// if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+	//
+	// vect.rotate(1f, 0, 1, 0);
+	// camera.lookAt(vect);
+	//
+	// }
+	// if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+	// camera.direction.rotate(-1f, 0, 1, 0);
+	// }
+	// }
 
-		if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-			camera.position.x += camera.direction.x * speed;
-			camera.position.z += camera.direction.z * speed;
+	public void walk(float timeElapsed) {
+		float speed = movementSpeed;
+		if ((forward | back) & (right | left)) {
+			speed /= Math.sqrt(2);
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-			camera.position.x -= camera.direction.x * speed;
-			camera.position.z -= camera.direction.z * speed;
+		System.out.println(speed);
+		if (forward) {
+			Vector3 v = camera.direction.cpy();
+			v.y = 0f;
+			v.x *= speed * timeElapsed;
+			v.z *= speed * timeElapsed;
+			camera.translate(v);
+			camera.update();
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-			camera.position.x += camera.direction.z * speed;
-			camera.position.z -= camera.direction.x * speed;
+		if (back) {
+			Vector3 v = camera.direction.cpy();
+			v.y = 0f;
+			v.x = -v.x;
+			v.z = -v.z;
+			v.x *= speed * timeElapsed;
+			v.z *= speed * timeElapsed;
+			camera.translate(v);
+			camera.update();
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-			camera.position.x -= camera.direction.z * speed;
-			camera.position.z += camera.direction.x * speed;
+		if (left) {
+			Vector3 v = camera.direction.cpy();
+			v.y = 0f;
+			v.rotate(Vector3.Y, 90);
+			v.x *= speed * timeElapsed;
+			v.z *= speed * timeElapsed;
+			camera.translate(v);
+			camera.update();
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			camera.direction.rotate(1f, 0, 1, 0);
+		if (right) {
+			Vector3 v = camera.direction.cpy();
+			v.y = 0f;
+			v.rotate(Vector3.Y, -90);
+			v.x *= speed * timeElapsed;
+			v.z *= speed * timeElapsed;
+			camera.translate(v);
+			camera.update();
 
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			camera.direction.rotate(-1f, 0, 1, 0);
-		}
+
 	}
 
 	@Override
@@ -131,8 +277,7 @@ public class MyGdxGame implements ApplicationListener {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-		moveCamera();
-		camera.update();
+		walk(Gdx.graphics.getDeltaTime());
 
 		// You need to call update on the animation controller so it will advance the
 		// animation. Pass in frame delta
