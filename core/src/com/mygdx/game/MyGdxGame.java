@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationDesc;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationListener;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.UBJsonReader;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class MyGdxGame implements ApplicationListener {
 	private PerspectiveCamera camera;
@@ -89,7 +90,7 @@ public class MyGdxGame implements ApplicationListener {
 
 				// rotating on the y axis
 				float x = dragX - screenX;
-				// change this Vector3.y with cam.up if you have a dynamic up.
+				
 				camera.rotate(Vector3.Y, x * rotateSpeed);
 
 				// rotating on the x and z axis is different
