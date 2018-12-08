@@ -9,16 +9,21 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationDesc;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationListener;
+import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -26,16 +31,24 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class MyGdxGame implements ApplicationListener {
 	private PerspectiveCamera camera;
 	private ModelBatch modelBatch;
-	private Model model;
-	private ModelInstance modelInstance;
+	private Model entranceDoorModel;
+	private ModelInstance entranceDoorInstance;
+	private ModelInstance floorInstance;
 	private Environment environment;
 	private AnimationController controller;
+	private ModelBuilder modelBuilder;
+	private Material material; //used for the floor.
+	private Texture floorTexture;
 
 	private float movementSpeed = 25f;
 	private boolean forward = false;
 	private boolean back = false;
 	private boolean left = false;
 	private boolean right = false;
+	
+	//Width and Height of the room's floor.
+	private float floorWidth = 120;
+	private float floorHeight = 120;
 
 	@Override
 	public void create() {
@@ -43,7 +56,7 @@ public class MyGdxGame implements ApplicationListener {
 		camera = new PerspectiveCamera(70, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		// Move the camera 5 units back along the z-axis and look at the origin
-		camera.position.set(0f, 10f, 50f);
+		camera.position.set(0f, 15f, 50f);
 		camera.lookAt(0f, 0f, 0f);
 
 		// Near and Far (plane) represent the minimum and maximum ranges of the camera
@@ -55,6 +68,8 @@ public class MyGdxGame implements ApplicationListener {
 		// geometry for OpenGL
 		modelBatch = new ModelBatch();
 
+		modelBuilder = new ModelBuilder();
+
 		// Model loader needs a binary json reader to decode
 		UBJsonReader jsonReader = new UBJsonReader();
 		// Create a model loader passing in our json reader
@@ -62,16 +77,22 @@ public class MyGdxGame implements ApplicationListener {
 		// Now load the model by name
 		// Note, the model (g3db file ) and textures need to be added to the assets
 		// folder of the Android proj
-		model = modelLoader.loadModel(Gdx.files.getFileHandle("Door_Component_BI3.g3db", FileType.Internal));
+		entranceDoorModel = modelLoader.loadModel(Gdx.files.getFileHandle("Door_Component_BI3.g3db", FileType.Internal));
 		// Now create an instance. Instance holds the positioning data, etc of an
 		// instance of your model
-		modelInstance = new ModelInstance(model);
-
-		controller = new AnimationController(modelInstance);
+		entranceDoorInstance = new ModelInstance(entranceDoorModel);
+		entranceDoorInstance.transform.scale(0.1f, 0.1f, 0.1f);
+		entranceDoorInstance.transform.translate(0, 0, 0);
+		
+		material = new Material();
+		floorTexture = new Texture(Gdx.files.internal("floorTexture.jpg"));
+		material.set(new TextureAttribute(TextureAttribute.Diffuse, floorTexture));
+		floorInstance = new ModelInstance(createPlaneModel(floorWidth, floorHeight, material, 0, 0, 1, 1));
+		floorInstance.transform.translate(0,0,-floorHeight/2);
+		floorInstance.transform.rotate(Vector3.X,270);
+		
+		controller = new AnimationController(entranceDoorInstance);
 		controller.allowSameAnimation = true;
-
-		modelInstance.transform.scale(0.1f, 0.1f, 0.1f);
-		modelInstance.transform.translate(0, -40, 0);
 
 		// Finally we want some light, or we wont see our color. The environment gets
 		// passed in during
@@ -79,7 +100,7 @@ public class MyGdxGame implements ApplicationListener {
 		// non-directional ) light.
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 1.0f));
-		
+
 		Gdx.input.setCursorCatched(true);
 		Gdx.input.setInputProcessor(new InputProcessor() {
 			private int dragX, dragY;
@@ -91,7 +112,7 @@ public class MyGdxGame implements ApplicationListener {
 
 				// rotating on the y axis
 				float x = dragX - screenX;
-				
+
 				camera.rotate(Vector3.Y, x * rotateSpeed);
 
 				// rotating on the x and z axis is different
@@ -173,12 +194,6 @@ public class MyGdxGame implements ApplicationListener {
 		});
 	}
 
-	@Override
-	public void dispose() {
-		modelBatch.dispose();
-		model.dispose();
-	}
-
 	public void OpenDoor() {
 
 		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
@@ -242,6 +257,21 @@ public class MyGdxGame implements ApplicationListener {
 
 	}
 
+	private Model createPlaneModel(final float width, final float height, final Material material, final float u1,
+			final float v1, final float u2, final float v2) {
+
+		modelBuilder.begin();
+		MeshPartBuilder bPartBuilder = modelBuilder.part("rect", GL20.GL_TRIANGLES,
+				Usage.Position | Usage.Normal | Usage.TextureCoordinates, material);
+		// NOTE ON TEXTURE REGION, MAY FILL OTHER REGIONS, USE GET region.getU() and so
+		// on
+		bPartBuilder.setUVRange(u1, v1, u2, v2);
+		bPartBuilder.rect(-(width * 0.5f), -(height * 0.5f), 0, (width * 0.5f), -(height * 0.5f), 0, (width * 0.5f),
+				(height * 0.5f), 0, -(width * 0.5f), (height * 0.5f), 0, 0, 0, -1);
+
+		return (modelBuilder.end());
+	}
+
 	@Override
 	public void render() {
 		// You've seen all this before, just be sure to clear the GL_DEPTH_BUFFER_BIT
@@ -252,11 +282,20 @@ public class MyGdxGame implements ApplicationListener {
 
 		walk(Gdx.graphics.getDeltaTime());
 		OpenDoor();
-		
+
 		controller.update(Gdx.graphics.getDeltaTime());
 		modelBatch.begin(camera);
-		modelBatch.render(modelInstance, environment);
+		
+		modelBatch.render(entranceDoorInstance, environment);
+		modelBatch.render(floorInstance,environment);
+		
 		modelBatch.end();
+	}
+
+	@Override
+	public void dispose() {
+		modelBatch.dispose();
+		entranceDoorModel.dispose();
 	}
 
 	@Override
