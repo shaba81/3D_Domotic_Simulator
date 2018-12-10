@@ -13,12 +13,12 @@ public enum ScreenEnum {
 		public Screen getScreen() {
 			return new GameScreen();
 		}
+	},
+	REGISTER_SCREEN {
+		public Screen getScreen() {
+			return new RegisterScreen();
+		}
 	}
-//	REGISTER_SCREEN {
-//		public Screen getScreen() {
-//			return new RegisterScreen();
-//		}
-//	}
 	;
 	public abstract Screen getScreen();
 

@@ -1,26 +1,23 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class MainMenuScreen implements Screen {
-
-	// final Drop game;
+public class RegisterScreen implements Screen {
 
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
@@ -30,17 +27,18 @@ public class MainMenuScreen implements Screen {
 	private TextureAtlas atlas;
 	protected Skin skin;
 
-	private Texture title;
-	private TextButton playButton;
-	private TextButton registerButton;
-	private TextButton exitButton;
+	private Label uNameLabel;
+	private Label pWordLabel;
 
-	private boolean play = false;
-	private boolean register = false;
+	private TextField txtUsername;
+	private String userName;
+	private TextField txtPassword;
+	private String passWord;
+	
+	private TextButton backButton;
+	private boolean back = false;
 
-	public MainMenuScreen() {
-		// this.game = game;
-
+	public RegisterScreen() {
 		camera = new OrthographicCamera();
 		viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
 		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -51,59 +49,56 @@ public class MainMenuScreen implements Screen {
 
 		atlas = new TextureAtlas(Gdx.files.internal("uiskin.atlas"));
 		skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
-
 	}
 
 	@Override
 	public void show() {
-
 		batch = new SpriteBatch();
 		stage = new Stage(viewport, batch);
 		Gdx.input.setInputProcessor(stage);
 
-		title = new Texture(Gdx.files.internal("title.png"));
 		// Creo table
 		Table mainTable = new Table();
 		// Dico alla table di riempire lo stage
 		mainTable.setFillParent(true);
 		// Allineo le cose nella table
-		mainTable.bottom();
-
-		// Creo bottoni
-		playButton = new TextButton("Play", skin);
-		registerButton = new TextButton("Register", skin);
-		exitButton = new TextButton("Exit", skin);
+		mainTable.center();
+		
+		backButton = new TextButton("Back", skin);
 
 		// In ascolto di eventi
-		playButton.addListener(new ClickListener() {
+		backButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				play = true;
-			}
-		});
-		registerButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-
-				register = true;
-			}
-		});
-		exitButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				Gdx.app.exit();
+				back = true;
 			}
 		});
 
-		// Aggiungo bottoni alla table
-		mainTable.add(playButton);
+		uNameLabel = new Label("Username: ", skin);
+		pWordLabel = new Label("Password: ", skin);
+
+		txtUsername = new TextField("", skin);
+		txtUsername.setMessageText("UserName");
+
+		txtPassword = new TextField("", skin);
+		txtPassword.setPasswordCharacter('*');
+		txtPassword.setPasswordMode(true);
+		txtPassword.setMessageText("PassWord");
+
+		mainTable.add(uNameLabel);
 		mainTable.row();
-		mainTable.add(registerButton);
+		mainTable.add(txtUsername);
 		mainTable.row();
-		mainTable.add(exitButton);
+		mainTable.add(pWordLabel);
+		mainTable.row();
+		mainTable.add(txtPassword);
+		mainTable.row();
+		mainTable.add(backButton);
+		mainTable.row();
 
 		// Aggiungo table allo stage
 		stage.addActor(mainTable);
+
 	}
 
 	@Override
@@ -112,21 +107,21 @@ public class MainMenuScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		batch.begin();
-		batch.draw(title, Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 2, 700, 150);
+
 		batch.end();
 
 		stage.act();
 		stage.draw();
-
-		if (play) {
-			play = false;
-			ScreenManager.getInstance().showScreen(ScreenEnum.GAME_SCREEN);
+		
+		if (back) {
+			back = false;
+			ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
 		}
 
-		if (register) {
-			register = false;
-			ScreenManager.getInstance().showScreen(ScreenEnum.REGISTER_SCREEN);
-		}
+		userName = txtUsername.getText();
+		System.out.println(userName);
+		passWord = txtPassword.getText();
+		System.out.println(passWord);
 
 	}
 
@@ -134,7 +129,6 @@ public class MainMenuScreen implements Screen {
 	public void dispose() {
 		batch.dispose();
 		stage.dispose();
-		title.dispose();
 		skin.dispose();
 		atlas.dispose();
 
@@ -142,9 +136,7 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		viewport.update(width, height);
-		camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-		camera.update();
+		// TODO Auto-generated method stub
 
 	}
 
