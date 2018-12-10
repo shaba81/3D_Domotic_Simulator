@@ -135,6 +135,8 @@ public class GameScreen implements Screen {
 				camera.update();
 				dragX = screenX;
 				dragY = screenY;
+				
+				Gdx.app.log(direction.toString(), "Direction Vector");
 				return true;
 			}
 
@@ -227,7 +229,7 @@ public class GameScreen implements Screen {
 		if ((forward | back) & (right | left)) {
 			speed /= Math.sqrt(2);
 		}
-		System.out.println(speed);
+		
 		if (forward) {
 			Vector3 v = camera.direction.cpy();
 			v.y = 0f;
