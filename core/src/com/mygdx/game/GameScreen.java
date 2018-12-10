@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Files.FileType;
@@ -7,6 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -23,6 +26,8 @@ import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationDesc;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationListener;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
@@ -31,7 +36,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class GameScreen implements Screen {
 
-	//final Drop game;
+	// final Drop game;
 
 	private PerspectiveCamera camera;
 	private ModelBatch modelBatch;
@@ -43,6 +48,7 @@ public class GameScreen implements Screen {
 	private ModelBuilder modelBuilder;
 	private Material material; // used for the floor.
 	private Texture floorTexture;
+	private GameEntity player;
 
 	private float movementSpeed = 25f;
 	private boolean forward = false;
@@ -55,12 +61,13 @@ public class GameScreen implements Screen {
 	private float floorHeight = 120;
 
 	public GameScreen() {
-		//this.game = game;
+		// this.game = game;
 
 		// Create camera sized to screens width/height with Field of View of 75 degrees
 		camera = new PerspectiveCamera(70, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		// Move the camera 5 units back along the z-axis and look at the origin
+		player = new GameEntity(0,50,20,20);
 		camera.position.set(0f, 15f, 50f);
 		camera.lookAt(0f, 0f, 0f);
 
@@ -268,6 +275,8 @@ public class GameScreen implements Screen {
 			camera.update();
 
 		}
+		
+		Gdx.app.log(camera.position.toString(), "Position Vector");
 
 	}
 
@@ -307,8 +316,8 @@ public class GameScreen implements Screen {
 
 		// Use this to change Screen
 		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-			ScreenManager.getInstance().showScreen( ScreenEnum.MAIN_MENU);
-			//game.setScreen(game.menu);
+			ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
+			// game.setScreen(game.menu);
 		}
 	}
 
