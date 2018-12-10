@@ -20,7 +20,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class MainMenuScreen implements Screen {
 
-	final Drop game;
+	// final Drop game;
 
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
@@ -38,8 +38,8 @@ public class MainMenuScreen implements Screen {
 	private boolean play = false;
 	private boolean register = false;
 
-	public MainMenuScreen(final Drop game) {
-		this.game = game;
+	public MainMenuScreen() {
+		// this.game = game;
 
 		camera = new OrthographicCamera();
 		viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
@@ -49,9 +49,6 @@ public class MainMenuScreen implements Screen {
 		camera.update();
 		viewport.apply();
 
-		batch = new SpriteBatch();
-		stage = new Stage(viewport, batch);
-
 		atlas = new TextureAtlas(Gdx.files.internal("uiskin.atlas"));
 		skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
 
@@ -59,6 +56,9 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void show() {
+
+		batch = new SpriteBatch();
+		stage = new Stage(viewport, batch);
 		Gdx.input.setInputProcessor(stage);
 
 		title = new Texture(Gdx.files.internal("title.png"));
@@ -71,7 +71,7 @@ public class MainMenuScreen implements Screen {
 
 		// Creo bottoni
 		playButton = new TextButton("Play", skin);
-		registerButton = new TextButton("Options", skin);
+		registerButton = new TextButton("Register", skin);
 		exitButton = new TextButton("Exit", skin);
 
 		// In ascolto di eventi
@@ -120,11 +120,13 @@ public class MainMenuScreen implements Screen {
 
 		if (play) {
 			play = false;
-			game.setScreen(new GameScreen(game));
+			ScreenManager.getInstance().showScreen(ScreenEnum.GAME_SCREEN);
+			// game.setScreen(new GameScreen(game));
 		}
 
 		if (register) {
 			register = false;
+			//ScreenManager.getInstance().showScreen(ScreenEnum.REGISTER_SCREEN);
 			// game.setScreen(new RegisterScreen(game)); //ancora non lo ho creato
 		}
 

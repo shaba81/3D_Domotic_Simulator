@@ -6,8 +6,8 @@ public class Drop extends Game{
 
 	@Override
 	public void create() {
-		
-		this.setScreen(new MainMenuScreen(this));
+		ScreenManager.getInstance().initialize(this);
+        ScreenManager.getInstance().showScreen( ScreenEnum.MAIN_MENU );
 		
 	}
 	

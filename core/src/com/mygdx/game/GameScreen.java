@@ -31,7 +31,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class GameScreen implements Screen {
 
-	final Drop game;
+	//final Drop game;
 
 	private PerspectiveCamera camera;
 	private ModelBatch modelBatch;
@@ -54,8 +54,8 @@ public class GameScreen implements Screen {
 	private float floorWidth = 120;
 	private float floorHeight = 120;
 
-	public GameScreen(final Drop game) {
-		this.game = game;
+	public GameScreen() {
+		//this.game = game;
 
 		// Create camera sized to screens width/height with Field of View of 75 degrees
 		camera = new PerspectiveCamera(70, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -71,7 +71,6 @@ public class GameScreen implements Screen {
 
 		// A ModelBatch is like a SpriteBatch, just for models. Use it to batch up
 		// geometry for OpenGL
-		modelBatch = new ModelBatch();
 
 		modelBuilder = new ModelBuilder();
 
@@ -112,6 +111,8 @@ public class GameScreen implements Screen {
 	@Override
 	public void show() {
 
+		modelBatch = new ModelBatch();
+
 		Gdx.input.setCursorCatched(true);
 		Gdx.input.setInputProcessor(new InputProcessor() {
 			private int dragX, dragY;
@@ -135,7 +136,7 @@ public class GameScreen implements Screen {
 				camera.update();
 				dragX = screenX;
 				dragY = screenY;
-				
+
 				Gdx.app.log(direction.toString(), "Direction Vector");
 				return true;
 			}
@@ -229,7 +230,7 @@ public class GameScreen implements Screen {
 		if ((forward | back) & (right | left)) {
 			speed /= Math.sqrt(2);
 		}
-		
+
 		if (forward) {
 			Vector3 v = camera.direction.cpy();
 			v.y = 0f;
@@ -303,12 +304,12 @@ public class GameScreen implements Screen {
 		modelBatch.render(floorInstance, environment);
 
 		modelBatch.end();
-		
-		//Use this to change Screen
-//		if (Gdx.input.isKeyPressed(Input.Keys.B)) {
-//			game.setScreen(new MainMenuScreen(game));
-//			dispose();
-//		}
+
+		// Use this to change Screen
+		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+			ScreenManager.getInstance().showScreen( ScreenEnum.MAIN_MENU);
+			//game.setScreen(game.menu);
+		}
 	}
 
 	@Override
@@ -332,6 +333,6 @@ public class GameScreen implements Screen {
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
