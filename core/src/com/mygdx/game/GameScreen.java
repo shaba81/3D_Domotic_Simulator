@@ -40,8 +40,6 @@ public class GameScreen implements Screen {
 
 	private PerspectiveCamera camera;
 	private ModelBatch modelBatch;
-	private Model entranceDoorModel;
-	private ModelInstance entranceDoorInstance;
 	private ModelInstance floorInstance;
 	private Environment environment;
 	private AnimationController controller;
@@ -49,6 +47,36 @@ public class GameScreen implements Screen {
 	private Material material; // used for the floor.
 	private Texture floorTexture;
 	private GameEntity player;
+
+	private Model entranceDoorModel;
+	private ModelInstance entranceDoorInstance;
+	private ModelInstance exitDoorInstance; // Per exit intendo porta di uscita dalla stanza.
+
+	private Model lampModel;
+	private ModelInstance lampInstance;
+
+	private Model wall;
+	private Model wallDoor;
+	private Model overDoorWall;
+	private ModelInstance sxWallInstance;
+	private ModelInstance dxWallInstance;
+	private ModelInstance frontWallSxInstance;
+	private ModelInstance backWallSxInstance;
+	private ModelInstance frontWallDxInstance;
+	private ModelInstance backWallDxInstance;
+	private ModelInstance overFrontWallInstance;
+	private ModelInstance overBackWallInstance;
+
+	private float wallThickness = 2f;
+	private float wallHeight = 40f;
+	private Vector3 sxWallPosition;
+	private Vector3 dxWallPosition;
+	private Vector3 frontWallSxPosition;
+	private Vector3 backWallSxPosition;
+	private Vector3 frontWallDxPosition;
+	private Vector3 backWallDxPosition;
+	private Vector3 overFrontDoorWallPosition;
+	private Vector3 overBackDoorWallPosition;
 
 	private float movementSpeed = 25f;
 	private boolean forward = false;
@@ -67,7 +95,7 @@ public class GameScreen implements Screen {
 		camera = new PerspectiveCamera(70, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		// Move the camera 5 units back along the z-axis and look at the origin
-		player = new GameEntity(0,50,20,20);
+		player = new GameEntity(0, 50, 20, 20);
 		camera.position.set(0f, 15f, 50f);
 		camera.lookAt(0f, 0f, 0f);
 
@@ -90,19 +118,24 @@ public class GameScreen implements Screen {
 		// folder of the Android proj
 		entranceDoorModel = modelLoader
 				.loadModel(Gdx.files.getFileHandle("Door_Component_BI3.g3db", FileType.Internal));
+
+		lampModel = modelLoader.loadModel(Gdx.files.getFileHandle("lamp.g3db", FileType.Internal));
+
+		createRoom();
+
 		// Now create an instance. Instance holds the positioning data, etc of an
 		// instance of your model
 		entranceDoorInstance = new ModelInstance(entranceDoorModel);
 		entranceDoorInstance.transform.scale(0.1f, 0.1f, 0.1f);
 		entranceDoorInstance.transform.translate(0, 0, 0);
 
-		// Floor Initialization
-		material = new Material();
-		floorTexture = new Texture(Gdx.files.internal("floorTexture.jpg"));
-		material.set(new TextureAttribute(TextureAttribute.Diffuse, floorTexture));
-		floorInstance = new ModelInstance(createPlaneModel(floorWidth, floorHeight, material, 0, 0, 1, 1));
-		floorInstance.transform.translate(0, 0, -floorHeight / 2);
-		floorInstance.transform.rotate(Vector3.X, 270);
+		exitDoorInstance = new ModelInstance(entranceDoorModel);
+		exitDoorInstance.transform.scale(0.1f, 0.1f, 0.1f);
+		exitDoorInstance.transform.translate(0, 0, - floorHeight * 10);
+
+		lampInstance = new ModelInstance(lampModel);
+		// lampInstance.transform.scale(0.1f, 0.1f, 0.1f);
+		lampInstance.transform.translate(0, 10, 20);
 
 		controller = new AnimationController(entranceDoorInstance);
 		controller.allowSameAnimation = true;
@@ -113,6 +146,65 @@ public class GameScreen implements Screen {
 		// non-directional ) light.
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 1.0f));
+	}
+
+	public void createRoom() {
+		// Floor Initialization
+		material = new Material();
+		floorTexture = new Texture(Gdx.files.internal("floorTexture.jpg"));
+		material.set(new TextureAttribute(TextureAttribute.Diffuse, floorTexture));
+		floorInstance = new ModelInstance(createPlaneModel(floorWidth, floorHeight, material, 0, 0, 1, 1));
+		floorInstance.transform.translate(0, 0, -floorHeight / 2);
+		floorInstance.transform.rotate(Vector3.X, 270);
+
+		// Walls initialization
+		sxWallPosition = new Vector3(-60, 20, -60);
+		dxWallPosition = new Vector3(60, 20, -60);
+		frontWallSxPosition = new Vector3(-33, 20, 0);
+		backWallSxPosition = new Vector3(-33, 20, -120);
+		frontWallDxPosition = new Vector3(33, 20, 0);
+		backWallDxPosition = new Vector3(33, 20, -120);
+		overBackDoorWallPosition = new Vector3(0, 30, -120);
+		overFrontDoorWallPosition = new Vector3(0, 30, 0);
+
+		wall = modelBuilder.createBox(wallThickness, wallHeight, floorWidth,
+				new Material(ColorAttribute.createDiffuse(Color.GRAY)), Usage.Position | Usage.Normal);
+
+		wallDoor = modelBuilder.createBox(wallThickness, wallHeight, floorWidth / 2 - 4f,
+				new Material(ColorAttribute.createDiffuse(Color.GRAY)), Usage.Position | Usage.Normal);
+
+		overDoorWall = modelBuilder.createBox(wallThickness, wallHeight / 2, 10f,
+				new Material(ColorAttribute.createDiffuse(Color.GRAY)), Usage.Position | Usage.Normal);
+
+		sxWallInstance = new ModelInstance(wall);
+		sxWallInstance.transform.translate(sxWallPosition);
+
+		dxWallInstance = new ModelInstance(wall);
+		dxWallInstance.transform.translate(dxWallPosition);
+
+		frontWallSxInstance = new ModelInstance(wallDoor);
+		frontWallSxInstance.transform.translate(frontWallSxPosition);
+		frontWallSxInstance.transform.rotate(Vector3.Y, 270);
+
+		backWallSxInstance = new ModelInstance(wallDoor);
+		backWallSxInstance.transform.translate(backWallSxPosition);
+		backWallSxInstance.transform.rotate(Vector3.Y, 270);
+
+		frontWallDxInstance = new ModelInstance(wallDoor);
+		frontWallDxInstance.transform.translate(frontWallDxPosition);
+		frontWallDxInstance.transform.rotate(Vector3.Y, 270);
+
+		backWallDxInstance = new ModelInstance(wallDoor);
+		backWallDxInstance.transform.translate(backWallDxPosition);
+		backWallDxInstance.transform.rotate(Vector3.Y, 270);
+
+		overFrontWallInstance = new ModelInstance(overDoorWall);
+		overFrontWallInstance.transform.translate(overFrontDoorWallPosition);
+		overFrontWallInstance.transform.rotate(Vector3.Y, 270);
+
+		overBackWallInstance = new ModelInstance(overDoorWall);
+		overBackWallInstance.transform.translate(overBackDoorWallPosition);
+		overBackWallInstance.transform.rotate(Vector3.Y, 270);
 	}
 
 	@Override
@@ -275,7 +367,7 @@ public class GameScreen implements Screen {
 			camera.update();
 
 		}
-		
+
 		Gdx.app.log(camera.position.toString(), "Position Vector");
 
 	}
@@ -310,13 +402,25 @@ public class GameScreen implements Screen {
 		modelBatch.begin(camera);
 
 		modelBatch.render(entranceDoorInstance, environment);
+		modelBatch.render(exitDoorInstance, environment);
+		// modelBatch.render(roomInstance, environment);
+		modelBatch.render(sxWallInstance, environment);
+		modelBatch.render(dxWallInstance, environment);
+		modelBatch.render(frontWallSxInstance, environment);
+		modelBatch.render(backWallSxInstance, environment);
+		modelBatch.render(frontWallDxInstance, environment);
+		modelBatch.render(backWallDxInstance, environment);
+		modelBatch.render(overFrontWallInstance, environment);
+		modelBatch.render(overBackWallInstance, environment);
+
 		modelBatch.render(floorInstance, environment);
 
 		modelBatch.end();
 
 		// Use this to change Screen
 		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-			ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
+			// ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
+			Gdx.app.exit();
 			// game.setScreen(game.menu);
 		}
 	}
