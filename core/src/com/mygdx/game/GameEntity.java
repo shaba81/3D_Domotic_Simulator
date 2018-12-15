@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.math.Vector3;
+
 public class GameEntity {
 
 	public float x;
@@ -17,6 +19,11 @@ public class GameEntity {
 	public void updatePosition(float _x, float _z) {
 		x = _x;
 		z = _z;
+	}
+	
+	public Vector3 getPosition() {
+		Vector3 v = new Vector3(x,0,z);
+		return v;
 	}
 
 	public String isColliding(GameEntity g) {

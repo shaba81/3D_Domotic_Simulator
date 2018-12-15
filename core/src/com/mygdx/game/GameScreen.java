@@ -78,6 +78,9 @@ public class GameScreen implements Screen {
 	private Vector3 overFrontDoorWallPosition;
 	private Vector3 overBackDoorWallPosition;
 
+	private GameEntity sxWallEntity;
+	private GameEntity dxWallEntity;
+
 	private float movementSpeed = 25f;
 	private boolean forward = false;
 	private boolean back = false;
@@ -95,7 +98,6 @@ public class GameScreen implements Screen {
 		camera = new PerspectiveCamera(70, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		// Move the camera 5 units back along the z-axis and look at the origin
-		player = new GameEntity(0, 50, 20, 20);
 		camera.position.set(0f, 15f, 50f);
 		camera.lookAt(0f, 0f, 0f);
 
@@ -123,6 +125,8 @@ public class GameScreen implements Screen {
 
 		createRoom();
 
+		player = new GameEntity(camera.position.x, camera.position.z, 5f, 5f);
+		sxWallEntity = new GameEntity(sxWallPosition.x, sxWallPosition.z, wallThickness, floorHeight);
 		// Now create an instance. Instance holds the positioning data, etc of an
 		// instance of your model
 		entranceDoorInstance = new ModelInstance(entranceDoorModel);
@@ -131,7 +135,7 @@ public class GameScreen implements Screen {
 
 		exitDoorInstance = new ModelInstance(entranceDoorModel);
 		exitDoorInstance.transform.scale(0.1f, 0.1f, 0.1f);
-		exitDoorInstance.transform.translate(0, 0, - floorHeight * 10);
+		exitDoorInstance.transform.translate(0, 0, -floorHeight * 10);
 
 		lampInstance = new ModelInstance(lampModel);
 		// lampInstance.transform.scale(0.1f, 0.1f, 0.1f);
@@ -236,7 +240,6 @@ public class GameScreen implements Screen {
 				dragX = screenX;
 				dragY = screenY;
 
-				Gdx.app.log(direction.toString(), "Direction Vector");
 				return true;
 			}
 
@@ -337,6 +340,7 @@ public class GameScreen implements Screen {
 			v.z *= speed * timeElapsed;
 			camera.translate(v);
 			camera.update();
+			player.updatePosition(camera.position.x, camera.position.z);
 		}
 		if (back) {
 			Vector3 v = camera.direction.cpy();
@@ -347,6 +351,7 @@ public class GameScreen implements Screen {
 			v.z *= speed * timeElapsed;
 			camera.translate(v);
 			camera.update();
+			player.updatePosition(camera.position.x, camera.position.z);
 		}
 		if (left) {
 			Vector3 v = camera.direction.cpy();
@@ -356,6 +361,7 @@ public class GameScreen implements Screen {
 			v.z *= speed * timeElapsed;
 			camera.translate(v);
 			camera.update();
+			player.updatePosition(camera.position.x, camera.position.z);
 		}
 		if (right) {
 			Vector3 v = camera.direction.cpy();
@@ -365,10 +371,11 @@ public class GameScreen implements Screen {
 			v.z *= speed * timeElapsed;
 			camera.translate(v);
 			camera.update();
+			player.updatePosition(camera.position.x, camera.position.z);
 
 		}
 
-		Gdx.app.log(camera.position.toString(), "Position Vector");
+		Gdx.app.log(player.isColliding(sxWallEntity), "Collision");
 
 	}
 
@@ -403,7 +410,7 @@ public class GameScreen implements Screen {
 
 		modelBatch.render(entranceDoorInstance, environment);
 		modelBatch.render(exitDoorInstance, environment);
-		// modelBatch.render(roomInstance, environment);
+
 		modelBatch.render(sxWallInstance, environment);
 		modelBatch.render(dxWallInstance, environment);
 		modelBatch.render(frontWallSxInstance, environment);
@@ -412,7 +419,6 @@ public class GameScreen implements Screen {
 		modelBatch.render(backWallDxInstance, environment);
 		modelBatch.render(overFrontWallInstance, environment);
 		modelBatch.render(overBackWallInstance, environment);
-
 		modelBatch.render(floorInstance, environment);
 
 		modelBatch.end();
