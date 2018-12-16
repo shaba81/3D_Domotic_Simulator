@@ -52,9 +52,6 @@ public class GameScreen implements Screen {
 	private ModelInstance entranceDoorInstance;
 	private ModelInstance exitDoorInstance; // Per exit intendo porta di uscita dalla stanza.
 
-	private Model lampModel;
-	private ModelInstance lampInstance;
-
 	private Model wall;
 	private Model wallDoor;
 	private Model overDoorWall;
@@ -121,12 +118,10 @@ public class GameScreen implements Screen {
 		entranceDoorModel = modelLoader
 				.loadModel(Gdx.files.getFileHandle("Door_Component_BI3.g3db", FileType.Internal));
 
-		lampModel = modelLoader.loadModel(Gdx.files.getFileHandle("lamp.g3db", FileType.Internal));
-
 		createRoom();
 
 		player = new GameEntity(camera.position.x, camera.position.z, 5f, 5f);
-		sxWallEntity = new GameEntity(sxWallPosition.x, sxWallPosition.z, wallThickness, floorHeight);
+		sxWallEntity = new GameEntity(sxWallPosition.x, 0, wallThickness, floorHeight);
 		// Now create an instance. Instance holds the positioning data, etc of an
 		// instance of your model
 		entranceDoorInstance = new ModelInstance(entranceDoorModel);
@@ -136,10 +131,6 @@ public class GameScreen implements Screen {
 		exitDoorInstance = new ModelInstance(entranceDoorModel);
 		exitDoorInstance.transform.scale(0.1f, 0.1f, 0.1f);
 		exitDoorInstance.transform.translate(0, 0, -floorHeight * 10);
-
-		lampInstance = new ModelInstance(lampModel);
-		// lampInstance.transform.scale(0.1f, 0.1f, 0.1f);
-		lampInstance.transform.translate(0, 10, 20);
 
 		controller = new AnimationController(entranceDoorInstance);
 		controller.allowSameAnimation = true;
@@ -375,7 +366,9 @@ public class GameScreen implements Screen {
 
 		}
 
-		Gdx.app.log(player.isColliding(sxWallEntity), "Collision");
+		System.out.println(sxWallEntity.getBounds().toString());
+		System.out.println(player.getBounds().toString());
+		System.out.println(player.isColliding(sxWallEntity));
 
 	}
 
