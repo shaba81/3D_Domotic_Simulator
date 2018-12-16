@@ -77,6 +77,9 @@ public class GameScreen implements Screen {
 
 	private GameEntity sxWallEntity;
 	private GameEntity dxWallEntity;
+	private GameEntity frontWallEntity;
+	private GameEntity backWallEntity;
+	private ArrayList<GameEntity> walls;
 
 	private float movementSpeed = 25f;
 	private boolean forward = false;
@@ -122,6 +125,16 @@ public class GameScreen implements Screen {
 
 		player = new GameEntity(camera.position.x, camera.position.z, 5f, 5f);
 		sxWallEntity = new GameEntity(sxWallPosition.x, 0, wallThickness, floorHeight);
+		dxWallEntity = new GameEntity(dxWallPosition.x, 0, wallThickness, floorHeight);
+		frontWallEntity = new GameEntity(10, 120, floorWidth / 2, wallThickness);
+		backWallEntity = new GameEntity(10, 0, floorWidth / 2, wallThickness);
+
+		walls = new ArrayList<GameEntity>();
+		walls.add(sxWallEntity);
+		walls.add(dxWallEntity);
+		walls.add(frontWallEntity);
+		walls.add(backWallEntity);
+
 		// Now create an instance. Instance holds the positioning data, etc of an
 		// instance of your model
 		entranceDoorInstance = new ModelInstance(entranceDoorModel);
@@ -366,9 +379,9 @@ public class GameScreen implements Screen {
 
 		}
 
-		System.out.println(sxWallEntity.getBounds().toString());
-		System.out.println(player.getBounds().toString());
-		System.out.println(player.isColliding(sxWallEntity));
+		for (GameEntity w : walls) {
+			System.out.println(player.isColliding(w));
+		}
 
 	}
 
