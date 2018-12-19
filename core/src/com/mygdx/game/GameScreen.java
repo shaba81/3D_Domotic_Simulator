@@ -80,6 +80,12 @@ public class GameScreen implements Screen {
 	private GameEntity frontWallEntity;
 	private GameEntity backWallEntity;
 	private ArrayList<GameEntity> walls;
+	
+	private Model lampModel;
+	private ModelInstance lampInstance;
+	
+	private Model tvModel;
+	private ModelInstance tvInstance;
 
 	private float movementSpeed = 25f;
 	private boolean forward = false;
@@ -120,6 +126,12 @@ public class GameScreen implements Screen {
 		// folder of the Android proj
 		entranceDoorModel = modelLoader
 				.loadModel(Gdx.files.getFileHandle("Door_Component_BI3.g3db", FileType.Internal));
+		
+		lampModel = modelLoader
+				.loadModel(Gdx.files.getFileHandle("lamp.g3db", FileType.Internal));
+		
+		tvModel = modelLoader
+				.loadModel(Gdx.files.getFileHandle("TV.g3db", FileType.Internal));
 
 		createRoom();
 
@@ -144,6 +156,14 @@ public class GameScreen implements Screen {
 		exitDoorInstance = new ModelInstance(entranceDoorModel);
 		exitDoorInstance.transform.scale(0.1f, 0.1f, 0.1f);
 		exitDoorInstance.transform.translate(0, 0, -floorHeight * 10);
+		
+		lampInstance = new ModelInstance(lampModel);
+		lampInstance.transform.scale(0.1f, 0.1f, 0.1f);
+		lampInstance.transform.translate(0,20,-10 * 10);
+		
+		tvInstance = new ModelInstance(tvModel);
+		tvInstance.transform.scale(0.06f, 0.06f, 0.06f);
+		tvInstance.transform.translate(-95 * 10,25 * 10,-80 * 10);
 
 		controller = new AnimationController(entranceDoorInstance);
 		controller.allowSameAnimation = true;
@@ -416,6 +436,8 @@ public class GameScreen implements Screen {
 
 		modelBatch.render(entranceDoorInstance, environment);
 		modelBatch.render(exitDoorInstance, environment);
+		//modelBatch.render(lampInstance, environment);
+		modelBatch.render(tvInstance, environment);
 
 		modelBatch.render(sxWallInstance, environment);
 		modelBatch.render(dxWallInstance, environment);
@@ -441,6 +463,8 @@ public class GameScreen implements Screen {
 	public void dispose() {
 		modelBatch.dispose();
 		entranceDoorModel.dispose();
+		lampModel.dispose();
+		tvModel.dispose();
 	}
 
 	@Override
