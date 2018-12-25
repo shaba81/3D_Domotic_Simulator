@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -22,6 +23,9 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
+import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationDesc;
@@ -80,12 +84,19 @@ public class GameScreen implements Screen {
 	private GameEntity frontWallEntity;
 	private GameEntity backWallEntity;
 	private ArrayList<GameEntity> walls;
-	
+
 	private Model lampModel;
 	private ModelInstance lampInstance;
-	
+
 	private Model tvModel;
 	private ModelInstance tvInstance;
+
+	private Texture tvScreenTexture;
+	private TextureRegion tvScreenRegion;
+	private Decal tvScreen;
+	private boolean isTvOn = false;
+
+	private DecalBatch decalBatch;
 
 	private float movementSpeed = 25f;
 	private boolean forward = false;
@@ -126,12 +137,17 @@ public class GameScreen implements Screen {
 		// folder of the Android proj
 		entranceDoorModel = modelLoader
 				.loadModel(Gdx.files.getFileHandle("Door_Component_BI3.g3db", FileType.Internal));
-		
-		lampModel = modelLoader
-				.loadModel(Gdx.files.getFileHandle("lamp.g3db", FileType.Internal));
-		
-		tvModel = modelLoader
-				.loadModel(Gdx.files.getFileHandle("TV.g3db", FileType.Internal));
+
+		lampModel = modelLoader.loadModel(Gdx.files.getFileHandle("lamp.g3db", FileType.Internal));
+
+		tvModel = modelLoader.loadModel(Gdx.files.getFileHandle("TV.g3db", FileType.Internal));
+
+		tvScreenTexture = new Texture(Gdx.files.internal("tvScreen.jpg"));
+		tvScreenRegion = new TextureRegion(tvScreenTexture);
+		tvScreen = Decal.newDecal(tvScreenRegion);
+		tvScreen.setDimensions(10, 10);
+		tvScreen.setPosition(-51, 15, -48);
+		tvScreen.setRotationY(90);
 
 		createRoom();
 
@@ -156,14 +172,14 @@ public class GameScreen implements Screen {
 		exitDoorInstance = new ModelInstance(entranceDoorModel);
 		exitDoorInstance.transform.scale(0.1f, 0.1f, 0.1f);
 		exitDoorInstance.transform.translate(0, 0, -floorHeight * 10);
-		
+
 		lampInstance = new ModelInstance(lampModel);
 		lampInstance.transform.scale(0.1f, 0.1f, 0.1f);
-		lampInstance.transform.translate(0,20,-10 * 10);
-		
+		lampInstance.transform.translate(0, 20, -10 * 10);
+
 		tvInstance = new ModelInstance(tvModel);
 		tvInstance.transform.scale(0.06f, 0.06f, 0.06f);
-		tvInstance.transform.translate(-95 * 10,25 * 10,-80 * 10);
+		tvInstance.transform.translate(-95 * 10, 25 * 10, -80 * 10);
 
 		controller = new AnimationController(entranceDoorInstance);
 		controller.allowSameAnimation = true;
@@ -239,6 +255,7 @@ public class GameScreen implements Screen {
 	public void show() {
 
 		modelBatch = new ModelBatch();
+		decalBatch = new DecalBatch(new CameraGroupStrategy(camera));
 
 		Gdx.input.setCursorCatched(true);
 		Gdx.input.setInputProcessor(new InputProcessor() {
@@ -280,6 +297,9 @@ public class GameScreen implements Screen {
 				}
 				if (keycode == Input.Keys.D) {
 					right = true;
+				}
+				if (keycode == Input.Keys.T) {
+					isTvOn = !isTvOn;
 				}
 				return false;
 			}
@@ -348,6 +368,13 @@ public class GameScreen implements Screen {
 				public void onLoop(AnimationController.AnimationDesc animation) {
 				}
 			});
+		}
+	}
+
+	public void startTV() {
+		if (isTvOn) {
+			decalBatch.add(tvScreen);
+			decalBatch.flush();
 		}
 	}
 
@@ -436,7 +463,7 @@ public class GameScreen implements Screen {
 
 		modelBatch.render(entranceDoorInstance, environment);
 		modelBatch.render(exitDoorInstance, environment);
-		//modelBatch.render(lampInstance, environment);
+		// modelBatch.render(lampInstance, environment);
 		modelBatch.render(tvInstance, environment);
 
 		modelBatch.render(sxWallInstance, environment);
@@ -451,12 +478,15 @@ public class GameScreen implements Screen {
 
 		modelBatch.end();
 
+		startTV();
+
 		// Use this to change Screen
 		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
 			// ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
 			Gdx.app.exit();
 			// game.setScreen(game.menu);
 		}
+
 	}
 
 	@Override
