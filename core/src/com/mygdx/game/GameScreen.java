@@ -49,7 +49,11 @@ public class GameScreen implements Screen {
 	private AnimationController controller;
 	private ModelBuilder modelBuilder;
 	private Material material; // used for the floor.
+	private Material wallMaterial;
+	private Material ceilingMaterial;
 	private Texture floorTexture;
+	private Texture wallTexture;
+	private Texture ceilingTexture;
 	private GameEntity player;
 
 	private Model entranceDoorModel;
@@ -59,6 +63,7 @@ public class GameScreen implements Screen {
 	private Model wall;
 	private Model wallDoor;
 	private Model overDoorWall;
+	private Model ceiling;
 	private ModelInstance sxWallInstance;
 	private ModelInstance dxWallInstance;
 	private ModelInstance frontWallSxInstance;
@@ -67,6 +72,7 @@ public class GameScreen implements Screen {
 	private ModelInstance backWallDxInstance;
 	private ModelInstance overFrontWallInstance;
 	private ModelInstance overBackWallInstance;
+	private ModelInstance ceilingInstance;
 
 	private float wallThickness = 2f;
 	private float wallHeight = 40f;
@@ -78,6 +84,7 @@ public class GameScreen implements Screen {
 	private Vector3 backWallDxPosition;
 	private Vector3 overFrontDoorWallPosition;
 	private Vector3 overBackDoorWallPosition;
+	private Vector3 ceilingPosition;
 
 	private GameEntity sxWallEntity;
 	private GameEntity dxWallEntity;
@@ -95,6 +102,11 @@ public class GameScreen implements Screen {
 	private TextureRegion tvScreenRegion;
 	private Decal tvScreen;
 	private boolean isTvOn = false;
+
+	private Texture lightTexture;
+	private TextureRegion lightRegion;
+	private Decal light;
+	private boolean isLightOn = false;
 
 	private DecalBatch decalBatch;
 
@@ -149,6 +161,14 @@ public class GameScreen implements Screen {
 		tvScreen.setPosition(-51, 15, -48);
 		tvScreen.setRotationY(90);
 
+		lightTexture = new Texture(Gdx.files.internal("light.png"));
+		lightRegion = new TextureRegion(lightTexture);
+		light = Decal.newDecal(lightRegion, true);
+		light.lookAt(camera.position, camera.up);
+		light.setDimensions(40, 40);
+		light.setPosition(0, 26, -60);
+		light.setRotationY(90);
+
 		createRoom();
 
 		player = new GameEntity(camera.position.x, camera.position.z, 5f, 5f);
@@ -174,8 +194,9 @@ public class GameScreen implements Screen {
 		exitDoorInstance.transform.translate(0, 0, -floorHeight * 10);
 
 		lampInstance = new ModelInstance(lampModel);
-		lampInstance.transform.scale(0.1f, 0.1f, 0.1f);
-		lampInstance.transform.translate(0, 20, -10 * 10);
+		lampInstance.transform.scale(0.02f, 0.02f, 0.02f);
+		lampInstance.transform.translate(0, 180 * 10, -floorHeight * 25);
+		lampInstance.transform.rotate(Vector3.X, 180);
 
 		tvInstance = new ModelInstance(tvModel);
 		tvInstance.transform.scale(0.06f, 0.06f, 0.06f);
@@ -195,8 +216,14 @@ public class GameScreen implements Screen {
 	public void createRoom() {
 		// Floor Initialization
 		material = new Material();
+		wallMaterial = new Material();
+		ceilingMaterial = new Material();
 		floorTexture = new Texture(Gdx.files.internal("floorTexture.jpg"));
+		wallTexture = new Texture(Gdx.files.internal("walltexture.jpg"));
+		ceilingTexture = new Texture(Gdx.files.internal("ceilingtexture.jpg"));
 		material.set(new TextureAttribute(TextureAttribute.Diffuse, floorTexture));
+		wallMaterial.set(new TextureAttribute(TextureAttribute.Diffuse, wallTexture));
+		ceilingMaterial.set(new TextureAttribute(TextureAttribute.Diffuse, ceilingTexture));
 		floorInstance = new ModelInstance(createPlaneModel(floorWidth, floorHeight, material, 0, 0, 1, 1));
 		floorInstance.transform.translate(0, 0, -floorHeight / 2);
 		floorInstance.transform.rotate(Vector3.X, 270);
@@ -210,15 +237,23 @@ public class GameScreen implements Screen {
 		backWallDxPosition = new Vector3(33, 20, -120);
 		overBackDoorWallPosition = new Vector3(0, 30, -120);
 		overFrontDoorWallPosition = new Vector3(0, 30, 0);
+		ceilingPosition = new Vector3(0, wallHeight, -floorHeight / 2);
 
-		wall = modelBuilder.createBox(wallThickness, wallHeight, floorWidth,
-				new Material(ColorAttribute.createDiffuse(Color.GRAY)), Usage.Position | Usage.Normal);
+		wall = modelBuilder.createBox(wallThickness, wallHeight, floorWidth, wallMaterial,
+				Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 
-		wallDoor = modelBuilder.createBox(wallThickness, wallHeight, floorWidth / 2 - 4f,
-				new Material(ColorAttribute.createDiffuse(Color.GRAY)), Usage.Position | Usage.Normal);
+		wallDoor = modelBuilder.createBox(wallThickness, wallHeight, floorWidth / 2 - 4f, wallMaterial,
+				Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 
-		overDoorWall = modelBuilder.createBox(wallThickness, wallHeight / 2, 10f,
-				new Material(ColorAttribute.createDiffuse(Color.GRAY)), Usage.Position | Usage.Normal);
+		overDoorWall = modelBuilder.createBox(wallThickness, wallHeight / 2, 10f, wallMaterial,
+				Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+
+		ceiling = modelBuilder.createBox(wallThickness, floorWidth, floorHeight, ceilingMaterial,
+				Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+
+		ceilingInstance = new ModelInstance(ceiling);
+		ceilingInstance.transform.translate(ceilingPosition);
+		ceilingInstance.transform.rotate(Vector3.Z, 90);
 
 		sxWallInstance = new ModelInstance(wall);
 		sxWallInstance.transform.translate(sxWallPosition);
@@ -301,6 +336,9 @@ public class GameScreen implements Screen {
 				if (keycode == Input.Keys.T) {
 					isTvOn = !isTvOn;
 				}
+				if (keycode == Input.Keys.L) {
+					isLightOn = !isLightOn;
+				}
 				return false;
 			}
 
@@ -374,6 +412,14 @@ public class GameScreen implements Screen {
 	public void startTV() {
 		if (isTvOn) {
 			decalBatch.add(tvScreen);
+			decalBatch.flush();
+		}
+	}
+
+	public void turnLights() {
+		if (isLightOn) {
+			decalBatch.add(light);
+			light.lookAt(camera.position, camera.up);
 			decalBatch.flush();
 		}
 	}
@@ -463,7 +509,7 @@ public class GameScreen implements Screen {
 
 		modelBatch.render(entranceDoorInstance, environment);
 		modelBatch.render(exitDoorInstance, environment);
-		// modelBatch.render(lampInstance, environment);
+		modelBatch.render(lampInstance, environment);
 		modelBatch.render(tvInstance, environment);
 
 		modelBatch.render(sxWallInstance, environment);
@@ -475,10 +521,12 @@ public class GameScreen implements Screen {
 		modelBatch.render(overFrontWallInstance, environment);
 		modelBatch.render(overBackWallInstance, environment);
 		modelBatch.render(floorInstance, environment);
+		modelBatch.render(ceilingInstance, environment);
 
 		modelBatch.end();
 
 		startTV();
+		turnLights();
 
 		// Use this to change Screen
 		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
