@@ -32,11 +32,11 @@ public class MainMenuScreen implements Screen {
 
 	private Texture title;
 	private TextButton playButton;
-	private TextButton registerButton;
+	private TextButton administrationButton;
 	private TextButton exitButton;
 
 	private boolean play = false;
-	private boolean register = false;
+	private boolean administration = false;
 
 	public MainMenuScreen() {
 		// this.game = game;
@@ -71,7 +71,7 @@ public class MainMenuScreen implements Screen {
 
 		// Creo bottoni
 		playButton = new TextButton("Play", skin);
-		registerButton = new TextButton("Register", skin);
+		administrationButton = new TextButton("Administration", skin);
 		exitButton = new TextButton("Exit", skin);
 
 		// In ascolto di eventi
@@ -81,11 +81,11 @@ public class MainMenuScreen implements Screen {
 				play = true;
 			}
 		});
-		registerButton.addListener(new ClickListener() {
+		administrationButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 
-				register = true;
+				administration = true;
 			}
 		});
 		exitButton.addListener(new ClickListener() {
@@ -98,7 +98,7 @@ public class MainMenuScreen implements Screen {
 		// Aggiungo bottoni alla table
 		mainTable.add(playButton);
 		mainTable.row();
-		mainTable.add(registerButton);
+		mainTable.add(administrationButton);
 		mainTable.row();
 		mainTable.add(exitButton);
 
@@ -123,9 +123,9 @@ public class MainMenuScreen implements Screen {
 			ScreenManager.getInstance().showScreen(ScreenEnum.GAME_SCREEN);
 		}
 
-		if (register) {
-			register = false;
-			ScreenManager.getInstance().showScreen(ScreenEnum.REGISTER_SCREEN);
+		if (administration) {
+			administration = false;
+			ScreenManager.getInstance().showScreen(ScreenEnum.LOGIN_SCREEN);
 		}
 
 	}

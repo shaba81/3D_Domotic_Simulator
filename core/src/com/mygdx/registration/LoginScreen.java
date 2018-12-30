@@ -1,4 +1,6 @@
-package com.mygdx.game;
+package com.mygdx.registration;
+
+import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -16,8 +18,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.database.persistence.PostgreDAOFactory;
+import com.mygdx.database.persistence.dao.UserDAO;
+import com.mygdx.game.ScreenEnum;
+import com.mygdx.game.ScreenManager;
 
-public class RegisterScreen implements Screen {
+public class LoginScreen implements Screen {
 
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
@@ -27,18 +33,21 @@ public class RegisterScreen implements Screen {
 	private TextureAtlas atlas;
 	protected Skin skin;
 
-	private Label uNameLabel;
+	private Label idLabel;
 	private Label pWordLabel;
 
-	private TextField txtUsername;
-	private String userName;
+	private TextField txtId;
 	private TextField txtPassword;
-	private String passWord;
-	
+
+	private ArrayList<String> credentials;
+
 	private TextButton backButton;
 	private boolean back = false;
 
-	public RegisterScreen() {
+	private TextButton accessButton;
+	private boolean access = false;
+
+	public LoginScreen() {
 		camera = new OrthographicCamera();
 		viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
 		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -49,6 +58,8 @@ public class RegisterScreen implements Screen {
 
 		atlas = new TextureAtlas(Gdx.files.internal("uiskin.atlas"));
 		skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
+
+		credentials = new ArrayList<String>();
 	}
 
 	@Override
@@ -63,8 +74,9 @@ public class RegisterScreen implements Screen {
 		mainTable.setFillParent(true);
 		// Allineo le cose nella table
 		mainTable.center();
-		
-		backButton = new TextButton("Back", skin);
+
+		backButton = new TextButton("Back to Menu", skin);
+		accessButton = new TextButton("Access", skin);
 
 		// In ascolto di eventi
 		backButton.addListener(new ClickListener() {
@@ -74,24 +86,33 @@ public class RegisterScreen implements Screen {
 			}
 		});
 
-		uNameLabel = new Label("Username: ", skin);
+		accessButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				access = true;
+			}
+		});
+
+		idLabel = new Label("Id: ", skin);
 		pWordLabel = new Label("Password: ", skin);
 
-		txtUsername = new TextField("", skin);
-		txtUsername.setMessageText("UserName");
+		txtId = new TextField("", skin);
+		txtId.setMessageText("Id");
 
 		txtPassword = new TextField("", skin);
 		txtPassword.setPasswordCharacter('*');
 		txtPassword.setPasswordMode(true);
 		txtPassword.setMessageText("PassWord");
 
-		mainTable.add(uNameLabel);
+		mainTable.add(idLabel);
 		mainTable.row();
-		mainTable.add(txtUsername);
+		mainTable.add(txtId);
 		mainTable.row();
 		mainTable.add(pWordLabel);
 		mainTable.row();
 		mainTable.add(txtPassword);
+		mainTable.row();
+		mainTable.add(accessButton);
 		mainTable.row();
 		mainTable.add(backButton);
 		mainTable.row();
@@ -103,25 +124,44 @@ public class RegisterScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		try {
+			Gdx.gl.glClearColor(0, 0, 0, 1);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		batch.begin();
+			batch.begin();
 
-		batch.end();
+			batch.end();
 
-		stage.act();
-		stage.draw();
-		
-		if (back) {
-			back = false;
-			ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
+			stage.act();
+			stage.draw();
+
+			if (back) {
+				back = false;
+				ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
+			}
+
+			if (access) {
+				this.access = false;
+				// to do accesso
+				this.credentials.add(this.txtId.getText());
+				this.credentials.add(txtPassword.getText());
+				PostgreDAOFactory postgreDAOFactory = new PostgreDAOFactory();
+				UserDAO utenteDAO = postgreDAOFactory.getUtenteDAO();
+				if( utenteDAO.validateUserAdminCredentials(this.credentials.get(1), this.credentials.get(0)) ) {
+					System.out.println("CREDENZIALI CORRETTE");
+					ScreenManager.getInstance().showScreen(ScreenEnum.ADMINISTRATION_SCREEN);
+				}
+				else {
+					/*
+					 * TODO POPUP
+					 */
+					System.err.println("CREDENZIALI SBAGLIATE");
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
-		userName = txtUsername.getText();
-		System.out.println(userName);
-		passWord = txtPassword.getText();
-		System.out.println(passWord);
 
 	}
 

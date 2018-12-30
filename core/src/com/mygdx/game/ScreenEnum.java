@@ -1,6 +1,10 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Screen;
+import com.mygdx.registration.AdministrationScreen;
+import com.mygdx.registration.FaceCaptureScreen;
+import com.mygdx.registration.LoginScreen;
+import com.mygdx.registration.RegistrationScreen;
 
 public enum ScreenEnum {
 
@@ -14,9 +18,24 @@ public enum ScreenEnum {
 			return new GameScreen();
 		}
 	},
-	REGISTER_SCREEN {
+	LOGIN_SCREEN {
 		public Screen getScreen() {
-			return new RegisterScreen();
+			return new LoginScreen();
+		}
+	},
+	ADMINISTRATION_SCREEN {
+		public Screen getScreen() {
+			return new AdministrationScreen();
+		}
+	},
+	REGISTRATION_SCREEN{
+		public Screen getScreen() {
+			return new RegistrationScreen();
+		}
+	},
+	FACE_CAPTURE_SCREEN{
+		public Screen getScreen() {
+			return new FaceCaptureScreen();
 		}
 	}
 	;
