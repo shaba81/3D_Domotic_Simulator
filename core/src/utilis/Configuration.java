@@ -8,21 +8,21 @@ package utilis;
  */
 public interface Configuration {
 
-//	/*
-//	 * email
-//	 */
-//	public static final String userEmail;
-//	public String userPassword;
-//
-//	/*
-//	 * sms
-//	 */
-//	public String baseUrlSms;
-//	public String messageQuality;
-//	public String userNameSms;
-//	public String userPasswordSms;
-//	public String messageBody;
-//	public String recipient;
+	/*
+	 * email
+	 */
+	public static final String userEmail = "fantaleague.siw18@gmail.com";
+	public String userPassword = "112358.siw18";
+
+	/*
+	 * sms
+	 */
+	public String baseUrlSms = "https://api.skebby.it/API/v1.0/REST/";
+	public String messageQuality = "SI";
+	public String userNameSms = "tagete";
+	public String userPasswordSms = "pr08qwe03";
+	public String messageBody = "Ciao Test sms per INGSW.";
+	public String recipient = "+393275407014";
 
 	/*
 	 * DB set
