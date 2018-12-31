@@ -21,7 +21,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.ScreenEnum;
 import com.mygdx.game.ScreenManager;
 
-public class RegistrationScreen implements Screen{
+import utilis.Utils;
+
+public class RegistrationCredentialsScreen implements Screen {
 
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
@@ -45,7 +47,7 @@ public class RegistrationScreen implements Screen{
 	private TextButton backToAdministrationButton;
 	private boolean backToAdministration;
 
-	public RegistrationScreen() {
+	public RegistrationCredentialsScreen() {
 		this.camera = new OrthographicCamera();
 		this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
 		this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -59,9 +61,10 @@ public class RegistrationScreen implements Screen{
 
 		this.faceCapture = false;
 		this.backToAdministration = false;
+
+		this.credentials = new ArrayList<String>();
 	}
 
-	
 	@Override
 	public void show() {
 		this.batch = new SpriteBatch();
@@ -76,7 +79,7 @@ public class RegistrationScreen implements Screen{
 		mainTable.center();
 
 		this.faceCaptureButton = new TextButton("Face capture", skin);
-		this.backToAdministrationButton= new TextButton("Back to Administration", skin);
+		this.backToAdministrationButton = new TextButton("Back to Administration", skin);
 
 		this.faceCaptureButton.addListener(new ClickListener() {
 			@Override
@@ -91,7 +94,6 @@ public class RegistrationScreen implements Screen{
 				backToAdministration = true;
 			}
 		});
-
 
 		this.emailLabel = new Label("Email: ", skin);
 		this.txtEmail = new TextField("", skin);
@@ -138,14 +140,26 @@ public class RegistrationScreen implements Screen{
 		this.stage.act();
 		this.stage.draw();
 
-		if( faceCapture ) {
+		if (faceCapture) {
 			faceCapture = false;
-			ScreenManager.getInstance().showScreen(ScreenEnum.FACE_CAPTURE_SCREEN);
+			this.credentials.add(0, this.txtEmail.getText());
+			this.credentials.add(1, this.txtTelephoneNumber.getText());
+			this.credentials.add(2, this.txtNickName.getText());
+			if (this.credentials.get(0).equals("") || this.credentials.get(1).equals("")
+					|| this.credentials.get(1).equals(""))
+				Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSING_CRED_POPUP, skin, stage);
+			else if ( !this.credentials.get(0).contains("@") || !this.credentials.get(0).contains(".") )
+				Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_BAD_EMAIL_FORMAT_POPUP, skin, stage);
+			else if ( this.credentials.get(1).length() < 13 || ! this.credentials.get(1).contains("+") )
+				Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_BAD_NUMBER_FORMAT_POPUP, skin, stage);
+			else
+				ScreenManager.getInstance().showScreen(ScreenEnum.FACE_CAPTURE_SCREEN);
+
 		}
 
-		if( backToAdministration ) {
+		if (backToAdministration) {
 			backToAdministration = false;
-			ScreenManager.getInstance().showScreen(ScreenEnum.ADMINISTRATION_SCREEN);
+			Utils.showPopUp(Utils.REGISTRATION_CREDENTIALS_SCREEN_BACK_POPUP, skin, stage, this);
 		}
 
 	}
@@ -153,25 +167,25 @@ public class RegistrationScreen implements Screen{
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

@@ -4,7 +4,7 @@ import com.badlogic.gdx.Screen;
 import com.mygdx.registration.AdministrationScreen;
 import com.mygdx.registration.FaceCaptureScreen;
 import com.mygdx.registration.LoginScreen;
-import com.mygdx.registration.RegistrationScreen;
+import com.mygdx.registration.RegistrationCredentialsScreen;
 
 public enum ScreenEnum {
 
@@ -28,9 +28,9 @@ public enum ScreenEnum {
 			return new AdministrationScreen();
 		}
 	},
-	REGISTRATION_SCREEN{
+	REGISTRATION_CREDENTIALS_SCREEN{
 		public Screen getScreen() {
-			return new RegistrationScreen();
+			return new RegistrationCredentialsScreen();
 		}
 	},
 	FACE_CAPTURE_SCREEN{

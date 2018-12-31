@@ -3,6 +3,7 @@ package com.mygdx.registration;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -10,18 +11,22 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.database.persistence.PostgreDAOFactory;
 import com.mygdx.database.persistence.dao.UserDAO;
 import com.mygdx.game.ScreenEnum;
 import com.mygdx.game.ScreenManager;
+
+import utilis.Utils;
 
 public class LoginScreen implements Screen {
 
@@ -104,17 +109,17 @@ public class LoginScreen implements Screen {
 		txtPassword.setPasswordMode(true);
 		txtPassword.setMessageText("PassWord");
 
-		mainTable.add(idLabel);
+		mainTable.add(idLabel).align(Align.center);
 		mainTable.row();
-		mainTable.add(txtId);
+		mainTable.add(txtId).align(Align.center);
 		mainTable.row();
-		mainTable.add(pWordLabel);
+		mainTable.add(pWordLabel).align(Align.center);
 		mainTable.row();
-		mainTable.add(txtPassword);
+		mainTable.add(txtPassword).align(Align.center);
 		mainTable.row();
-		mainTable.add(accessButton);
+		mainTable.add(accessButton).align(Align.center);
 		mainTable.row();
-		mainTable.add(backButton);
+		mainTable.add(backButton).align(Align.center);
 		mainTable.row();
 
 		// Aggiungo table allo stage
@@ -137,25 +142,21 @@ public class LoginScreen implements Screen {
 
 			if (back) {
 				back = false;
-				ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
+				Utils.showPopUp(Utils.LOGIN_SCREEN_BACK_POPUP, skin, stage, this);
 			}
 
 			if (access) {
 				this.access = false;
 				// to do accesso
-				this.credentials.add(this.txtId.getText());
-				this.credentials.add(txtPassword.getText());
+				this.credentials.add(0,this.txtId.getText());
+				this.credentials.add(1,txtPassword.getText());
 				PostgreDAOFactory postgreDAOFactory = new PostgreDAOFactory();
 				UserDAO utenteDAO = postgreDAOFactory.getUtenteDAO();
 				if( utenteDAO.validateUserAdminCredentials(this.credentials.get(1), this.credentials.get(0)) ) {
-					System.out.println("CREDENZIALI CORRETTE");
 					ScreenManager.getInstance().showScreen(ScreenEnum.ADMINISTRATION_SCREEN);
 				}
 				else {
-					/*
-					 * TODO POPUP
-					 */
-					System.err.println("CREDENZIALI SBAGLIATE");
+					Utils.showMessageDialog(Utils.LOGIN_SCREEN_WRONG_CREDENTIAL_POPUP, skin, stage);
 				}
 			}
 

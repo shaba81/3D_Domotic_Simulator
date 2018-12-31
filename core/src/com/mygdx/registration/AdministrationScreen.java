@@ -12,10 +12,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.ScreenEnum;
 import com.mygdx.game.ScreenManager;
+
+import utilis.Utils;
 
 public class AdministrationScreen implements Screen{
 
@@ -99,6 +102,7 @@ public class AdministrationScreen implements Screen{
 		mainTable.add(this.backButton);
 		mainTable.row();
 
+		mainTable.setFillParent(true);
 		// Aggiungo table allo stage
 		stage.addActor(mainTable);
 	}
@@ -117,7 +121,7 @@ public class AdministrationScreen implements Screen{
 
 		if( this.registration ) {
 			this.registration = false;
-			ScreenManager.getInstance().showScreen(ScreenEnum.REGISTRATION_SCREEN);
+			ScreenManager.getInstance().showScreen(ScreenEnum.REGISTRATION_CREDENTIALS_SCREEN);
 		}
 
 		if( this.showHouseInteraction ) {
@@ -130,7 +134,7 @@ public class AdministrationScreen implements Screen{
 
 		if( this.back ) {
 			this.back = false;
-			ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
+			Utils.showPopUp(Utils.ADMINISTRATION_SCREEN_BACK_POPUP, skin, stage, this);
 		}
 
 	}

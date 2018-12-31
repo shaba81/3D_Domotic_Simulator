@@ -17,6 +17,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.ScreenEnum;
 import com.mygdx.game.ScreenManager;
 
+import utilis.Utils;
+
 public class FaceCaptureScreen implements Screen {
 
 	private OrthographicCamera camera;
@@ -110,7 +112,7 @@ public class FaceCaptureScreen implements Screen {
 
 		if( this.backToRegistrationScreen ) {
 			this.backToRegistrationScreen = false;
-			ScreenManager.getInstance().showScreen(ScreenEnum.REGISTRATION_SCREEN);
+			Utils.showPopUp(Utils.FACE_CAPTURE_SCREEN_BACK_POPUP, skin, stage, this);
 		}
 
 	}

@@ -18,6 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import utilis.Utils;
+
 public class MainMenuScreen implements Screen {
 
 	// final Drop game;
@@ -37,6 +39,7 @@ public class MainMenuScreen implements Screen {
 
 	private boolean play = false;
 	private boolean administration = false;
+	private boolean back;
 
 	public MainMenuScreen() {
 		// this.game = game;
@@ -51,6 +54,8 @@ public class MainMenuScreen implements Screen {
 
 		atlas = new TextureAtlas(Gdx.files.internal("uiskin.atlas"));
 		skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
+
+		this.back = false;
 
 	}
 
@@ -91,7 +96,7 @@ public class MainMenuScreen implements Screen {
 		exitButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				Gdx.app.exit();
+				back = true;
 			}
 		});
 
@@ -126,6 +131,11 @@ public class MainMenuScreen implements Screen {
 		if (administration) {
 			administration = false;
 			ScreenManager.getInstance().showScreen(ScreenEnum.LOGIN_SCREEN);
+		}
+
+		if( back ) {
+			back = false;
+			Utils.showPopUp(Utils.MAIN_MENU_BACK_POPUP, skin, stage, this);
 		}
 
 	}
