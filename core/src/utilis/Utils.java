@@ -28,6 +28,7 @@ import com.mygdx.registration.RegistrationCredentialsScreen;
  */
 public class Utils {
 
+	public static final Long ID_SUPPLY = (long) 1;
 	/*
 	 * PATH per i file di configurazione
 	 */
@@ -47,7 +48,7 @@ public class Utils {
 	public static final String REGISTRATION_CREDENTIALS_SCREEN_BACK_POPUP = "Are you sure you want to quit from Registration screen?";
 	public static final String REGISTRATION_CREDENTIALS_SCREEN_MISSING_CRED_POPUP = "Missing one or more of the three credentials.";
 	public static final String REGISTRATION_CREDENTIALS_SCREEN_BAD_EMAIL_FORMAT_POPUP = "Bad format of email field.\n Example: ciao@caro.it";
-	public static final String REGISTRATION_CREDENTIALS_SCREEN_BAD_NUMBER_FORMAT_POPUP = "Bad format of telphone number field. Must contain 12 numbers and the '+' character.\n Example: +390123456789";
+	public static final String REGISTRATION_CREDENTIALS_SCREEN_BAD_NUMBER_FORMAT_POPUP = "Bad format of telphone number field. Must contain 12 numbers and the '+' character at the beginning of number and mustn't contain letter.\n Example: +390123456789";
 	public static final String REGISTRATION_CREDENTIALS_SCREEN_EMAIL_EXIST_POPUP = "Email already exists, , please click on ENTER or OK to continue.";
 	public static final String REGISTRATION_CREDENTIALS_SCREEN_TELEPHONE_EXIST_POPUP = "Telephone number already exists, please click on ENTER or OK to continue.";
 	public static final String REGISTRATION_CREDENTIALS_SCREEN_NICKNAME_EXIST_POPUP = "Nickname already exists, please click on ENTER or OK to continue.";

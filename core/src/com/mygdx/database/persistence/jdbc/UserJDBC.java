@@ -205,4 +205,10 @@ public class UserJDBC implements UserDAO {
 		}
 	}
 
+	
+	@Override
+	public boolean isFirstRegistrationForThisForniture(Long idSupply) throws Exception {
+		return false;
+	}
+
 }

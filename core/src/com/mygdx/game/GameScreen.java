@@ -35,8 +35,13 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.database.persistence.PostgreDAOFactory;
+import com.mygdx.database.persistence.dao.UserDAO;
+
+import utilis.Utils;
 
 public class GameScreen implements Screen {
 
@@ -212,7 +217,7 @@ public class GameScreen implements Screen {
 		// non-directional ) light.
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 1.0f));
-		
+
 		this.nAccessButton = false;
 	}
 
@@ -501,55 +506,63 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		// You've seen all this before, just be sure to clear the GL_DEPTH_BUFFER_BIT
-		// when working in 3D
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		try {
+			// You've seen all this before, just be sure to clear the GL_DEPTH_BUFFER_BIT
+			// when working in 3D
+			Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			Gdx.gl.glClearColor(1, 1, 1, 1);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-		walk(Gdx.graphics.getDeltaTime());
-		OpenDoor();
+			walk(Gdx.graphics.getDeltaTime());
+			OpenDoor();
 
-		controller.update(Gdx.graphics.getDeltaTime());
-		modelBatch.begin(camera);
+			controller.update(Gdx.graphics.getDeltaTime());
+			modelBatch.begin(camera);
 
-		modelBatch.render(entranceDoorInstance, environment);
-		modelBatch.render(exitDoorInstance, environment);
-		modelBatch.render(lampInstance, environment);
-		modelBatch.render(tvInstance, environment);
+			modelBatch.render(entranceDoorInstance, environment);
+			modelBatch.render(exitDoorInstance, environment);
+			modelBatch.render(lampInstance, environment);
+			modelBatch.render(tvInstance, environment);
 
-		modelBatch.render(sxWallInstance, environment);
-		modelBatch.render(dxWallInstance, environment);
-		modelBatch.render(frontWallSxInstance, environment);
-		modelBatch.render(backWallSxInstance, environment);
-		modelBatch.render(frontWallDxInstance, environment);
-		modelBatch.render(backWallDxInstance, environment);
-		modelBatch.render(overFrontWallInstance, environment);
-		modelBatch.render(overBackWallInstance, environment);
-		modelBatch.render(floorInstance, environment);
-		modelBatch.render(ceilingInstance, environment);
+			modelBatch.render(sxWallInstance, environment);
+			modelBatch.render(dxWallInstance, environment);
+			modelBatch.render(frontWallSxInstance, environment);
+			modelBatch.render(backWallSxInstance, environment);
+			modelBatch.render(frontWallDxInstance, environment);
+			modelBatch.render(backWallDxInstance, environment);
+			modelBatch.render(overFrontWallInstance, environment);
+			modelBatch.render(overBackWallInstance, environment);
+			modelBatch.render(floorInstance, environment);
+			modelBatch.render(ceilingInstance, environment);
 
-		modelBatch.end();
+			modelBatch.end();
 
-		startTV();
-		turnLights();
-		
-		if(this.nAccessButton)
-		{
-			this.nAccessButton = false;
-			ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
-			
-		}
+			startTV();
+			turnLights();
 
-		// Use this to change Screen
-		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-			
-			//gestire i vari casi in cui si può volere uscire
-			Gdx.app.exit();
+			if (this.nAccessButton) {
+				this.nAccessButton = false;
+				PostgreDAOFactory postgreDAOFactory = new PostgreDAOFactory();
+				UserDAO utenteDAO = postgreDAOFactory.getUtenteDAO();
+
+				if ( utenteDAO.isFirstRegistrationForThisForniture(Utils.ID_SUPPLY) )
+					ScreenManager.getInstance().showScreen(ScreenEnum.LOGIN_SCREEN);
+				else
+					ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
+
+			}
+
+			// Use this to change Screen
+			if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+
+				// gestire i vari casi in cui si può volere uscire
+				Gdx.app.exit();
 //			ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
-			// game.setScreen(game.menu);
+				// game.setScreen(game.menu);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
-
 	}
 
 	@Override

@@ -8,5 +8,6 @@ public interface UserDAO {
 	public void deleteUtente(String email) throws Exception;
 	public int userExist(String email, String telephoneNumber, String nickName ) throws Exception;
 	public boolean validateUserAdminCredentials(String password, String id) throws Exception;
+	public boolean isFirstRegistrationForThisForniture(Long idSupply) throws Exception;
 
 }

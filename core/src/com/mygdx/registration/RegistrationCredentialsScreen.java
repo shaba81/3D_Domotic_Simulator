@@ -17,7 +17,7 @@ import com.mygdx.interfaces.AbstractScreen;
 
 import utilis.Utils;
 
-public class RegistrationCredentialsScreen extends AbstractScreen{
+public class RegistrationCredentialsScreen extends AbstractScreen {
 
 	private Label emailLabel;
 	private Label telephoneNumberLabel;
@@ -110,26 +110,24 @@ public class RegistrationCredentialsScreen extends AbstractScreen{
 				this.credentials.add(2, this.txtNickName.getText());
 
 				/*
-				 * This function return:
-				 * 	1: if email already exist.
-				 *  2: if telephone number already exist.
-				 *  3: if nickname already exist.
+				 * This function return: 1: if email already exist. 2: if telephone number
+				 * already exist. 3: if nickname already exist.
 				 */
 				int result = utenteDAO.userExist(this.credentials.get(0), this.credentials.get(1),
 						this.credentials.get(2));
 
+				if (result == 1)
+					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_EMAIL_EXIST_POPUP, skin, stage);
+				else if (result == 2)
+					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_TELEPHONE_EXIST_POPUP, skin, stage);
+				else if (result == 3)
+					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_NICKNAME_EXIST_POPUP, skin, stage);
 				if (this.credentials.get(0).equals("") || this.credentials.get(1).equals("")
 						|| this.credentials.get(1).equals(""))
 					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSING_CRED_POPUP, skin, stage);
-				else if( result == 1 ) 
-					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_EMAIL_EXIST_POPUP, skin, stage);
-				else if( result == 2 )
-					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_TELEPHONE_EXIST_POPUP, skin, stage);
-				else if( result == 3 )
-					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_NICKNAME_EXIST_POPUP, skin, stage);	
 				else if (!this.credentials.get(0).contains("@") || !this.credentials.get(0).contains("."))
 					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_BAD_EMAIL_FORMAT_POPUP, skin, stage);
-				else if (this.credentials.get(1).length() < 13 || !this.credentials.get(1).contains("+"))
+				else if ( !this.credentials.get(1).matches("[0-9+]+") || this.credentials.get(1).length() != 13 || this.credentials.get(1).charAt(0) != '+')
 					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_BAD_NUMBER_FORMAT_POPUP, skin, stage);
 				else
 					ScreenManager.getInstance().showScreen(ScreenEnum.FACE_CAPTURE_SCREEN);
@@ -144,7 +142,7 @@ public class RegistrationCredentialsScreen extends AbstractScreen{
 			// TODO: handle exception
 		}
 	}
-
+	
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
