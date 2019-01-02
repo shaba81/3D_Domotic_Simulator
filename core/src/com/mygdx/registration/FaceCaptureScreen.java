@@ -1,32 +1,15 @@
 package com.mygdx.registration;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mygdx.game.ScreenEnum;
-import com.mygdx.game.ScreenManager;
+import com.mygdx.interfaces.AbstractScreen;
 
 import utilis.Utils;
 
-public class FaceCaptureScreen implements Screen {
-
-	private OrthographicCamera camera;
-	private SpriteBatch batch;
-	private Viewport viewport;
-	private Stage stage;
-	private TextureAtlas atlas;
-	protected Skin skin;
+public class FaceCaptureScreen extends AbstractScreen {
 
 	private TextButton registrationButton;
 	private TextButton backToRegistrationScreenButton;
@@ -35,16 +18,6 @@ public class FaceCaptureScreen implements Screen {
 	private boolean backToRegistrationScreen;
 
 	public FaceCaptureScreen() {
-		this.camera = new OrthographicCamera();
-		this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
-		this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		this.camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-
-		this.camera.update();
-		this.viewport.apply();
-
-		this.atlas = new TextureAtlas(Gdx.files.internal("uiskin.atlas"));
-		this.skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
 
 		this.registration = false;
 		this.backToRegistrationScreen = false;
@@ -52,17 +25,9 @@ public class FaceCaptureScreen implements Screen {
 
 	@Override
 	public void show() {
-		this.batch = new SpriteBatch();
-		this.stage = new Stage(this.viewport, this.batch);
-		Gdx.input.setInputProcessor(this.stage);
-
-		// Creo table
-		Table mainTable = new Table();
-		// Dico alla table di riempire lo stage
-		mainTable.setFillParent(true);
-		// Allineo le cose nella table
-		mainTable.center();
-
+		
+		super.show();
+		this.mainTable.center();
 		this.registrationButton = new TextButton("SignIn", skin);
 		this.backToRegistrationScreenButton = new TextButton("Back to registration screen", skin);
 
@@ -81,10 +46,8 @@ public class FaceCaptureScreen implements Screen {
 			}
 		});
 
-		mainTable.add(this.registrationButton);
-		mainTable.row();
-		mainTable.add(this.backToRegistrationScreenButton);
-		mainTable.row();
+		this.add(this.registrationButton);
+		this.add(this.backToRegistrationScreenButton);
 
 		// Aggiungo table allo stage
 		stage.addActor(mainTable);
@@ -139,14 +102,6 @@ public class FaceCaptureScreen implements Screen {
 	public void hide() {
 		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public void dispose() {
-		batch.dispose();
-		stage.dispose();
-		skin.dispose();
-		atlas.dispose();
 	}
 
 }

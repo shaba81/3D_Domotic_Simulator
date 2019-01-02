@@ -3,36 +3,21 @@ package com.mygdx.registration;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.database.persistence.PostgreDAOFactory;
 import com.mygdx.database.persistence.dao.UserDAO;
 import com.mygdx.game.ScreenEnum;
 import com.mygdx.game.ScreenManager;
+import com.mygdx.interfaces.AbstractScreen;
 
 import utilis.Utils;
 
-public class RegistrationCredentialsScreen implements Screen {
-
-	private OrthographicCamera camera;
-	private SpriteBatch batch;
-	private Viewport viewport;
-	private Stage stage;
-	private TextureAtlas atlas;
-	protected Skin skin;
+public class RegistrationCredentialsScreen extends AbstractScreen{
 
 	private Label emailLabel;
 	private Label telephoneNumberLabel;
@@ -50,36 +35,17 @@ public class RegistrationCredentialsScreen implements Screen {
 	private boolean backToAdministration;
 
 	public RegistrationCredentialsScreen() {
-		this.camera = new OrthographicCamera();
-		this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
-		this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		this.camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-
-		this.camera.update();
-		this.viewport.apply();
-
-		this.atlas = new TextureAtlas(Gdx.files.internal("uiskin.atlas"));
-		this.skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
 
 		this.faceCapture = false;
 		this.backToAdministration = false;
-
 		this.credentials = new ArrayList<String>();
 	}
 
 	@Override
 	public void show() {
-		this.batch = new SpriteBatch();
-		this.stage = new Stage(this.viewport, this.batch);
-		Gdx.input.setInputProcessor(this.stage);
 
-		// Creo table
-		Table mainTable = new Table();
-		// Dico alla table di riempire lo stage
-		mainTable.setFillParent(true);
-		// Allineo le cose nella table
-		mainTable.center();
-
+		super.show();
+		this.mainTable.center();
 		this.faceCaptureButton = new TextButton("Face capture", skin);
 		this.backToAdministrationButton = new TextButton("Back to Administration", skin);
 
@@ -109,22 +75,14 @@ public class RegistrationCredentialsScreen implements Screen {
 		this.txtNickName = new TextField("", skin);
 		this.txtNickName.setMessageText("Ex: Maria");
 
-		mainTable.add(this.emailLabel);
-		mainTable.row();
-		mainTable.add(this.txtEmail);
-		mainTable.row();
-		mainTable.add(this.telephoneNumberLabel);
-		mainTable.row();
-		mainTable.add(this.txtTelephoneNumber);
-		mainTable.row();
-		mainTable.add(this.nickNameLabel);
-		mainTable.row();
-		mainTable.add(this.txtNickName);
-		mainTable.row();
-		mainTable.add(this.faceCaptureButton);
-		mainTable.row();
-		mainTable.add(this.backToAdministrationButton);
-		mainTable.row();
+		this.add(this.emailLabel);
+		this.add(this.txtEmail);
+		this.add(this.telephoneNumberLabel);
+		this.add(this.txtTelephoneNumber);
+		this.add(this.nickNameLabel);
+		this.add(this.txtNickName);
+		this.add(this.faceCaptureButton);
+		this.add(this.backToAdministrationButton);
 
 		// Aggiungo table allo stage
 		stage.addActor(mainTable);
@@ -209,14 +167,6 @@ public class RegistrationCredentialsScreen implements Screen {
 	public void hide() {
 		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public void dispose() {
-		batch.dispose();
-		stage.dispose();
-		skin.dispose();
-		atlas.dispose();
 	}
 
 }
