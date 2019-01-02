@@ -9,6 +9,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
 
 import com.badlogic.gdx.Gdx;
 import com.mygdx.database.model.User;
+import com.mygdx.database.persistence.PostgreDAOFactory;
 import com.mygdx.database.persistence.dao.UserDAO;
 import com.mygdx.database.persistence.exception.PersistenceException;
 
@@ -24,7 +25,7 @@ public class UserJDBC implements UserDAO {
 	}
 
 	@Override
-	public void registration(User utente) throws Exception {
+	public void registration(User user) throws Exception {
 
 		Connection conn = null;
 		PreparedStatement statement = null;
@@ -33,14 +34,14 @@ public class UserJDBC implements UserDAO {
 
 			conn = basicDataSource.getConnection();
 
-			Configuration config = (Configuration) Utils.getJsonFile(Configuration.class, Utils.DB_PATH_QUERY);
-			statement = conn.prepareStatement(config.insertUser);
+			//Configuration config = (Configuration) Utils.getJsonFile(Configuration.class, Utils.DB_PATH_QUERY);
+			statement = conn.prepareStatement(Configuration.insertUser);
 
-			statement.setString(1, utente.getEmail());
-			statement.setString(2, utente.getNickName());
-			statement.setString(3, utente.getTelefonNumber());
-			statement.setString(4, utente.getPathImage());
-			statement.setBoolean(5, utente.isAdministrator());
+			statement.setString(1, user.getEmail());
+			statement.setString(2, user.getNickName());
+			statement.setString(3, user.getTelefonNumber());
+			statement.setString(4, user.getPathImage());
+			statement.setBoolean(5, user.isAdministrator());
 
 			statement.executeUpdate();
 
@@ -66,7 +67,7 @@ public class UserJDBC implements UserDAO {
 	}
 
 	@Override
-	public User findByEmail(String email) throws Exception {
+	public int userExist(String email, String telephoneNumber, String nickName ) throws Exception {
 
 		Connection connection = null;
 		PreparedStatement statement = null;
@@ -76,28 +77,47 @@ public class UserJDBC implements UserDAO {
 
 			connection = basicDataSource.getConnection();
 
-			Configuration config = (Configuration) Utils.getJsonFile(Configuration.class, Utils.DB_PATH_QUERY);
-			statement = connection.prepareStatement(config.findByEmail);
+		//	Configuration config = (Configuration) Utils.getJsonFile(Configuration.class, Utils.DB_PATH_QUERY);
+			/*
+			 * Check is the check is separeted to give the client more detail of the mistake made.
+			 * 
+			 * Check if email, telephoneNumber and nickName exist.
+			 */
+			statement = connection.prepareStatement(Configuration.checkIfEmailExist);
 
 			statement.setString(1, email);
 			resultSet = statement.executeQuery();
 
-			User user = null;
+			if (resultSet.next()) 
+				return 1;
 
-			if (resultSet.next()) {
+			/*
+			 * Check if  telephoneNumber exist.
+			 */
+			resultSet = null;
+			statement = null;
 
-				if (user == null) {
-					user = new User();
-				}
+			statement = connection.prepareStatement(Configuration.checkIfTelephoneNumberExist);
+			statement.setString(1, telephoneNumber);
+			resultSet = statement.executeQuery();
 
-				user.setEmail(resultSet.getString("email"));
-				user.setNickName(resultSet.getString("nick_name"));
-				user.setPathImage(resultSet.getString("image_path"));
-				user.setTelefonNumber(resultSet.getString("phone_number"));
+			if (resultSet.next()) 
+				return 2;
 
-			}
+			/*
+			 * Check if nickName exist.
+			 */
+			resultSet = null;
+			statement = null;
 
-			return user;
+			statement = connection.prepareStatement(Configuration.checkIfNickNameExist);
+			statement.setString(1, nickName);
+			resultSet = statement.executeQuery();
+
+			if (resultSet.next()) 
+				return 3;
+
+			return -1;
 
 		} catch (SQLException e) {
 			throw e;
@@ -121,7 +141,7 @@ public class UserJDBC implements UserDAO {
 			
 			conn = basicDataSource.getConnection();
 
-			Configuration config = (Configuration) Utils.getJsonFile(Configuration.class, Utils.DB_PATH_QUERY);
+			//Configuration config = (Configuration) Utils.getJsonFile(Configuration.class, Utils.DB_PATH_QUERY);
 
 		//	statement = conn.prepareStatement(config.deleteUtenteByEmail);
 			statement.setString(1, email);

@@ -18,6 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.database.persistence.PostgreDAOFactory;
+import com.mygdx.database.persistence.dao.UserDAO;
 import com.mygdx.game.ScreenEnum;
 import com.mygdx.game.ScreenManager;
 
@@ -97,15 +99,15 @@ public class RegistrationCredentialsScreen implements Screen {
 
 		this.emailLabel = new Label("Email: ", skin);
 		this.txtEmail = new TextField("", skin);
-		this.txtEmail.setMessageText("Email");
+		this.txtEmail.setMessageText("Ex: ciao@caro.it");
 
 		this.telephoneNumberLabel = new Label("Telephone number: ", skin);
 		this.txtTelephoneNumber = new TextField("", skin);
-		this.txtTelephoneNumber.setMessageText("Telephone number");
+		this.txtTelephoneNumber.setMessageText("Ex: +390123456789");
 
 		this.nickNameLabel = new Label("Nickname: ", skin);
 		this.txtNickName = new TextField("", skin);
-		this.txtNickName.setMessageText("Nickname");
+		this.txtNickName.setMessageText("Ex: Maria");
 
 		mainTable.add(this.emailLabel);
 		mainTable.row();
@@ -130,38 +132,59 @@ public class RegistrationCredentialsScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		try {
+			Gdx.gl.glClearColor(0, 0, 0, 1);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		this.batch.begin();
+			this.batch.begin();
 
-		this.batch.end();
+			this.batch.end();
 
-		this.stage.act();
-		this.stage.draw();
+			this.stage.act();
+			this.stage.draw();
 
-		if (faceCapture) {
-			faceCapture = false;
-			this.credentials.add(0, this.txtEmail.getText());
-			this.credentials.add(1, this.txtTelephoneNumber.getText());
-			this.credentials.add(2, this.txtNickName.getText());
-			if (this.credentials.get(0).equals("") || this.credentials.get(1).equals("")
-					|| this.credentials.get(1).equals(""))
-				Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSING_CRED_POPUP, skin, stage);
-			else if ( !this.credentials.get(0).contains("@") || !this.credentials.get(0).contains(".") )
-				Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_BAD_EMAIL_FORMAT_POPUP, skin, stage);
-			else if ( this.credentials.get(1).length() < 13 || ! this.credentials.get(1).contains("+") )
-				Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_BAD_NUMBER_FORMAT_POPUP, skin, stage);
-			else
-				ScreenManager.getInstance().showScreen(ScreenEnum.FACE_CAPTURE_SCREEN);
+			if (faceCapture) {
+				PostgreDAOFactory postgreDAOFactory = new PostgreDAOFactory();
+				UserDAO utenteDAO = postgreDAOFactory.getUtenteDAO();
+				faceCapture = false;
+				this.credentials.add(0, this.txtEmail.getText());
+				this.credentials.add(1, this.txtTelephoneNumber.getText());
+				this.credentials.add(2, this.txtNickName.getText());
 
+				/*
+				 * This function return:
+				 * 	1: if email already exist.
+				 *  2: if telephone number already exist.
+				 *  3: if nickname already exist.
+				 */
+				int result = utenteDAO.userExist(this.credentials.get(0), this.credentials.get(1),
+						this.credentials.get(2));
+
+				if (this.credentials.get(0).equals("") || this.credentials.get(1).equals("")
+						|| this.credentials.get(1).equals(""))
+					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSING_CRED_POPUP, skin, stage);
+				else if( result == 1 ) 
+					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_EMAIL_EXIST_POPUP, skin, stage);
+				else if( result == 2 )
+					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_TELEPHONE_EXIST_POPUP, skin, stage);
+				else if( result == 3 )
+					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_NICKNAME_EXIST_POPUP, skin, stage);	
+				else if (!this.credentials.get(0).contains("@") || !this.credentials.get(0).contains("."))
+					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_BAD_EMAIL_FORMAT_POPUP, skin, stage);
+				else if (this.credentials.get(1).length() < 13 || !this.credentials.get(1).contains("+"))
+					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_BAD_NUMBER_FORMAT_POPUP, skin, stage);
+				else
+					ScreenManager.getInstance().showScreen(ScreenEnum.FACE_CAPTURE_SCREEN);
+
+			}
+
+			if (backToAdministration) {
+				backToAdministration = false;
+				Utils.showPopUp(Utils.REGISTRATION_CREDENTIALS_SCREEN_BACK_POPUP, skin, stage, this);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
-
-		if (backToAdministration) {
-			backToAdministration = false;
-			Utils.showPopUp(Utils.REGISTRATION_CREDENTIALS_SCREEN_BACK_POPUP, skin, stage, this);
-		}
-
 	}
 
 	@Override

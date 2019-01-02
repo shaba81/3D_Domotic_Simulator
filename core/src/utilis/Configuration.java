@@ -45,5 +45,10 @@ public interface Configuration {
 	public String updateUserAdmin = "update ingswschema.users set email=?, nick_name=?, telephone_number=?, path_image=?, is_administrator=? where id_user=?;";
 	public String insertUser = "insert into ingswschema.users(id_user,email,nick_name,telephone_number,path_image,is_administrator,id_supply) values (nextval('ingswschema.sequence_id'),?,?,?,?,?,1);";
 	public String findByEmail = "select * from ingswschema.users where email=?;";
+
+	public String checkIfEmailExist = "select u.id_user from ingswschema.users u where u.email=?;";
+	public String checkIfTelephoneNumberExist = "select u.id_user from ingswschema.users u where u.telephone_number=?;";
+	public String checkIfNickNameExist = "select u.id_user from ingswschema.users u where u.nick_name=?;";
+
 	public String deleteUserById = "delete from ingswschema.users where id_user=?;";
 }
