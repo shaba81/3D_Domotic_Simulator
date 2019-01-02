@@ -115,6 +115,7 @@ public class GameScreen implements Screen {
 	private boolean back = false;
 	private boolean left = false;
 	private boolean right = false;
+	private boolean nAccessButton;
 
 	// Width and Height of the room's floor.
 	private float floorWidth = 120;
@@ -211,6 +212,8 @@ public class GameScreen implements Screen {
 		// non-directional ) light.
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 1.0f));
+		
+		this.nAccessButton = false;
 	}
 
 	public void createRoom() {
@@ -338,6 +341,9 @@ public class GameScreen implements Screen {
 				}
 				if (keycode == Input.Keys.L) {
 					isLightOn = !isLightOn;
+				}
+				if (keycode == Input.Keys.N) {
+					nAccessButton = true;
 				}
 				return false;
 			}
@@ -527,11 +533,20 @@ public class GameScreen implements Screen {
 
 		startTV();
 		turnLights();
+		
+		if(this.nAccessButton)
+		{
+			this.nAccessButton = false;
+			ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
+			
+		}
 
 		// Use this to change Screen
 		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-			// ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
+			
+			//gestire i vari casi in cui si può volere uscire
 			Gdx.app.exit();
+//			ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
 			// game.setScreen(game.menu);
 		}
 

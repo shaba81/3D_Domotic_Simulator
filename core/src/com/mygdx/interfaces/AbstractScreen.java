@@ -37,6 +37,8 @@ public abstract class AbstractScreen implements Screen{
 		
 		this.atlas = new TextureAtlas(Gdx.files.internal("uiskin.atlas"));
 		this.skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
+		
+		Gdx.input.setCursorCatched(false);
 	}
 	
 	public void show() {
