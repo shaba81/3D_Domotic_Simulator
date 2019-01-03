@@ -345,7 +345,6 @@ public class GameScreen implements Screen {
 					isLightOn = !isLightOn;
 				}
 				if (keycode == Input.Keys.N) {
-					System.out.println("BOTTONE PREMUTO");
 					nAccessButton = true;
 				}
 				return false;
@@ -544,6 +543,7 @@ public class GameScreen implements Screen {
 				UserDAO utenteDAO = postgreDAOFactory.getUtenteDAO();
 
 				if ( utenteDAO.isFirstRegistrationForThisForniture(Utils.ID_SUPPLY, Utils.ID_USER) ) {
+					Utils.isFirstAccess = true;
 					ScreenManager.getInstance().showScreen(ScreenEnum.LOGIN_SCREEN);
 				}
 				else {

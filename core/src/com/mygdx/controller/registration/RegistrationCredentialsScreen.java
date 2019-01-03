@@ -26,7 +26,6 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 	private TextField txtEmail;
 	private TextField txtTelephoneNumber;
 	private TextField txtNickName;
-	private ArrayList<String> credentials;
 
 	private TextButton faceCaptureButton;
 	private boolean faceCapture;
@@ -47,7 +46,13 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 		super.show();
 		this.mainTable.center();
 		this.faceCaptureButton = new TextButton("Face capture", skin);
-		this.backToAdministrationButton = new TextButton("Back to Administration", skin);
+		String text = "Back to Administration";
+		this.backToAdministrationButton = new TextButton("", skin);
+
+		if( Utils.isFirstAccess )
+			text = "Back to simulation";
+
+		this.backToAdministrationButton.setText(text);
 
 		this.faceCaptureButton.addListener(new ClickListener() {
 			@Override
@@ -118,26 +123,6 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 
 				String dialogText = this.errorOccurr(result);
 
-//				if (result == 1)
-//					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_EMAIL_EXIST_POPUP, skin, stage);
-//				else if (result == 2)
-//					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_TELEPHONE_EXIST_POPUP, skin, stage);
-//				else if (result == 3)
-//					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_NICKNAME_EXIST_POPUP, skin, stage);
-//				else if (this.credentials.get(0).equals("") || this.credentials.get(1).equals("")
-//						|| this.credentials.get(1).equals(""))
-//					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSING_CRED_POPUP, skin, stage);
-//				else if (!this.credentials.get(0).contains("@") )
-//					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSING_AT_EMAIL_POPUP, skin, stage);
-//				else if( !this.credentials.get(0).contains("."))
-//					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSING_POINT_EMAIL_POPUP, skin, stage);
-//				else if ( !this.credentials.get(1).matches("[0-9+]+")  )
-//					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_NUMBER_CONTAINS_LETTER_POPUP, skin, stage);
-//				else if( this.credentials.get(1).length() != 13)
-//					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_NUMBER_TOO_SHORT_POPUP, skin, stage);
-//				else if ( this.credentials.get(1).charAt(0) != '+')
-//					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSIN_PLUS_NUMBER_POPUP, skin, stage);
-
 				if (dialogText != "")
 					Utils.showMessageDialog(dialogText, skin, stage);
 				else
@@ -147,7 +132,11 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 
 			if (backToAdministration) {
 				backToAdministration = false;
-				Utils.showPopUp(Utils.REGISTRATION_CREDENTIALS_SCREEN_BACK_POPUP, skin, stage, this);
+				if( !Utils.isFirstAccess )
+					Utils.showPopUp(Utils.REGISTRATION_CREDENTIALS_SCREEN_BACK_POPUP, skin, stage, "registration_credentials_screen");
+				else {
+					Utils.showPopUp(Utils.SCREEN_BACK_GAME_POPUP, skin, stage, "registration_credentials_screen_first_acc");
+				}
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -160,10 +149,10 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_EMAIL_EXIST_POPUP;
 		else if (result == 2)
 			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_TELEPHONE_EXIST_POPUP;
-		else if (result == 3)
+		else if (  !this.credentials.get(2).equals("")  && result == 3)
 			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_NICKNAME_EXIST_POPUP;
 		else if (this.credentials.get(0).equals("") || this.credentials.get(1).equals("")
-				|| this.credentials.get(1).equals(""))
+				|| this.credentials.get(2).equals(""))
 			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSING_CRED_POPUP;
 		else if (!this.credentials.get(0).contains("@"))
 			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSING_AT_EMAIL_POPUP;

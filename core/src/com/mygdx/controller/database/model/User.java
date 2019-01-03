@@ -9,7 +9,7 @@ import java.math.BigInteger;
  */
 public class User {
 
-	private Long idUtente;
+	private String idUser;
 	private String nickName;
 	private String email;
 	private String telefonNumber;
@@ -29,12 +29,12 @@ public class User {
 		this.isAdministrator = isAdministrator;
 	}
 
-	public Long getIdUtente() {
-		return idUtente;
+	public String getIdUser() {
+		return idUser;
 	}
 
-	public void setIdUtente(Long idUtente) {
-		this.idUtente = idUtente;
+	public void setIdUser(String idUser) {
+		this.idUser = idUser;
 	}
 
 	public boolean isAdministrator() {

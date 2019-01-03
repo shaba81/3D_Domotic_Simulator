@@ -5,6 +5,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.controller.database.model.User;
+import com.mygdx.controller.database.persistence.PostgreDAOFactory;
+import com.mygdx.controller.database.persistence.dao.UserDAO;
 import com.mygdx.interfaces.AbstractScreen;
 
 import utilis.Utils;
@@ -25,7 +28,7 @@ public class FaceCaptureScreen extends AbstractScreen {
 
 	@Override
 	public void show() {
-		
+
 		super.show();
 		this.mainTable.center();
 		this.registrationButton = new TextButton("SignIn", skin);
@@ -55,29 +58,69 @@ public class FaceCaptureScreen extends AbstractScreen {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			Gdx.gl.glClearColor(0, 0, 0, 1);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		this.batch.begin();
+			this.batch.begin();
 
-		this.batch.end();
+			this.batch.end();
 
-		this.stage.act();
-		this.stage.draw();
+			this.stage.act();
+			this.stage.draw();
 
-		if( this.registration ) {
-			this.registration = false;
+			if (this.registration) {
+				this.registration = false;
+				PostgreDAOFactory postgreDAOFactory = new PostgreDAOFactory();
+				UserDAO userDAO = postgreDAOFactory.getUtenteDAO();
+
+				/*
+				 * Decommentare le funzioni per il salvataggio.
+				 * Ora se si preme il bottone + come se simulasse la registrazione. quindi la booleana la mette a false.
+				 * Ma successivamente sarà messa all'interno del metodo così da settarla solo quando effettivamente il 
+				 * salvataggio è avvenuto con successo e questo controllo lo facciamo dentro la funzione.
+				 */
+				if (Utils.isFirstAccess) {
+					System.out.println("FIRST ACCESS");
+//					this.registrationUser(userDAO, true);
+					Utils.isFirstAccess = false;
+				} else {
+					System.out.println("NORMAL USER REGISTRATION");
+//					this.registrationUser(userDAO, false);
+				}
+			}
+
+			if (this.backToRegistrationScreen) {
+				this.backToRegistrationScreen = false;
+				Utils.showPopUp(Utils.FACE_CAPTURE_SCREEN_BACK_POPUP, skin, stage, "face_capture_screen");
+			}
+	}
+
+	/**
+	 * Save User into DB. 
+	 * 
+	 * @param userDAO
+	 * @param isAdministrator
+	 */
+	private void registrationUser(UserDAO userDAO, boolean isAdministrator) {
+		try {
 			/*
-			 * TODO CHIAMATA A DB E SALVATAGGIO
+			 * TODO: fare distinzione di popup, quando fallisce va benisismo. Quando ha successo farlo accedere 
 			 */
-			//ScreenManager.getInstance().showScreen(ScreenEnum.REGISTRATION_SCREEN);
-		}
+			User user = new User();
+			user.setEmail(this.credentials.get(0));
+			user.setAdministrator(isAdministrator);
+			user.setNickName(this.credentials.get(2));
+			user.setTelefonNumber(this.credentials.get(1));
+			user.setPathImage(this.credentials.get(3));
 
-		if( this.backToRegistrationScreen ) {
-			this.backToRegistrationScreen = false;
-			Utils.showPopUp(Utils.FACE_CAPTURE_SCREEN_BACK_POPUP, skin, stage, this);
+			if (userDAO.registration(user))
+				Utils.showMessageDialog(Utils.REGISTRATION_SUCCESS_POPUP, skin, stage);
+			else {
+				Utils.showMessageDialog(Utils.REGISTRATION_FAILED_POPUP, skin, stage);
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
-
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package com.mygdx.interfaces;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -24,7 +26,8 @@ public abstract class AbstractScreen implements Screen{
 	protected TextureAtlas atlas;
 	protected Skin skin;
 	protected Table mainTable;
-	
+	protected ArrayList<String> credentials;
+
 	public AbstractScreen() {
 		// TODO Auto-generated constructor stub
 		this.camera = new OrthographicCamera();

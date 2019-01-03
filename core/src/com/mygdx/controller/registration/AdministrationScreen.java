@@ -97,7 +97,7 @@ public class AdministrationScreen extends AbstractScreen{
 
 		if( this.back ) {
 			this.back = false;
-			Utils.showPopUp(Utils.ADMINISTRATION_SCREEN_BACK_POPUP, skin, stage, this);
+			Utils.showPopUp(Utils.ADMINISTRATION_SCREEN_BACK_POPUP, skin, stage, "admin_screen");
 		}
 
 	}

@@ -25,7 +25,7 @@ public class UserJDBC implements UserDAO {
 	}
 
 	@Override
-	public void registration(User user) throws Exception {
+	public boolean registration(User user) throws Exception {
 
 		Connection conn = null;
 		PreparedStatement statement = null;
@@ -36,15 +36,24 @@ public class UserJDBC implements UserDAO {
 
 			// Configuration config = (Configuration) Utils.getJsonFile(Configuration.class,
 			// Utils.DB_PATH_QUERY);
-			statement = conn.prepareStatement(Configuration.insertUser);
+			String query = Configuration.insertUserNormal;
 
+			if( Utils.isFirstAccess )
+				query = Configuration.insertUserAdmin;
+
+			statement = conn.prepareStatement(query);
 			statement.setString(1, user.getEmail());
 			statement.setString(2, user.getNickName());
 			statement.setString(3, user.getTelefonNumber());
 			statement.setString(4, user.getPathImage());
 			statement.setBoolean(5, user.isAdministrator());
 
-			statement.executeUpdate();
+			int result = statement.executeUpdate();
+
+			if( result != 0 )
+				return true;
+
+			return false;
 
 		} catch (SQLException e) {
 
@@ -241,7 +250,6 @@ public class UserJDBC implements UserDAO {
 				}
 			}
 
-			System.out.println("QUI");
 			return false;
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());

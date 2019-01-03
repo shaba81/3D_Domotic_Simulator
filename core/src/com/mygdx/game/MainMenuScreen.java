@@ -93,7 +93,7 @@ public class MainMenuScreen extends AbstractScreen {
 
 		if( back ) {
 			back = false;
-			Utils.showPopUp(Utils.MAIN_MENU_BACK_POPUP, skin, stage, this);
+			Utils.showPopUp(Utils.MAIN_MENU_BACK_POPUP, skin, stage, "main_menu_screen");
 		}
 
 	}

@@ -43,7 +43,8 @@ public interface Configuration {
 	public String updateUserAdminPass =  "update ingswschema.users set password_registration=crypt(?, gen_salt('bf')) where id_user=?;";
 	public String validateUserAdminPass = "select ingswschema.users.id_user, (password_registration= crypt(?, password_registration)) AS pswmatch from ingswschema.users where id_user=?;";
 	public String updateUserAdmin = "update ingswschema.users set email=?, nick_name=?, telephone_number=?, path_image=?, is_administrator=? where id_user=?;";
-	public String insertUser = "insert into ingswschema.users(id_user,email,nick_name,telephone_number,path_image,is_administrator,id_supply) values (nextval('ingswschema.sequence_id'),?,?,?,?,?,1);";
+	public String insertUserNormal = "insert into ingswschema.users(id_user,email,nick_name,telephone_number,path_image,is_administrator,id_supply) values (nextval('ingswschema.sequence_id'),?,?,?,?,?,1);";
+	public String insertUserAdmin = "insert into ingswschema.users(email,nick_name,telephone_number,path_image,is_administrator,id_supply) values (?,?,?,?,?,1);";
 	public String findByEmail = "select * from ingswschema.users where email=?;";
 
 	public String checkIfEmailExist = "select u.id_user from ingswschema.users u where u.email=?;";

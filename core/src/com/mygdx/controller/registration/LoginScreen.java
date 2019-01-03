@@ -28,13 +28,17 @@ public class LoginScreen extends AbstractScreen {
 	private ArrayList<String> credentials;
 
 	private TextButton backButton;
-	private boolean back = false;
+	private boolean back;
 
 	private TextButton accessButton;
-	private boolean access = false;
+	private boolean access;
+	private boolean isFirstAccessInternal;
 
 	public LoginScreen() {
 
+		this.back = false;
+		this.access = false;
+		this.isFirstAccessInternal = true;
 		credentials = new ArrayList<String>();
 	}
 
@@ -43,7 +47,13 @@ public class LoginScreen extends AbstractScreen {
 
 		super.show();
 		this.mainTable.center();
-		backButton = new TextButton("Back to Menu", skin);
+		String text = "Back to Administration";
+		this.backButton = new TextButton("", skin);
+
+		if( Utils.isFirstAccess )
+			text = "Back to simulation";
+
+		this.backButton.setText(text);
 		accessButton = new TextButton("Access", skin);
 
 		// In ascolto di eventi
@@ -97,9 +107,19 @@ public class LoginScreen extends AbstractScreen {
 			stage.act();
 			stage.draw();
 
-			if (back) {
+			if(this.isFirstAccessInternal && Utils.isFirstAccess) {
+				this.isFirstAccessInternal = false;
+				Utils.showMessageDialog(Utils.LOGIN_SCREEN_FIRST_ACCESS_POPUP, skin, stage);
+			}
+
+			if (back && !Utils.isFirstAccess) {
 				back = false;
-				Utils.showPopUp(Utils.LOGIN_SCREEN_BACK_POPUP, skin, stage, this);
+				Utils.showPopUp(Utils.LOGIN_SCREEN_BACK_POPUP, skin, stage, "login_back_adm");
+			}
+
+			if (back && Utils.isFirstAccess) {
+				back = false;
+				Utils.showPopUp(Utils.SCREEN_BACK_GAME_POPUP, skin, stage, "login_back_game");
 			}
 
 			if (access) {
@@ -110,7 +130,11 @@ public class LoginScreen extends AbstractScreen {
 				PostgreDAOFactory postgreDAOFactory = new PostgreDAOFactory();
 				UserDAO utenteDAO = postgreDAOFactory.getUtenteDAO();
 				if( utenteDAO.validateUserAdminCredentials(this.credentials.get(1), this.credentials.get(0)) ) {
-					ScreenManager.getInstance().showScreen(ScreenEnum.ADMINISTRATION_SCREEN);
+					if( !Utils.isFirstAccess )
+						ScreenManager.getInstance().showScreen(ScreenEnum.ADMINISTRATION_SCREEN);
+					else{
+						ScreenManager.getInstance().showScreen(ScreenEnum.REGISTRATION_CREDENTIALS_SCREEN);
+					}
 				}
 				else {
 					Utils.showMessageDialog(Utils.LOGIN_SCREEN_WRONG_CREDENTIAL_POPUP, skin, stage);
