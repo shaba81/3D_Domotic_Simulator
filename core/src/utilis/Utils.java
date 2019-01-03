@@ -47,15 +47,18 @@ public class Utils {
 	public static final String FACE_CAPTURE_SCREEN_BACK_POPUP = "Are you sure you want to quit from Face Capture screen?";
 	public static final String REGISTRATION_CREDENTIALS_SCREEN_BACK_POPUP = "Are you sure you want to quit from Registration screen?";
 	public static final String REGISTRATION_CREDENTIALS_SCREEN_MISSING_CRED_POPUP = "Missing one or more of the three credentials.";
-	public static final String REGISTRATION_CREDENTIALS_SCREEN_BAD_EMAIL_FORMAT_POPUP = "Bad format of email field.\n Example: ciao@caro.it";
-	public static final String REGISTRATION_CREDENTIALS_SCREEN_BAD_NUMBER_FORMAT_POPUP = "Bad format of telphone number field. Must contain 12 numbers and the '+' character at the beginning of number and mustn't contain letter.\n Example: +390123456789";
 	public static final String REGISTRATION_CREDENTIALS_SCREEN_EMAIL_EXIST_POPUP = "Email already exists, , please click on ENTER or OK to continue.";
 	public static final String REGISTRATION_CREDENTIALS_SCREEN_TELEPHONE_EXIST_POPUP = "Telephone number already exists, please click on ENTER or OK to continue.";
 	public static final String REGISTRATION_CREDENTIALS_SCREEN_NICKNAME_EXIST_POPUP = "Nickname already exists, please click on ENTER or OK to continue.";
+	public static final String REGISTRATION_CREDENTIALS_SCREEN_MISSING_AT_EMAIL_POPUP = "Wrong email format. This field must contain's '@' caharacter.";
+	public static final String REGISTRATION_CREDENTIALS_SCREEN_MISSING_POINT_EMAIL_POPUP = "Wrong email format. This field must contain's '.' character.";
+	public static final String REGISTRATION_CREDENTIALS_SCREEN_NUMBER_CONTAINS_LETTER_POPUP = "Wrong telephone numebr format. This field mustn't contain's any letter or other character.";
+	public static final String REGISTRATION_CREDENTIALS_SCREEN_NUMBER_TOO_SHORT_POPUP = "Wrong telephone numebr format. The field must be composed of the '+' character at the beginning, \nthe next two numbers represent the area code and the next ten numbers the telephone number.";
+	public static final String REGISTRATION_CREDENTIALS_SCREEN_MISSIN_PLUS_NUMBER_POPUP = "Wrong telephone numebr format. Missing the '+' character at the beginning of the number.";
 
 	/**
 	 * Metodo che prende come parametri Il Tipo di classe che ha all'interno i dati
-	 * che saranno nel file .json {@link Configuration}, e il path dove si trova il file.
+	 * che saranno nel file .json {@link Configuration}, e il path dove si trova il file
 	 * @param type
 	 * @param fileHandle
 	 * @return

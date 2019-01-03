@@ -116,19 +116,30 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 				int result = utenteDAO.userExist(this.credentials.get(0), this.credentials.get(1),
 						this.credentials.get(2));
 
-				if (result == 1)
-					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_EMAIL_EXIST_POPUP, skin, stage);
-				else if (result == 2)
-					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_TELEPHONE_EXIST_POPUP, skin, stage);
-				else if (result == 3)
-					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_NICKNAME_EXIST_POPUP, skin, stage);
-				if (this.credentials.get(0).equals("") || this.credentials.get(1).equals("")
-						|| this.credentials.get(1).equals(""))
-					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSING_CRED_POPUP, skin, stage);
-				else if (!this.credentials.get(0).contains("@") || !this.credentials.get(0).contains("."))
-					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_BAD_EMAIL_FORMAT_POPUP, skin, stage);
-				else if ( !this.credentials.get(1).matches("[0-9+]+") || this.credentials.get(1).length() != 13 || this.credentials.get(1).charAt(0) != '+')
-					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_BAD_NUMBER_FORMAT_POPUP, skin, stage);
+				String dialogText = this.errorOccurr(result);
+
+//				if (result == 1)
+//					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_EMAIL_EXIST_POPUP, skin, stage);
+//				else if (result == 2)
+//					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_TELEPHONE_EXIST_POPUP, skin, stage);
+//				else if (result == 3)
+//					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_NICKNAME_EXIST_POPUP, skin, stage);
+//				else if (this.credentials.get(0).equals("") || this.credentials.get(1).equals("")
+//						|| this.credentials.get(1).equals(""))
+//					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSING_CRED_POPUP, skin, stage);
+//				else if (!this.credentials.get(0).contains("@") )
+//					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSING_AT_EMAIL_POPUP, skin, stage);
+//				else if( !this.credentials.get(0).contains("."))
+//					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSING_POINT_EMAIL_POPUP, skin, stage);
+//				else if ( !this.credentials.get(1).matches("[0-9+]+")  )
+//					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_NUMBER_CONTAINS_LETTER_POPUP, skin, stage);
+//				else if( this.credentials.get(1).length() != 13)
+//					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_NUMBER_TOO_SHORT_POPUP, skin, stage);
+//				else if ( this.credentials.get(1).charAt(0) != '+')
+//					Utils.showMessageDialog(Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSIN_PLUS_NUMBER_POPUP, skin, stage);
+
+				if (dialogText != "")
+					Utils.showMessageDialog(dialogText, skin, stage);
 				else
 					ScreenManager.getInstance().showScreen(ScreenEnum.FACE_CAPTURE_SCREEN);
 
@@ -142,7 +153,32 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 			// TODO: handle exception
 		}
 	}
-	
+
+	private String errorOccurr(int result) {
+		String resultText = "";
+		if (result == 1)
+			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_EMAIL_EXIST_POPUP;
+		else if (result == 2)
+			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_TELEPHONE_EXIST_POPUP;
+		else if (result == 3)
+			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_NICKNAME_EXIST_POPUP;
+		else if (this.credentials.get(0).equals("") || this.credentials.get(1).equals("")
+				|| this.credentials.get(1).equals(""))
+			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSING_CRED_POPUP;
+		else if (!this.credentials.get(0).contains("@"))
+			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSING_AT_EMAIL_POPUP;
+		else if (!this.credentials.get(0).contains("."))
+			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSING_POINT_EMAIL_POPUP;
+		else if (!this.credentials.get(1).matches("[0-9+]+"))
+			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_NUMBER_CONTAINS_LETTER_POPUP;
+		else if (this.credentials.get(1).length() != 13)
+			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_NUMBER_TOO_SHORT_POPUP;
+		else if (this.credentials.get(1).charAt(0) != '+')
+			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSIN_PLUS_NUMBER_POPUP;
+
+		return resultText;
+	}
+
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
