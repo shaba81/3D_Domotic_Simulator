@@ -264,4 +264,65 @@ public class UserJDBC implements UserDAO {
 		}
 	}
 
+	@Override
+	public String[] updateCredentilsAdministrator(String idUser, Long idSupply, String newPass) throws Exception {
+		Connection conn = null;
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+
+		try {
+
+			conn = basicDataSource.getConnection();
+
+			// Configuration config = (Configuration) Utils.getJsonFile(Configuration.class,
+			// Utils.DB_PATH_QUERY);
+
+			/*
+			 * Update pass
+			 */
+			statement = conn.prepareStatement(Configuration.updateUserAdminPass);
+			statement.setString(1, newPass);
+			statement.setString(2, idUser);
+			statement.setLong(3, idSupply);
+
+			statement.executeUpdate();
+
+			/*
+			 * Select admin email
+			 */
+			statement = null;
+			statement = conn.prepareStatement(Configuration.findById);
+			statement.setString(1, idUser);
+
+			resultSet = statement.executeQuery();
+
+			String[] emailCredentialsAdmin = new String[2];
+			if (resultSet.next()) {
+				emailCredentialsAdmin[0] = resultSet.getString("email");
+				emailCredentialsAdmin[1] = resultSet.getString("telephone_number");
+			}
+
+			return emailCredentialsAdmin;			
+		} catch (SQLException e) {
+
+			if (e.getSQLState().equals("23505")) {
+				throw new PersistenceException(10006L);
+			} else {
+				System.out.println(e.getMessage());
+				throw e;
+			}
+
+		} finally {
+			try {
+				if (statement != null)
+					statement.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw e;
+			}
+		}
+	}
+
 }

@@ -22,7 +22,7 @@ import utilis.Utils;
  * @author Antonio
  *
  */
-public class EmailSender {
+public abstract class EmailSender {
 
 	/**
 	 * Metodo che invia la mail data la mail a cui mandare, l'oggetto e il messaggio
@@ -35,7 +35,7 @@ public class EmailSender {
 	 * @param messageArea {@link String} sctringa che identifica il messaggio da
 	 *                    mettere nel corpo della mail.
 	 */
-	public void sendMessage(String send, String object, String messageArea) {
+	public static boolean sendMessage(String send, String object, String messageArea) {
 
 		try {
 			boolean result = true;
@@ -46,97 +46,103 @@ public class EmailSender {
 				MimeMessage message;
 
 				// Setta le propriet‡ della connessione
-				Session session = Session.getDefaultInstance(this.setPropertiesStream());
+				Session session = Session.getDefaultInstance(setPropertiesStream());
 
 				message = new MimeMessage(session);
 				message.setFrom(new InternetAddress());
 
 				// chiamata al Set to
-				this.setTo(message, send);
+				setTo(message, send);
 
 				// chiamata al set Oggeto
-				this.setObject(message, object);
+				setObject(message, object);
 
 				// chiamata al set Messaggio
-				this.setText(message, messageArea);
+				setText(message, messageArea);
 
 				// Send message
-				this.sendEmail(message, session);
+				sendEmail(message, session);
 
-			} else {
-				JOptionPane.showMessageDialog(null, "La email inserita non esiste");
+				return true;
 			}
+
+			return false;
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
+
+		return false;
 	}
 
 	/**
 	 * Metodo che setta le propriet√† della connesione smtp.
+	 * 
 	 * @return
 	 */
-	private Properties setPropertiesStream() {
-		  Properties properties = System.getProperties();
-	      properties.setProperty("mail.smtp.port", "25");
-	      properties.setProperty("mail.smtp.socketFactory.port", "25");
+	private static Properties setPropertiesStream() {
+		Properties properties = System.getProperties();
+		properties.setProperty("mail.smtp.port", "25");
+		properties.setProperty("mail.smtp.socketFactory.port", "25");
 
-	      properties.setProperty("smtp.gmail.com", "localhost");
-	      return properties;
+		properties.setProperty("smtp.gmail.com", "localhost");
+		return properties;
 	}
 
 	/**
 	 * Meotodo che setta il Destinatario della mail
+	 * 
 	 * @param m
 	 * @param jTx
-	 * @throws MessagingException 
-	 * @throws AddressException 
+	 * @throws MessagingException
+	 * @throws AddressException
 	 */
-	private void setTo(MimeMessage m, String jTx) throws AddressException, MessagingException {
-			m.addRecipient(Message.RecipientType.TO, new InternetAddress(jTx));
+	private static void setTo(MimeMessage m, String jTx) throws AddressException, MessagingException {
+		m.addRecipient(Message.RecipientType.TO, new InternetAddress(jTx));
 	}
 
 	/**
 	 * Metodo che setta l'oggetto dell'email
+	 * 
 	 * @param m
 	 * @param jTx
 	 * @throws MessagingException
 	 */
-	private void setObject(MimeMessage m, String jTx) throws MessagingException {
-			m.setSubject(jTx);
+	private static void setObject(MimeMessage m, String jTx) throws MessagingException {
+		m.setSubject(jTx);
 	}
 
 	/**
 	 * Meotod che setta il testo dell'email
+	 * 
 	 * @param m
 	 * @param jTx
 	 * @throws MessagingException
 	 */
-	public void setText(MimeMessage m, String jTx) throws MessagingException {
-			m.setText(jTx);
+	private static void setText(MimeMessage m, String jTx) throws MessagingException {
+		m.setText(jTx);
 	}
 
 	/**
-	 * Metodo che manda effettivamente la email settando le infomrazioni per 
-	 * la connessione alla casella di posta su gmail. Le informazioni le prende
-	 * da un file .json attraverso l'uso della libreria GSON di Google.
+	 * Metodo che manda effettivamente la email settando le infomrazioni per la
+	 * connessione alla casella di posta su gmail. Le informazioni le prende da un
+	 * file .json attraverso l'uso della libreria GSON di Google.
 	 * 
 	 * @param m
 	 * @param s
 	 * @throws FileNotFoundException
 	 * @throws MessagingException
 	 */
-	public void sendEmail(MimeMessage m, Session s) throws FileNotFoundException, MessagingException {
-        //	Configuration config = (Configuration) Utils.getJsonFile(Configuration.class, Utils.CONFIG_PATH_EMAIL);
+	private static void sendEmail(MimeMessage m, Session s) throws FileNotFoundException, MessagingException {
+		// Configuration config = (Configuration) Utils.getJsonFile(Configuration.class,
+		// Utils.CONFIG_PATH_EMAIL);
 
-			String email = Configuration.userEmail;
-			String passwd = Configuration.userPassword;
+		String email = Configuration.userEmail;
+		String passwd = Configuration.userPassword;
 
-
-        	SMTPTransport t = (SMTPTransport)s.getTransport("smtps");
-			t.connect("smtp.gmail.com", email, passwd);
-			t.sendMessage(m, m.getAllRecipients());      
-			t.close();
-			JOptionPane.showMessageDialog(null, "Email inviata con successo.");
+		SMTPTransport t = (SMTPTransport) s.getTransport("smtps");
+		t.connect("smtp.gmail.com", email, passwd);
+		t.sendMessage(m, m.getAllRecipients());
+		t.close();
 	}
 }

@@ -11,10 +11,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.controller.database.persistence.PostgreDAOFactory;
 import com.mygdx.controller.database.persistence.dao.UserDAO;
+import com.mygdx.controller.email.EmailSender;
+import com.mygdx.controller.sms.SmsSender;
 import com.mygdx.game.ScreenEnum;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.interfaces.AbstractScreen;
 
+import utilis.Configuration;
 import utilis.Utils;
 
 public class LoginScreen extends AbstractScreen {
@@ -33,13 +36,15 @@ public class LoginScreen extends AbstractScreen {
 	private TextButton accessButton;
 	private boolean access;
 	private boolean isFirstAccessInternal;
+	private int countFailedLogin;
 
 	public LoginScreen() {
 
 		this.back = false;
 		this.access = false;
 		this.isFirstAccessInternal = true;
-		credentials = new ArrayList<String>();
+		this.countFailedLogin = 0;
+		this.credentials = new ArrayList<String>();
 	}
 
 	@Override
@@ -124,12 +129,18 @@ public class LoginScreen extends AbstractScreen {
 
 			if (access) {
 				this.access = false;
-				// to do accesso
+
 				this.credentials.add(0,this.txtId.getText());
 				this.credentials.add(1,txtPassword.getText());
 				PostgreDAOFactory postgreDAOFactory = new PostgreDAOFactory();
 				UserDAO utenteDAO = postgreDAOFactory.getUtenteDAO();
-				if( utenteDAO.validateUserAdminCredentials(this.credentials.get(1), this.credentials.get(0)) ) {
+				if( this.credentials.get(0).equals("") ) {
+					Utils.showMessageDialog(Utils.LOGIN_SCREEN_NO_ID_INSERT_POPUP, skin, stage);
+				}
+				else if ( this.credentials.get(1).equals("") ) {
+					Utils.showMessageDialog(Utils.LOGIN_SCREEN_NO_PASSWORD_INSERT_POPUP, skin, stage);
+				}
+				else if( utenteDAO.validateUserAdminCredentials(this.credentials.get(1), this.credentials.get(0)) ) {
 					if( !Utils.isFirstAccess )
 						ScreenManager.getInstance().showScreen(ScreenEnum.ADMINISTRATION_SCREEN);
 					else{
@@ -137,7 +148,16 @@ public class LoginScreen extends AbstractScreen {
 					}
 				}
 				else {
-					Utils.showMessageDialog(Utils.LOGIN_SCREEN_WRONG_CREDENTIAL_POPUP, skin, stage);
+
+					if( this.countFailedLogin == 3 ) {
+						this.countFailedLogin = 0;
+						Utils.showMessageDialog(Utils.LOGIN_SCREEN_TOO_MANY_FAILED_ATTEMPTS_POPUP,skin, stage);
+						this.updateAndSendCredentials(utenteDAO);
+					}
+					else {						
+						++this.countFailedLogin;
+						Utils.showMessageDialog(Utils.LOGIN_SCREEN_WRONG_CREDENTIAL_POPUP, skin, stage);
+					}
 				}
 			}
 
@@ -145,6 +165,16 @@ public class LoginScreen extends AbstractScreen {
 			e.printStackTrace();
 		}
 
+	}
+
+	private void updateAndSendCredentials(UserDAO utenteDAO) throws Exception {
+		String newPass = Utils.generatePasswordAdministrator();
+		String[] emailTelephoneNumeberAdmin = utenteDAO.updateCredentilsAdministrator(Utils.ID_USER, Utils.ID_SUPPLY, newPass);
+		String bodyMessage = Utils.MESSAGE_RECOVERY_PASS_ADMIN_EMAIL + "\n\n\n New password: " + newPass;
+		String bodyMessageSMS = Utils.MESSAGE_RECOVERY_PASS_ADMIN_SMS + "\nNew password: " + newPass;
+
+		EmailSender.sendMessage(emailTelephoneNumeberAdmin[0], Utils.OBJ_EMAIL_RECOVERY_PASS_ADMIN, bodyMessage);
+		SmsSender.sendSms(bodyMessageSMS,emailTelephoneNumeberAdmin[1]);
 	}
 
 	@Override

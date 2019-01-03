@@ -139,7 +139,7 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 				}
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			System.out.println(e.getMessage());
 		}
 	}
 

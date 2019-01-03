@@ -45,7 +45,7 @@ public abstract class AbstractScreen implements Screen{
 	}
 	
 	public void show() {
-		
+
 		this.batch = new SpriteBatch();
 		this.stage = new Stage(this.viewport, this.batch);
 		Gdx.input.setInputProcessor(this.stage);

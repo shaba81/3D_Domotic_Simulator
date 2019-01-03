@@ -19,22 +19,18 @@ import utilis.Utils;
  * @author anton
  *
  */
-public class SmsSender {
+public abstract class SmsSender {
 
 	/**
 	 * Metodo che invia l'SMS
 	 */
-	public void sendSms() {
+	public static void sendSms(String messageBody, String recipient) {
 		try {
 
-			Configuration config = (Configuration) Utils.getJsonFile(Configuration.class, Utils.CONFIG_PATH_SMS);
-
-			String baseUrlSms = config.baseUrlSms;
-			String messageQuality = config.messageQuality;
-			String userNameSms = config.userNameSms;
-			String userPasswordSms = config.userPasswordSms;
-			String messageBody = config.messageBody;
-			String recipient = config.recipient;
+			String baseUrlSms = Configuration.baseUrlSms;
+			String messageQuality = Configuration.messageQuality;
+			String userNameSms = Configuration.userNameSms;
+			String userPasswordSms = Configuration.userPasswordSms;
 
 			String[] authKeys = login(baseUrlSms, userNameSms, userPasswordSms);
 
@@ -65,7 +61,7 @@ public class SmsSender {
 	 * 
 	 * @throws IOException
 	 */
-	private String[] login(String baseUrl, String username, String password) throws IOException {
+	private static String[] login(String baseUrl, String username, String password) throws IOException {
 		URL url = new URL(baseUrl + "/login?username=" + username + "&password=" + password);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -97,7 +93,7 @@ public class SmsSender {
 	 * @param sendSMS  l'oggetto {@link SendSMSRequest}
 	 * @throws IOException
 	 */
-	private boolean sendSMS(String baseUrl, String[] authKeys, SendSMSRequest sendSMS) throws IOException {
+	private static boolean sendSMS(String baseUrl, String[] authKeys, SendSMSRequest sendSMS) throws IOException {
 		GsonBuilder builder = new GsonBuilder();
 		Gson gson = builder.create();
 
@@ -143,8 +139,4 @@ public class SmsSender {
 		return responseObj.isValid();
 	}
 
-	public static void main(String[] args) {
-		SmsSender smsSender = new SmsSender();
-		smsSender.sendSms();
-	}
 }
