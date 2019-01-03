@@ -1,4 +1,4 @@
-package com.mygdx.database.persistence.jdbc;
+package com.mygdx.controller.database.persistence.jdbc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,10 +8,10 @@ import java.sql.SQLException;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import com.badlogic.gdx.Gdx;
-import com.mygdx.database.model.User;
-import com.mygdx.database.persistence.PostgreDAOFactory;
-import com.mygdx.database.persistence.dao.UserDAO;
-import com.mygdx.database.persistence.exception.PersistenceException;
+import com.mygdx.controller.database.model.User;
+import com.mygdx.controller.database.persistence.PostgreDAOFactory;
+import com.mygdx.controller.database.persistence.dao.UserDAO;
+import com.mygdx.controller.database.persistence.exception.PersistenceException;
 
 import utilis.Configuration;
 import utilis.Utils;
@@ -34,7 +34,8 @@ public class UserJDBC implements UserDAO {
 
 			conn = basicDataSource.getConnection();
 
-			//Configuration config = (Configuration) Utils.getJsonFile(Configuration.class, Utils.DB_PATH_QUERY);
+			// Configuration config = (Configuration) Utils.getJsonFile(Configuration.class,
+			// Utils.DB_PATH_QUERY);
 			statement = conn.prepareStatement(Configuration.insertUser);
 
 			statement.setString(1, user.getEmail());
@@ -50,6 +51,7 @@ public class UserJDBC implements UserDAO {
 			if (e.getSQLState().equals("23505")) {
 				throw new PersistenceException(10006L);
 			} else {
+				System.out.println(e.getMessage());
 				throw e;
 			}
 
@@ -60,6 +62,7 @@ public class UserJDBC implements UserDAO {
 				if (conn != null)
 					conn.close();
 			} catch (SQLException e) {
+				System.out.println(e.getMessage());
 				throw e;
 			}
 		}
@@ -67,7 +70,7 @@ public class UserJDBC implements UserDAO {
 	}
 
 	@Override
-	public int userExist(String email, String telephoneNumber, String nickName ) throws Exception {
+	public int userExist(String email, String telephoneNumber, String nickName) throws Exception {
 
 		Connection connection = null;
 		PreparedStatement statement = null;
@@ -77,9 +80,11 @@ public class UserJDBC implements UserDAO {
 
 			connection = basicDataSource.getConnection();
 
-		//	Configuration config = (Configuration) Utils.getJsonFile(Configuration.class, Utils.DB_PATH_QUERY);
+			// Configuration config = (Configuration) Utils.getJsonFile(Configuration.class,
+			// Utils.DB_PATH_QUERY);
 			/*
-			 * Check is the check is separeted to give the client more detail of the mistake made.
+			 * Check is the check is separeted to give the client more detail of the mistake
+			 * made.
 			 * 
 			 * Check if email, telephoneNumber and nickName exist.
 			 */
@@ -88,11 +93,11 @@ public class UserJDBC implements UserDAO {
 			statement.setString(1, email);
 			resultSet = statement.executeQuery();
 
-			if (resultSet.next()) 
+			if (resultSet.next())
 				return 1;
 
 			/*
-			 * Check if  telephoneNumber exist.
+			 * Check if telephoneNumber exist.
 			 */
 			resultSet = null;
 			statement = null;
@@ -101,7 +106,7 @@ public class UserJDBC implements UserDAO {
 			statement.setString(1, telephoneNumber);
 			resultSet = statement.executeQuery();
 
-			if (resultSet.next()) 
+			if (resultSet.next())
 				return 2;
 
 			/*
@@ -114,14 +119,15 @@ public class UserJDBC implements UserDAO {
 			statement.setString(1, nickName);
 			resultSet = statement.executeQuery();
 
-			if (resultSet.next()) 
+			if (resultSet.next())
 				return 3;
 
 			return -1;
 
 		} catch (SQLException e) {
+			System.out.println(e.getMessage());
 			throw e;
-		}  finally {
+		} finally {
 			if (resultSet != null)
 				resultSet.close();
 			if (statement != null)
@@ -138,12 +144,13 @@ public class UserJDBC implements UserDAO {
 		PreparedStatement statement = null;
 
 		try {
-			
+
 			conn = basicDataSource.getConnection();
 
-			//Configuration config = (Configuration) Utils.getJsonFile(Configuration.class, Utils.DB_PATH_QUERY);
+			// Configuration config = (Configuration) Utils.getJsonFile(Configuration.class,
+			// Utils.DB_PATH_QUERY);
 
-		//	statement = conn.prepareStatement(config.deleteUtenteByEmail);
+			// statement = conn.prepareStatement(config.deleteUtenteByEmail);
 			statement.setString(1, email);
 
 			statement.executeUpdate();
@@ -153,6 +160,7 @@ public class UserJDBC implements UserDAO {
 			if (e.getSQLState().equals("23505")) {
 				throw new PersistenceException(10006L);
 			} else {
+				System.out.println(e.getMessage());
 				throw e;
 			}
 
@@ -163,6 +171,7 @@ public class UserJDBC implements UserDAO {
 				if (conn != null)
 					conn.close();
 			} catch (SQLException e) {
+				System.out.println(e.getMessage());
 				throw e;
 			}
 		}
@@ -179,7 +188,8 @@ public class UserJDBC implements UserDAO {
 
 			connection = basicDataSource.getConnection();
 
-			//Configuration config = (Configuration) Utils.getJsonFile(Configuration.class, Gdx.files.internal("query.json"));
+			// Configuration config = (Configuration) Utils.getJsonFile(Configuration.class,
+			// Gdx.files.internal("query.json"));
 			statement = connection.prepareStatement(Configuration.validateUserAdminPass);
 
 			statement.setString(1, password);
@@ -188,14 +198,15 @@ public class UserJDBC implements UserDAO {
 			resultSet = statement.executeQuery();
 
 			if (resultSet.next()) {
-				if( resultSet.getString("pswmatch").equals("t")  )
+				if (resultSet.getString("pswmatch").equals("t"))
 					return true;
 			}
 
 			return false;
 		} catch (SQLException e) {
+			System.out.println(e.getMessage());
 			throw e;
-		}  finally {
+		} finally {
 			if (resultSet != null)
 				resultSet.close();
 			if (statement != null)
@@ -205,10 +216,44 @@ public class UserJDBC implements UserDAO {
 		}
 	}
 
-	
 	@Override
-	public boolean isFirstRegistrationForThisForniture(Long idSupply) throws Exception {
-		return false;
+	public boolean isFirstRegistrationForThisForniture(Long idSupply, String idUser) throws Exception {
+		Connection connection = null;
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+
+		try {
+
+			connection = basicDataSource.getConnection();
+
+			// Configuration config = (Configuration) Utils.getJsonFile(Configuration.class,
+			// Gdx.files.internal("query.json"));
+			statement = connection.prepareStatement(Configuration.isFirstRegistrationForThisForniture);
+
+			statement.setLong(1, idSupply);
+			statement.setString(2, idUser);
+
+			resultSet = statement.executeQuery();
+
+			if (resultSet.next()) {
+				if (resultSet.getString("email").equals("") ) {
+					return true;
+				}
+			}
+
+			System.out.println("QUI");
+			return false;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw e;
+		} finally {
+			if (resultSet != null)
+				resultSet.close();
+			if (statement != null)
+				statement.close();
+			if (connection != null)
+				connection.close();
+		}
 	}
 
 }

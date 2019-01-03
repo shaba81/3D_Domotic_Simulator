@@ -1,4 +1,4 @@
-package com.mygdx.database.model;
+package com.mygdx.controller.database.model;
 
 import java.math.BigInteger;
 

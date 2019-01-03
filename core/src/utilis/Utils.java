@@ -12,13 +12,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.google.gson.Gson;
+import com.mygdx.controller.registration.AdministrationScreen;
+import com.mygdx.controller.registration.FaceCaptureScreen;
+import com.mygdx.controller.registration.LoginScreen;
+import com.mygdx.controller.registration.RegistrationCredentialsScreen;
+import com.mygdx.game.GameScreen;
 import com.mygdx.game.MainMenuScreen;
 import com.mygdx.game.ScreenEnum;
 import com.mygdx.game.ScreenManager;
-import com.mygdx.registration.AdministrationScreen;
-import com.mygdx.registration.FaceCaptureScreen;
-import com.mygdx.registration.LoginScreen;
-import com.mygdx.registration.RegistrationCredentialsScreen;
 
 /**
  * Classe di utilità per la lettura del file .json
@@ -28,7 +29,9 @@ import com.mygdx.registration.RegistrationCredentialsScreen;
  */
 public class Utils {
 
-	public static final Long ID_SUPPLY = (long) 1;
+	public static final Long ID_SUPPLY =  (long) 1;
+	public static final String ID_USER =  "5";
+
 	/*
 	 * PATH per i file di configurazione
 	 */
@@ -55,7 +58,8 @@ public class Utils {
 	public static final String REGISTRATION_CREDENTIALS_SCREEN_NUMBER_CONTAINS_LETTER_POPUP = "Wrong telephone numebr format. This field mustn't contain's any letter or other character.";
 	public static final String REGISTRATION_CREDENTIALS_SCREEN_NUMBER_TOO_SHORT_POPUP = "Wrong telephone numebr format. The field must be composed of the '+' character at the beginning, \nthe next two numbers represent the area code and the next ten numbers the telephone number.";
 	public static final String REGISTRATION_CREDENTIALS_SCREEN_MISSIN_PLUS_NUMBER_POPUP = "Wrong telephone numebr format. Missing the '+' character at the beginning of the number.";
-
+	public static final String GAME_SCREEN_FIRST_REGISTRATION_POPUP = "Hi, this is the first request for access to the house. \nYou will be registered as an administrator of this simulation. \nClick OK or press ENTER to continue recording.";
+	
 	/**
 	 * Metodo che prende come parametri Il Tipo di classe che ha all'interno i dati
 	 * che saranno nel file .json {@link Configuration}, e il path dove si trova il file
@@ -80,6 +84,8 @@ public class Utils {
 				if (obj.equals("true")) {
 					if (screen instanceof LoginScreen || screen instanceof AdministrationScreen)
 						ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
+					else if( screen instanceof GameScreen)
+						ScreenManager.getInstance().showScreen(ScreenEnum.LOGIN_SCREEN);
 					else if (screen instanceof RegistrationCredentialsScreen)
 						ScreenManager.getInstance().showScreen(ScreenEnum.ADMINISTRATION_SCREEN);
 					else if (screen instanceof FaceCaptureScreen)

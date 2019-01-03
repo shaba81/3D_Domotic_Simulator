@@ -1,10 +1,10 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Screen;
-import com.mygdx.registration.AdministrationScreen;
-import com.mygdx.registration.FaceCaptureScreen;
-import com.mygdx.registration.LoginScreen;
-import com.mygdx.registration.RegistrationCredentialsScreen;
+import com.mygdx.controller.registration.AdministrationScreen;
+import com.mygdx.controller.registration.FaceCaptureScreen;
+import com.mygdx.controller.registration.LoginScreen;
+import com.mygdx.controller.registration.RegistrationCredentialsScreen;
 
 public enum ScreenEnum {
 

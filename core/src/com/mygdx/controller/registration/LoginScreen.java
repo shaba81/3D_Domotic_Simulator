@@ -1,4 +1,4 @@
-package com.mygdx.registration;
+package com.mygdx.controller.registration;
 
 import java.util.ArrayList;
 
@@ -9,8 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.mygdx.database.persistence.PostgreDAOFactory;
-import com.mygdx.database.persistence.dao.UserDAO;
+import com.mygdx.controller.database.persistence.PostgreDAOFactory;
+import com.mygdx.controller.database.persistence.dao.UserDAO;
 import com.mygdx.game.ScreenEnum;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.interfaces.AbstractScreen;

@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -28,9 +30,13 @@ import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationListener
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.UBJsonReader;
-import com.mygdx.database.persistence.PostgreDAOFactory;
-import com.mygdx.database.persistence.dao.UserDAO;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.controller.database.persistence.PostgreDAOFactory;
+import com.mygdx.controller.database.persistence.dao.UserDAO;
 
 import utilis.Utils;
 
@@ -339,6 +345,7 @@ public class GameScreen implements Screen {
 					isLightOn = !isLightOn;
 				}
 				if (keycode == Input.Keys.N) {
+					System.out.println("BOTTONE PREMUTO");
 					nAccessButton = true;
 				}
 				return false;
@@ -475,7 +482,7 @@ public class GameScreen implements Screen {
 		}
 
 		for (GameEntity w : walls) {
-			System.out.println(player.isColliding(w));
+		//	System.out.println(player.isColliding(w));
 		}
 
 	}
@@ -536,10 +543,12 @@ public class GameScreen implements Screen {
 				PostgreDAOFactory postgreDAOFactory = new PostgreDAOFactory();
 				UserDAO utenteDAO = postgreDAOFactory.getUtenteDAO();
 
-				if ( utenteDAO.isFirstRegistrationForThisForniture(Utils.ID_SUPPLY) )
+				if ( utenteDAO.isFirstRegistrationForThisForniture(Utils.ID_SUPPLY, Utils.ID_USER) ) {
 					ScreenManager.getInstance().showScreen(ScreenEnum.LOGIN_SCREEN);
-				else
+				}
+				else {
 					ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
+				}
 
 			}
 
@@ -558,10 +567,10 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		modelBatch.dispose();
-		entranceDoorModel.dispose();
-		lampModel.dispose();
-		tvModel.dispose();
+		this.modelBatch.dispose();
+		this.entranceDoorModel.dispose();
+		this.lampModel.dispose();
+		this.tvModel.dispose();
 	}
 
 	@Override

@@ -1,9 +1,9 @@
-package com.mygdx.database.persistence;
+package com.mygdx.controller.database.persistence;
 
 import org.apache.commons.dbcp2.*;
 
-import com.mygdx.database.persistence.dao.UserDAO;
-import com.mygdx.database.persistence.jdbc.UserJDBC;
+import com.mygdx.controller.database.persistence.dao.UserDAO;
+import com.mygdx.controller.database.persistence.jdbc.UserJDBC;
 
 import utilis.Configuration;
 

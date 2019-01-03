@@ -1,4 +1,4 @@
-package com.mygdx.database.persistence.exception;
+package com.mygdx.controller.database.persistence.exception;
 
 /**
  * Classe per la gestione degli errori
@@ -8,7 +8,7 @@ package com.mygdx.database.persistence.exception;
 public class PersistenceException extends Exception {
 
 	public PersistenceException(long l) {
-
+		System.out.println(this.getMessage());
 	}
 
 }

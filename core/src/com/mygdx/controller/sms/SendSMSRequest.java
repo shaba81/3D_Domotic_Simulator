@@ -1,4 +1,4 @@
-package com.mygdx.sms;
+package com.mygdx.controller.sms;
 
 import java.util.ArrayList;
 import java.util.List;
