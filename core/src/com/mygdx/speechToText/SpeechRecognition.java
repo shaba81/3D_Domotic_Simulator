@@ -7,7 +7,7 @@ import com.darkprograms.speech.recognizer.GoogleResponse;
 
 import net.sourceforge.javaflacencoder.FLACFileWriter;
 
-public class GoogleSpeechRecognition implements GSpeechResponseListener {
+public class SpeechRecognition implements GSpeechResponseListener {
 
 	public static void main(String[] args) {
 
@@ -27,7 +27,7 @@ public class GoogleSpeechRecognition implements GSpeechResponseListener {
 	}
 
 	// funzione che fa iniziare il riconoscimento vocale
-	public void startingSpeechRecognition(GSpeechDuplex duplex, Microphone mic) {
+	public static void startingSpeechRecognition(GSpeechDuplex duplex, Microphone mic) {
 		try {
 			duplex.recognize(mic.getTargetDataLine(), mic.getAudioFormat());
 		} catch (Exception ex) {
