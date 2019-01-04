@@ -31,6 +31,7 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -110,13 +111,21 @@ public class GameScreen implements Screen {
 	private Decal light;
 	private boolean isLightOn = false;
 
+	private Texture micTexture;
+	private Image micImage;
+
 	private DecalBatch decalBatch;
+
+	private SpriteBatch spriteBatch;
+	private Stage stage;
+	private Viewport viewport;
 
 	private float movementSpeed = 25f;
 	private boolean forward = false;
 	private boolean back = false;
 	private boolean left = false;
 	private boolean right = false;
+	private boolean isSpeaking = false;
 	private boolean nAccessButton;
 
 	// Width and Height of the room's floor.
@@ -171,6 +180,11 @@ public class GameScreen implements Screen {
 		light.setDimensions(40, 40);
 		light.setPosition(0, 26, -60);
 		light.setRotationY(90);
+
+		micTexture = new Texture(Gdx.files.internal("mic.png"));
+		micImage = new Image(micTexture);
+		micImage.setSize(120, 120);
+		micImage.setPosition(Gdx.graphics.getWidth() - 200, Gdx.graphics.getHeight() - (Gdx.graphics.getHeight() - 30));
 
 		createRoom();
 
@@ -297,6 +311,10 @@ public class GameScreen implements Screen {
 		modelBatch = new ModelBatch();
 		decalBatch = new DecalBatch(new CameraGroupStrategy(camera));
 
+		spriteBatch = new SpriteBatch();
+		viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		stage = new Stage(viewport, spriteBatch);
+
 		Gdx.input.setCursorCatched(true);
 		Gdx.input.setInputProcessor(new InputProcessor() {
 			private int dragX, dragY;
@@ -344,6 +362,9 @@ public class GameScreen implements Screen {
 				if (keycode == Input.Keys.L) {
 					isLightOn = !isLightOn;
 				}
+				if (keycode == Input.Keys.R) {
+					isSpeaking = true;
+				}
 				if (keycode == Input.Keys.N) {
 					nAccessButton = true;
 				}
@@ -363,6 +384,9 @@ public class GameScreen implements Screen {
 				}
 				if (keycode == Input.Keys.D) {
 					right = false;
+				}
+				if (keycode == Input.Keys.R) {
+					isSpeaking = false;
 				}
 				return false;
 			}
@@ -415,6 +439,13 @@ public class GameScreen implements Screen {
 				}
 			});
 		}
+	}
+
+	public void drawMic() {
+		stage.addActor(micImage);
+		stage.act();
+		stage.draw();
+		stage.clear();
 	}
 
 	public void startTV() {
@@ -481,7 +512,7 @@ public class GameScreen implements Screen {
 		}
 
 		for (GameEntity w : walls) {
-		//	System.out.println(player.isColliding(w));
+			// System.out.println(player.isColliding(w));
 		}
 
 	}
@@ -509,6 +540,7 @@ public class GameScreen implements Screen {
 			Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			Gdx.gl.glClearColor(1, 1, 1, 1);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+			spriteBatch.setProjectionMatrix(camera.combined);
 
 			walk(Gdx.graphics.getDeltaTime());
 			OpenDoor();
@@ -534,6 +566,9 @@ public class GameScreen implements Screen {
 
 			modelBatch.end();
 
+			if (isSpeaking)
+				drawMic();
+
 			startTV();
 			turnLights();
 
@@ -542,11 +577,10 @@ public class GameScreen implements Screen {
 				PostgreDAOFactory postgreDAOFactory = new PostgreDAOFactory();
 				UserDAO utenteDAO = postgreDAOFactory.getUtenteDAO();
 
-				if ( utenteDAO.isFirstRegistrationForThisForniture(Utils.ID_SUPPLY, Utils.ID_USER) ) {
+				if (utenteDAO.isFirstRegistrationForThisForniture(Utils.ID_SUPPLY, Utils.ID_USER)) {
 					Utils.isFirstAccess = true;
 					ScreenManager.getInstance().showScreen(ScreenEnum.LOGIN_SCREEN);
-				}
-				else {
+				} else {
 					ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
 				}
 
@@ -557,7 +591,7 @@ public class GameScreen implements Screen {
 
 				// gestire i vari casi in cui si può volere uscire
 				Gdx.app.exit();
-//			ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
+				// ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
 				// game.setScreen(game.menu);
 			}
 		} catch (Exception e) {
@@ -571,6 +605,8 @@ public class GameScreen implements Screen {
 		this.entranceDoorModel.dispose();
 		this.lampModel.dispose();
 		this.tvModel.dispose();
+		this.spriteBatch.dispose();
+		this.stage.dispose();
 	}
 
 	@Override
