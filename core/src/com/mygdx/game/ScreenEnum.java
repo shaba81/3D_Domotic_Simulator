@@ -14,8 +14,13 @@ public enum ScreenEnum {
 		}
 	},
 	GAME_SCREEN {
+		private Screen gameScreen;
+
 		public Screen getScreen() {
-			return new GameScreen();
+			if (gameScreen == null)
+				gameScreen = new GameScreen();
+
+			return gameScreen;
 		}
 	},
 	LOGIN_SCREEN {
@@ -28,17 +33,16 @@ public enum ScreenEnum {
 			return new AdministrationScreen();
 		}
 	},
-	REGISTRATION_CREDENTIALS_SCREEN{
+	REGISTRATION_CREDENTIALS_SCREEN {
 		public Screen getScreen() {
 			return new RegistrationCredentialsScreen();
 		}
 	},
-	FACE_CAPTURE_SCREEN{
+	FACE_CAPTURE_SCREEN {
 		public Screen getScreen() {
 			return new FaceCaptureScreen();
 		}
-	}
-	;
+	};
 	public abstract Screen getScreen();
 
 }
