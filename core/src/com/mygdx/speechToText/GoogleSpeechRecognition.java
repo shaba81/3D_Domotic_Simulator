@@ -19,6 +19,11 @@ public class GoogleSpeechRecognition implements GSpeechResponseListener {
 		// settiamo la lingua
 		duplex.setLanguage("it"); // funziona anche in inglese
 
+		new Thread(() -> {
+			startingSpeechRecognition(duplex, mic);
+		}).start();
+		getResponse(duplex);
+
 	}
 
 	// funzione che fa iniziare il riconoscimento vocale
