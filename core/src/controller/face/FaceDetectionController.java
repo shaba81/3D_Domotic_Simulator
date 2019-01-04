@@ -19,17 +19,6 @@ import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-/**
- * The controller associated with the only view of our application. The
- * application logic is implemented here. It handles the button for
- * starting/stopping the camera, the acquired video stream, the relative
- * controls and the face detection/tracking.
- * 
- * @author <a href="mailto:luigi.derussis@polito.it">Luigi De Russis</a>
- * @version 1.1 (2015-11-10)
- * @since 1.0 (2014-01-10)
- * 
- */
 public class FaceDetectionController {
 	private boolean captured = false;
 	private boolean green = false;

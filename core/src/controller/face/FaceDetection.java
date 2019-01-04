@@ -13,19 +13,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-//C:\Program Files\Java\jre1.8.0_121\lib\ext\jfxrt.jar
-/**
- * The main class for a JavaFX application. It creates and handle the main
- * window with its resources (style, graphics, etc.).
- * 
- * This application handles a video stream and try to find any possible human
- * face in a frame. It can use the Haar or the LBP classifier.
- * 
- * @author <a href="mailto:luigi.derussis@polito.it">Luigi De Russis</a>
- * @version 2.0 (2017-03-10)
- * @since 1.0 (2014-01-10)
- * 
- */
+
 public class FaceDetection extends Application
 {
 	@Override

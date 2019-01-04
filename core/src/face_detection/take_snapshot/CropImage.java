@@ -1,10 +1,5 @@
 package face_detection.take_snapshot;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-
-import javax.imageio.ImageIO;
-
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
@@ -16,10 +11,8 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
 public class CropImage {
-	private static Mat cropImage;
 
 	public static void main(String[] args) throws Exception {
-		int x = 0, y = 0, height = 0, width = 0;
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
 		MatOfRect faces = new MatOfRect();

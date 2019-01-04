@@ -2,24 +2,11 @@ package controller.face;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-
 import org.opencv.core.Mat;
-
-import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 
-/**
- * Provide general purpose methods for handling OpenCV-JavaFX data conversion.
- * Moreover, expose some "low level" methods for matching few JavaFX behavior.
- *
- * @author <a href="mailto:luigi.derussis@polito.it">Luigi De Russis</a>
- * @author <a href="http://max-z.de">Maximilian Zuleger</a>
- * @version 1.0 (2016-09-17)
- * @since 1.0
- * 
- */
+
 public final class Utils
 {
 	/**
