@@ -1,5 +1,7 @@
 package com.mygdx.game.desktop;
 
+import org.opencv.core.Core;
+
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.mygdx.game.Drop;
@@ -11,6 +13,7 @@ public class DesktopLauncher {
 		config.width = 1366;
 		config.height = 768;
 
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		new LwjglApplication(new Drop(), config);
 	}
 }

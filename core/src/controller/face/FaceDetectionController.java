@@ -1,9 +1,15 @@
 package controller.face;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javax.imageio.ImageIO;
+
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Rect;
@@ -15,17 +21,10 @@ import org.opencv.objdetect.Objdetect;
 import org.opencv.videoio.VideoCapture;
 
 import face_detection.compare.ImageComparison;
-import javafx.fxml.FXML;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 public class FaceDetectionController {
 	private boolean captured = false;
 	private boolean green = false;
-
-	// the FXML area for showing the current frame
-	@FXML
-	private ImageView originalFrame;
 
 	// a timer for acquiring the video stream
 	private ScheduledExecutorService timer;
@@ -37,65 +36,65 @@ public class FaceDetectionController {
 	// face cascade classifier
 	private CascadeClassifier faceCascade;
 	private int absoluteFaceSize;
-	
+
 	private ImageComparison image_comparison;
-	
+
 	public FaceDetectionController() {
 		// TODO Auto-generated constructor stub
-		this.image_comparison= new ImageComparison();
+		this.image_comparison = new ImageComparison();
+		
 	}
 
 	/**
 	 * Init the controller, at start time
 	 */
-	protected void init() {
+	public void init() {
 		this.capture = new VideoCapture();
 		this.faceCascade = new CascadeClassifier();
 		this.absoluteFaceSize = 0;
 		this.faceCascade.load("resources/haarcascades/haarcascade_frontalface_alt.xml");
 		this.startCamera();
-
-		// set a fixed width for the frame
-		originalFrame.setFitWidth(600);
-		// preserve image ratio
-		originalFrame.setPreserveRatio(true);
 	}
 
-	/**
-	 * The action triggered by pushing the button on the GUI
-	 */
-	@FXML
 	protected void startCamera() {
-			// start the video capture
-			this.capture.open(0);
+		// start the video capture
+		this.capture.open(0);
 
-			// is the video stream available?
-			if (this.capture.isOpened()) {
-				this.cameraActive = true;
+		// is the video stream available?
+		if (this.capture.isOpened()) {
+			this.cameraActive = true;
 
-				// grab a frame every 33 ms (30 frames/sec)
-				Runnable frameGrabber = new Runnable() {
+			// grab a frame every 33 ms (30 frames/sec)
+			Runnable frameGrabber = new Runnable() {
 
-					@Override
-					public void run() {
-						while (!captured) {
-							// effectively grab and process a single frame
-							Mat frame = grabFrame();
-							// convert and show the frame
-							Image imageToShow = Utils.mat2Image(frame);
-							updateImageView(originalFrame, imageToShow);
+				@Override
+				public void run() {
+					while (!captured) {
+						// effectively grab and process a single frame
+						Mat frame = grabFrame();
+
+						// QUI BISOGNA SALVARE L'IMMAGINE SU FILE, CHE SARA POI PRESA DA GDX PER FARLA A
+						// VIDEO
+						BufferedImage buffImg = Utils.matToBufferedImage(frame);
+						File outputfile = new File("assets/frame.jpg");
+						try {
+							ImageIO.write(buffImg, "jpg", outputfile);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
 					}
-				};
+				}
+			};
 
-				this.timer = Executors.newSingleThreadScheduledExecutor();
-				this.timer.scheduleAtFixedRate(frameGrabber, 0, 33, TimeUnit.MILLISECONDS);
+			this.timer = Executors.newSingleThreadScheduledExecutor();
+			this.timer.scheduleAtFixedRate(frameGrabber, 0, 33, TimeUnit.MILLISECONDS);
 
-				// update the button content
-			} else {
-				// log the error
-				System.err.println("Failed to open the camera connection...");
-			}
+			// update the button content
+		} else {
+			// log the error
+			System.err.println("Failed to open the camera connection...");
+		}
 	}
 
 	/**
@@ -130,7 +129,8 @@ public class FaceDetectionController {
 	/**
 	 * Method for face detection and tracking
 	 * 
-	 * @param frame it looks for faces in this frame
+	 * @param frame
+	 *            it looks for faces in this frame
 	 */
 	private void detectAndDisplay(Mat frame) {
 		MatOfRect faces = new MatOfRect();
@@ -160,25 +160,23 @@ public class FaceDetectionController {
 
 			if (facesArray[i].width >= 300 && facesArray[i].height >= 300) {
 				Imgproc.rectangle(frame, facesArray[i].tl(), facesArray[i].br(), new Scalar(0, 255, 0), 3);
-				this.captureAndCrop(faces,frame,"resources/temp_image/temp.jpg");
+				this.captureAndCrop(faces, frame, "resources/temp_image/temp.jpg");
 				this.setClosed();
-//				this.compare();
+				// this.compare();
 				this.registerUser();
 				break;
-			} 
-//			else
-				Imgproc.rectangle(frame, facesArray[i].tl(), facesArray[i].br(), new Scalar(0, 0, 255), 3);
+			}
+			// else
+			Imgproc.rectangle(frame, facesArray[i].tl(), facesArray[i].br(), new Scalar(0, 0, 255), 3);
 		}
 
 	}
-	
-	private void compare()
-	{
+
+	private void compare() {
 		this.image_comparison.compare();
 	}
-	
-	private void registerUser()
-	{
+
+	private void registerUser() {
 		this.image_comparison.register();
 	}
 
@@ -209,16 +207,6 @@ public class FaceDetectionController {
 			// release the camera
 			this.capture.release();
 		}
-	}
-
-	/**
-	 * Update the {@link ImageView} in the JavaFX main thread
-	 * 
-	 * @param view  the {@link ImageView} to update
-	 * @param image the {@link Image} to show
-	 */
-	private void updateImageView(ImageView view, Image image) {
-		view.imageProperty().set(image);
 	}
 
 	/**
