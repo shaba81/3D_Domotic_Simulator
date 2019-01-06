@@ -27,13 +27,14 @@ public class ImageComparison {
 	private HashMap<Long, File> users_faces_files;
 	// Key: UserEmail; Value: user image
 	private HashMap<Long, Image> users_faces_images;
+	private int cont;
 //	private int cont;
 
 	public ImageComparison() {
 		// TODO Auto-generated constructor stub
 		this.users_faces_files = new HashMap<Long, File>();
 		this.users_faces_images = new HashMap<Long, Image>();
-//		this.cont = 8;
+		this.cont = 9;
 		this.soloPERORA();
 	}
 
@@ -197,7 +198,7 @@ public class ImageComparison {
 		return false;
 	}
 	
-	public boolean register(String file_name) {
+	public boolean register() {
 		try {
 			String base = "resources/temp_image";
 			String base_image = "temp.jpg";
@@ -208,9 +209,9 @@ public class ImageComparison {
 			if (this.isAnewUser(im,fileA.getPath()))
 			{
 				System.out.println("REGISTRAZIONE AVVENUTA CON SUCCESSO!");
-				this.moveNewUserToImageFolder(base,base_image,"resources/images",file_name+".jpg");
+				this.moveNewUserToImageFolder(base,base_image,"resources/images","a"+this.cont+".jpg");
 //				this.deleteAnElementInAfolder("resources/images", "a"+this.cont+".jpg");
-//				this.cont++;
+				this.cont++;
 				return true;
 			}
 			else

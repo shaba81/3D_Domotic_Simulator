@@ -65,7 +65,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 		
 		//di default sarà un utente che vorrà accedere
 		this.accesso = false;
-		this.user_telphone = "befana";
+//		this.user_telphone = "befana";
 
 	}
 
@@ -194,7 +194,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 				}
 				//se l'utente deve registrarsi
 				else if(!this.accesso){
-					if(((FaceDetectionController)faceController).registerUser(this.user_telphone))
+					if(((FaceDetectionController)faceController).registerUser())
 					{
 						//viene richiamato il 'facecaptureScreen' per far registrare l'utente 
 						System.out.println("puoi registrarti");

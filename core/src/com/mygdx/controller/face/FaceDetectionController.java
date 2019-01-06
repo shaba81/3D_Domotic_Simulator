@@ -183,9 +183,9 @@ public class FaceDetectionController {
 		return false;
 	}
 
-	public boolean registerUser(String file_name) {
+	public boolean registerUser() {
 		
-		if(this.image_comparison.register(file_name))
+		if(this.image_comparison.register())
 			return true;
 		return false;
 	}
