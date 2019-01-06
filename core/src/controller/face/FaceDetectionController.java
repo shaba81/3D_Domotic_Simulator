@@ -42,7 +42,7 @@ public class FaceDetectionController {
 	public FaceDetectionController() {
 		// TODO Auto-generated constructor stub
 		this.image_comparison = new ImageComparison();
-		
+
 	}
 
 	/**
@@ -70,15 +70,20 @@ public class FaceDetectionController {
 				@Override
 				public void run() {
 					while (!captured) {
-						// effectively grab and process a single frame
-						Mat frame = grabFrame();
-
-						// QUI BISOGNA SALVARE L'IMMAGINE SU FILE, CHE SARA POI PRESA DA GDX PER FARLA A
-						// VIDEO
-						BufferedImage buffImg = Utils.matToBufferedImage(frame);
-						File outputfile = new File("assets/frame.jpg");
 						try {
-							ImageIO.write(buffImg, "jpg", outputfile);
+							// effectively grab and process a single frame
+							Mat frame = grabFrame();
+
+							// QUI BISOGNA SALVARE L'IMMAGINE SU FILE, CHE SARA POI PRESA DA GDX PER FARLA A
+							// VIDEO
+							if (!utilis.Utils.capturing) {
+								BufferedImage buffImg = Utils.matToBufferedImage(frame);
+								File outputfile = new File("resources/frame.jpg");
+
+								ImageIO.write(buffImg, "jpg", outputfile);
+								utilis.Utils.capturing = true;
+
+							}
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -129,8 +134,7 @@ public class FaceDetectionController {
 	/**
 	 * Method for face detection and tracking
 	 * 
-	 * @param frame
-	 *            it looks for faces in this frame
+	 * @param frame it looks for faces in this frame
 	 */
 	private void detectAndDisplay(Mat frame) {
 		MatOfRect faces = new MatOfRect();

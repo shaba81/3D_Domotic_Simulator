@@ -7,18 +7,10 @@ import java.util.Random;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.google.gson.Gson;
-import com.mygdx.controller.registration.AdministrationScreen;
-import com.mygdx.controller.registration.FaceCaptureScreen;
-import com.mygdx.controller.registration.LoginScreen;
-import com.mygdx.controller.registration.RegistrationCredentialsScreen;
-import com.mygdx.game.GameScreen;
-import com.mygdx.game.MainMenuScreen;
 import com.mygdx.game.ScreenEnum;
 import com.mygdx.game.ScreenManager;
 
@@ -31,6 +23,7 @@ import com.mygdx.game.ScreenManager;
 public class Utils {
 
 	public static boolean isFirstAccess = false;
+	public static boolean capturing = false;
 
 	public static final Long ID_SUPPLY = (long) 1;
 	public static final String ID_USER = "5";

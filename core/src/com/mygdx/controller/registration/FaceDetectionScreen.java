@@ -7,8 +7,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Scaling;
 import com.mygdx.interfaces.AbstractScreen;
 
 import controller.face.FaceDetectionController;
@@ -31,7 +29,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 		imgStage.addActor(imageTable);
 		imageTable.debug();
 
-		frameTexture = new Texture(Gdx.files.internal("frame.jpg"));
+		frameTexture = new Texture(Gdx.files.internal("resources/frame1.jpg"));
 		imgRegion = new TextureRegion(frameTexture);
 		img = new Image(imgRegion);
 		imageTable.add(img).center();
@@ -54,13 +52,18 @@ public class FaceDetectionScreen extends AbstractScreen {
 
 		this.imgStage.act();
 		this.imgStage.draw();
+		if (utilis.Utils.capturing) {
+			this.updateFrame();
+			utilis.Utils.capturing = false;
+		}
 	}
 
 	public void updateFrame() {
-
-		frameTexture = new Texture(Gdx.files.internal("frame.jpg"));
-		imgRegion.setRegion(frameTexture);
-
+		imageTable.clear();
+		this.frameTexture = new Texture(Gdx.files.internal("resources/frame.jpg"));
+		this.imgRegion = new TextureRegion(frameTexture);
+		img = new Image(imgRegion);
+		imageTable.add(img).center();
 	}
 
 	public void dispose() {

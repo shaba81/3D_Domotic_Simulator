@@ -44,12 +44,10 @@ public class ImageComparison {
 	 */
 	private void soloPERORA() {
 		try {
-			System.out.println(System.getProperty("user.dir"));
 			File folder = new File("resources/images");
 			File[] listOfFiles = folder.listFiles();
 			long cont = 1;
-			
-			System.out.println(listOfFiles.length);
+
 			for (File file : listOfFiles) {
 				if (file.isFile()) {
 					this.users_faces_files.put(cont, file);
@@ -257,12 +255,5 @@ public class ImageComparison {
 			e.printStackTrace();
 		}
 	}
-
-	// public static void main(String[] args) {
-	//
-	// ImageComparison imageComparision = new ImageComparison();
-	// imageComparision.compare();
-	//
-	// }
 
 }
