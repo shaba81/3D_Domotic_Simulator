@@ -1,5 +1,8 @@
 package com.mygdx.game;
 
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -25,6 +28,7 @@ public class MainMenuScreen extends AbstractScreen {
 		this.play = false;
 		this.administration = false;
 		this.back = false;
+//		System.out.println("hola: "+Gdx.files.getLocalStoragePath());
 	}
 
 	@Override

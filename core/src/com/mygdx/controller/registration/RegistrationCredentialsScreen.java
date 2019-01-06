@@ -1,5 +1,6 @@
 package com.mygdx.controller.registration;
 
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
@@ -126,7 +127,10 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 				if (dialogText != "")
 					Utils.showMessageDialog(dialogText, skin, stage);
 				else
-					ScreenManager.getInstance().showScreen(ScreenEnum.FACE_CAPTURE_SCREEN);
+				{
+					ScreenManager.getInstance().showScreen(ScreenEnum.FACE_DETECTION_SCREEN);
+					((FaceDetectionScreen)ScreenManager.getInstance().getScreen(ScreenEnum.FACE_DETECTION_SCREEN)).setUser_telphone(this.nickNameLabel.toString());
+				}
 
 			}
 

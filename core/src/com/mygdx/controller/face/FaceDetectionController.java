@@ -1,4 +1,4 @@
-package controller.face;
+package com.mygdx.controller.face;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -20,7 +20,7 @@ import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.objdetect.Objdetect;
 import org.opencv.videoio.VideoCapture;
 
-import face_detection.compare.ImageComparison;
+import com.mygdx.controller.face.compare.ImageComparison;
 
 public class FaceDetectionController {
 	private boolean captured = false;
@@ -56,7 +56,7 @@ public class FaceDetectionController {
 		this.startCamera();
 	}
 
-	protected void startCamera() {
+	public void startCamera() {
 		// start the video capture
 		this.capture.open(0);
 
@@ -78,7 +78,7 @@ public class FaceDetectionController {
 							// VIDEO
 							if (!utilis.Utils.capturing) {
 								BufferedImage buffImg = Utils.matToBufferedImage(frame);
-								File outputfile = new File("resources/frame.jpg");
+								File outputfile = new File("resources/temp_image/temp.jpg");
 
 								ImageIO.write(buffImg, "jpg", outputfile);
 								utilis.Utils.capturing = true;
@@ -167,7 +167,7 @@ public class FaceDetectionController {
 				this.captureAndCrop(faces, frame, "resources/temp_image/temp.jpg");
 				this.setClosed();
 				// this.compare();
-				this.registerUser();
+//				this.registerUser();
 				break;
 			}
 			// else
@@ -176,12 +176,18 @@ public class FaceDetectionController {
 
 	}
 
-	private void compare() {
-		this.image_comparison.compare();
+	public boolean compare() {
+		
+		if(this.image_comparison.compare())
+			return true;
+		return false;
 	}
 
-	private void registerUser() {
-		this.image_comparison.register();
+	public boolean registerUser(String file_name) {
+		
+		if(this.image_comparison.register(file_name))
+			return true;
+		return false;
 	}
 
 	private void captureAndCrop(MatOfRect faces, Mat frame, String path) {
@@ -219,5 +225,15 @@ public class FaceDetectionController {
 	protected void setClosed() {
 		this.stopAcquisition();
 	}
+
+	public boolean isCaptured() {
+		return captured;
+	}
+
+	public void setCaptured(boolean captured) {
+		this.captured = captured;
+	}
+	
+	
 
 }

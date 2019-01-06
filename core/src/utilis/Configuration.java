@@ -22,7 +22,6 @@ public interface Configuration {
 	public String userNameSms = "tagete";
 	public String userPasswordSms = "pr08qwe03";
 
-
 	/*
 	 * DB set
 	 */

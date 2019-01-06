@@ -1,4 +1,4 @@
-package face_detection.compare;
+package com.mygdx.controller.face.compare;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -27,13 +27,13 @@ public class ImageComparison {
 	private HashMap<Long, File> users_faces_files;
 	// Key: UserEmail; Value: user image
 	private HashMap<Long, Image> users_faces_images;
-	private int cont;
+//	private int cont;
 
 	public ImageComparison() {
 		// TODO Auto-generated constructor stub
 		this.users_faces_files = new HashMap<Long, File>();
 		this.users_faces_images = new HashMap<Long, Image>();
-		this.cont = 8;
+//		this.cont = 8;
 		this.soloPERORA();
 	}
 
@@ -168,7 +168,7 @@ public class ImageComparison {
 	 * detection e tutte le immagini degli utenti già registrati: se l'immagine è
 	 * già registrata, l'utente può accedere, altrimenti no.
 	 */
-	public void compare() {
+	public boolean compare() {
 		try {
 			String base = "resources/temp_image/";
 			File fileA = new File(base + "temp.jpg");
@@ -179,7 +179,10 @@ public class ImageComparison {
 			System.out.println("dopo w: "+im.getWidth(null)+" h: "+im.getHeight(null));
 
 			if (!this.isAnewUser(im,fileA.getPath()))
+			{
 				System.out.println("ACCESSO PERMESSO");
+				return true;
+			}
 			else
 				System.out.println("ACCESSO NEGATO");
 
@@ -191,9 +194,10 @@ public class ImageComparison {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
+		return false;
 	}
 	
-	public void register() {
+	public boolean register(String file_name) {
 		try {
 			String base = "resources/temp_image";
 			String base_image = "temp.jpg";
@@ -204,17 +208,20 @@ public class ImageComparison {
 			if (this.isAnewUser(im,fileA.getPath()))
 			{
 				System.out.println("REGISTRAZIONE AVVENUTA CON SUCCESSO!");
-				this.moveNewUserToImageFolder(base,base_image,"resources/images","a"+this.cont+".jpg");
-				this.deleteAnElementInAfolder("resources/images", "a"+this.cont+".jpg");
-				this.cont++;
+				this.moveNewUserToImageFolder(base,base_image,"resources/images",file_name+".jpg");
+//				this.deleteAnElementInAfolder("resources/images", "a"+this.cont+".jpg");
+//				this.cont++;
+				return true;
 			}
 			else
 				System.out.println("REGISTRAZIONE NON RIUSCITA");
 
+			
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
+		return false;
 	}
 
 	///////////////////////// NON

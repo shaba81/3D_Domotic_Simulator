@@ -43,5 +43,11 @@ public class ScreenManager {
             currentScreen.dispose();
         }
     }
+    
+    //Returns the screen based on the screenEnum passed to it
+    public Screen getScreen(ScreenEnum screenEnum)
+    {
+    	return screenEnum.getScreen();
+    }
 
 }

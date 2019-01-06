@@ -1,4 +1,4 @@
-package controller.face;
+package com.mygdx.controller.face;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
