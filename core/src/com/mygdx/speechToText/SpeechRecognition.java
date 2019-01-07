@@ -8,31 +8,34 @@ import com.darkprograms.speech.recognizer.GoogleResponse;
 import net.sourceforge.javaflacencoder.FLACFileWriter;
 
 public class SpeechRecognition implements GSpeechResponseListener {
+	
+	
 
 	public static void main(String[] args) {
 
 		// microfono
-		final Microphone mic = new Microphone(FLACFileWriter.FLAC);
+		
 		// creiamo il duplex con la relativa chiave dei servizi Google Cloud
-		GSpeechDuplex duplex = new GSpeechDuplex("AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw");
+		
 
 		// settiamo la lingua
-		duplex.setLanguage("it"); // funziona anche in inglese
+//		duplex.setLanguage("it"); // funziona anche in inglese
 
-		new Thread(() -> {
-			startingSpeechRecognition(duplex, mic);
-		}).start();
-		getResponse(duplex);
+//		startingSpeechRecognition(duplex, mic);
+//
+//		getResponse(duplex);
 
 	}
 
 	// funzione che fa iniziare il riconoscimento vocale
-	public static void startingSpeechRecognition(GSpeechDuplex duplex, Microphone mic) {
-		try {
-			duplex.recognize(mic.getTargetDataLine(), mic.getAudioFormat());
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+	public void startingSpeechRecognition(GSpeechDuplex duplex, Microphone mic) {
+		new Thread(() -> {
+			try {
+				duplex.recognize(mic.getTargetDataLine(), mic.getAudioFormat());
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}).start();
 	}
 
 	// funziona che stoppa il riconoscimento vocale
@@ -42,7 +45,7 @@ public class SpeechRecognition implements GSpeechResponseListener {
 	}
 
 	// con questo metodo ricaviamo il testo della cattura audio
-	public static void getResponse(GSpeechDuplex duplex) {
+	public void getResponse(GSpeechDuplex duplex) {
 		duplex.addResponseListener(new GSpeechResponseListener() {
 
 			public void onResponse(GoogleResponse gr) {

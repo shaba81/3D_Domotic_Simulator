@@ -36,9 +36,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.darkprograms.speech.microphone.Microphone;
+import com.darkprograms.speech.recognizer.GSpeechDuplex;
 import com.mygdx.controller.database.persistence.PostgreDAOFactory;
 import com.mygdx.controller.database.persistence.dao.UserDAO;
+import com.mygdx.speechToText.SpeechRecognition;
 
+import net.sourceforge.javaflacencoder.FLACFileWriter;
 import utilis.Utils;
 
 public class GameScreen implements Screen {
@@ -127,6 +131,10 @@ public class GameScreen implements Screen {
 	private boolean right = false;
 	private boolean isSpeaking = false;
 	private boolean nAccessButton;
+
+	private SpeechRecognition speechRecognition;
+	final Microphone mic = new Microphone(FLACFileWriter.FLAC);
+	GSpeechDuplex duplex = new GSpeechDuplex("AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw");
 
 	// Width and Height of the room's floor.
 	private float floorWidth = 120;
@@ -303,6 +311,11 @@ public class GameScreen implements Screen {
 		overBackWallInstance = new ModelInstance(overDoorWall);
 		overBackWallInstance.transform.translate(overBackDoorWallPosition);
 		overBackWallInstance.transform.rotate(Vector3.Y, 270);
+
+		// inizializzazione e settaggio della lingua italiana (funziona anche in
+		// inglese)
+		speechRecognition = new SpeechRecognition();
+		duplex.setLanguage("it");
 	}
 
 	@Override
@@ -364,6 +377,9 @@ public class GameScreen implements Screen {
 				}
 				if (keycode == Input.Keys.R) {
 					isSpeaking = true;
+					speechRecognition.startingSpeechRecognition(duplex, mic);
+					speechRecognition.getResponse(duplex);
+
 				}
 				if (keycode == Input.Keys.N) {
 					nAccessButton = true;
@@ -387,6 +403,7 @@ public class GameScreen implements Screen {
 				}
 				if (keycode == Input.Keys.R) {
 					isSpeaking = false;
+					speechRecognition.stopSpeechRecognition(duplex, mic);
 				}
 				return false;
 			}
