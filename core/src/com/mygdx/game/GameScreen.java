@@ -180,8 +180,8 @@ public class GameScreen implements Screen {
 		entranceDoorModel = modelLoader.loadModel(Gdx.files.getFileHandle("Door_Component_BI3.g3db", FileType.Internal));
 		lampModel = modelLoader.loadModel(Gdx.files.getFileHandle("lamp.g3db", FileType.Internal));
 		tvModel = modelLoader.loadModel(Gdx.files.getFileHandle("TV.g3db", FileType.Internal));
-		sofaModel = modelLoader.loadModel(Gdx.files.getFileHandle("sofa.g3db", FileType.Internal));
-		tableModel = modelLoader.loadModel(Gdx.files.getFileHandle("table.g3db", FileType.Internal));
+//		sofaModel = modelLoader.loadModel(Gdx.files.getFileHandle("sofa.g3db", FileType.Internal));
+//		tableModel = modelLoader.loadModel(Gdx.files.getFileHandle("table.g3db", FileType.Internal));
 		speakerModel = modelLoader.loadModel(Gdx.files.getFileHandle("speaker.g3db", FileType.Internal));
 
 		tvScreenTexture = new Texture(Gdx.files.internal("tvScreen.jpg"));
@@ -237,13 +237,13 @@ public class GameScreen implements Screen {
 		tvInstance.transform.scale(0.06f, 0.06f, 0.06f);
 		tvInstance.transform.translate(-95 * 10, 25 * 10, -100 * 10);
 		
-		sofaInstance = new ModelInstance(sofaModel);
-		sofaInstance.transform.scale(0.3f, 0.3f, 0.3f);
-		sofaInstance.transform.translate(0,30,40);
-		
-		tableInstance = new ModelInstance(tableModel);
-		//tableInstance.transform.scale(0.2f, 0.2f, 0.2f);
-		tableInstance.transform.translate(0,20,60);
+//		sofaInstance = new ModelInstance(sofaModel);
+//		sofaInstance.transform.scale(0.3f, 0.3f, 0.3f);
+//		sofaInstance.transform.translate(0,30,40);
+//		
+//		tableInstance = new ModelInstance(tableModel);
+//		tableInstance.transform.scale(0.2f, 0.2f, 0.2f);
+//		tableInstance.transform.translate(0,20,60);
 		
 		speakerInstance = new ModelInstance(speakerModel);
 		speakerInstance.transform.scale(0.02f, 0.02f, 0.02f);
