@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -114,6 +115,8 @@ public class GameScreen implements Screen {
 	private Model speakerModel;
 	private ModelInstance speakerInstance;
 	private ModelInstance speaker2Instance;
+	private Music song1;
+	private boolean activateSpeaker = false;
 
 	private Texture tvScreenTexture;
 	private TextureRegion tvScreenRegion;
@@ -355,6 +358,8 @@ public class GameScreen implements Screen {
 		spriteBatch = new SpriteBatch();
 		viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		stage = new Stage(viewport, spriteBatch);
+		
+		song1 = Gdx.audio.newMusic(Gdx.files.internal("song1.mp3"));
 
 		Gdx.input.setCursorCatched(true);
 		Gdx.input.setInputProcessor(new InputProcessor() {
@@ -408,6 +413,9 @@ public class GameScreen implements Screen {
 					speechRecognition.startingSpeechRecognition(duplex, mic);
 					speechRecognition.getResponse(duplex);
 
+				}
+				if (keycode == Input.Keys.B) {
+					activateSpeaker = !activateSpeaker;
 				}
 				if (keycode == Input.Keys.N) {
 					nAccessButton = true;
@@ -506,6 +514,15 @@ public class GameScreen implements Screen {
 			light.lookAt(camera.position, camera.up);
 			decalBatch.flush();
 		}
+	}
+	
+	public void startSpeakers() {
+		if(activateSpeaker) {
+			song1.play();
+		} else {
+			song1.pause();
+		}
+		
 	}
 
 	public void walk(float timeElapsed) {
@@ -620,6 +637,7 @@ public class GameScreen implements Screen {
 
 			startTV();
 			turnLights();
+			startSpeakers();
 
 			if (this.nAccessButton) {
 				this.nAccessButton = false;
@@ -659,6 +677,7 @@ public class GameScreen implements Screen {
 		this.sofaModel.dispose();
 		this.spriteBatch.dispose();
 		this.stage.dispose();
+		this.song1.dispose();
 	}
 
 	@Override
