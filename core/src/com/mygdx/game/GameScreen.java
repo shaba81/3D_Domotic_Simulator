@@ -105,6 +105,16 @@ public class GameScreen implements Screen {
 	private Model tvModel;
 	private ModelInstance tvInstance;
 
+	private Model sofaModel;
+	private ModelInstance sofaInstance;
+
+	private Model tableModel;
+	private ModelInstance tableInstance;
+
+	private Model speakerModel;
+	private ModelInstance speakerInstance;
+	private ModelInstance speaker2Instance;
+
 	private Texture tvScreenTexture;
 	private TextureRegion tvScreenRegion;
 	private Decal tvScreen;
@@ -167,18 +177,18 @@ public class GameScreen implements Screen {
 		// Now load the model by name
 		// Note, the model (g3db file ) and textures need to be added to the assets
 		// folder of the Android proj
-		entranceDoorModel = modelLoader
-				.loadModel(Gdx.files.getFileHandle("Door_Component_BI3.g3db", FileType.Internal));
-
+		entranceDoorModel = modelLoader.loadModel(Gdx.files.getFileHandle("Door_Component_BI3.g3db", FileType.Internal));
 		lampModel = modelLoader.loadModel(Gdx.files.getFileHandle("lamp.g3db", FileType.Internal));
-
 		tvModel = modelLoader.loadModel(Gdx.files.getFileHandle("TV.g3db", FileType.Internal));
+		sofaModel = modelLoader.loadModel(Gdx.files.getFileHandle("sofa.g3db", FileType.Internal));
+		tableModel = modelLoader.loadModel(Gdx.files.getFileHandle("table.g3db", FileType.Internal));
+		speakerModel = modelLoader.loadModel(Gdx.files.getFileHandle("speaker.g3db", FileType.Internal));
 
 		tvScreenTexture = new Texture(Gdx.files.internal("tvScreen.jpg"));
 		tvScreenRegion = new TextureRegion(tvScreenTexture);
 		tvScreen = Decal.newDecal(tvScreenRegion);
 		tvScreen.setDimensions(10, 10);
-		tvScreen.setPosition(-51, 15, -48);
+		tvScreen.setPosition(-51, 15, -60);
 		tvScreen.setRotationY(90);
 
 		lightTexture = new Texture(Gdx.files.internal("light.png"));
@@ -225,7 +235,25 @@ public class GameScreen implements Screen {
 
 		tvInstance = new ModelInstance(tvModel);
 		tvInstance.transform.scale(0.06f, 0.06f, 0.06f);
-		tvInstance.transform.translate(-95 * 10, 25 * 10, -80 * 10);
+		tvInstance.transform.translate(-95 * 10, 25 * 10, -100 * 10);
+		
+		sofaInstance = new ModelInstance(sofaModel);
+		sofaInstance.transform.scale(0.3f, 0.3f, 0.3f);
+		sofaInstance.transform.translate(0,30,40);
+		
+		tableInstance = new ModelInstance(tableModel);
+		//tableInstance.transform.scale(0.2f, 0.2f, 0.2f);
+		tableInstance.transform.translate(0,20,60);
+		
+		speakerInstance = new ModelInstance(speakerModel);
+		speakerInstance.transform.scale(0.02f, 0.02f, 0.02f);
+		speakerInstance.transform.rotate(Vector3.Y, 340);
+		speakerInstance.transform.translate(-290 * 14,40,-260 * 16);
+		
+		speaker2Instance = new ModelInstance(speakerModel);
+		speaker2Instance.transform.scale(0.02f, 0.02f, 0.02f);
+		speaker2Instance.transform.rotate(Vector3.Y, 10);
+		speaker2Instance.transform.translate(-230 * 10,40,-90 * 10);
 
 		controller = new AnimationController(entranceDoorInstance);
 		controller.allowSameAnimation = true;
@@ -569,6 +597,10 @@ public class GameScreen implements Screen {
 			modelBatch.render(exitDoorInstance, environment);
 			modelBatch.render(lampInstance, environment);
 			modelBatch.render(tvInstance, environment);
+			modelBatch.render(sofaInstance, environment);
+			modelBatch.render(tableInstance, environment);
+			modelBatch.render(speakerInstance, environment);
+			modelBatch.render(speaker2Instance, environment);
 
 			modelBatch.render(sxWallInstance, environment);
 			modelBatch.render(dxWallInstance, environment);
@@ -622,6 +654,9 @@ public class GameScreen implements Screen {
 		this.entranceDoorModel.dispose();
 		this.lampModel.dispose();
 		this.tvModel.dispose();
+		this.speakerModel.dispose();
+		this.tableModel.dispose();
+		this.sofaModel.dispose();
 		this.spriteBatch.dispose();
 		this.stage.dispose();
 	}
