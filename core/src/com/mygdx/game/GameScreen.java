@@ -75,17 +75,21 @@ public class GameScreen implements Screen {
 	private ModelInstance exitDoorInstance; // Per exit intendo porta di uscita dalla stanza.
 
 	private Model wall;
+	private Model wallBath;
 	private Model wallDoor;
+	private Model wallBathDoor;
 	private Model overDoorWall;
 	private Model ceiling;
 	private ModelInstance sxWallInstance;
 	private ModelInstance dxWallInstance;
 	private ModelInstance frontWallSxInstance;
-	private ModelInstance backWallSxInstance;
+	private ModelInstance backWallInstance;
 	private ModelInstance frontWallDxInstance;
-	private ModelInstance backWallDxInstance;
 	private ModelInstance overFrontWallInstance;
-	private ModelInstance overBackWallInstance;
+	private ModelInstance sxBathWallInstance;
+	private ModelInstance frontSxBathWallInstance;
+	private ModelInstance frontDxBathWallInstance;
+	private ModelInstance overFrontBathWallInstance;
 	private ModelInstance ceilingInstance;
 
 	private float wallThickness = 2f;
@@ -93,17 +97,21 @@ public class GameScreen implements Screen {
 	private Vector3 sxWallPosition;
 	private Vector3 dxWallPosition;
 	private Vector3 frontWallSxPosition;
-	private Vector3 backWallSxPosition;
+	private Vector3 backWallPosition;
 	private Vector3 frontWallDxPosition;
-	private Vector3 backWallDxPosition;
 	private Vector3 overFrontDoorWallPosition;
-	private Vector3 overBackDoorWallPosition;
+	private Vector3 sxBathWallPosition;
+	private Vector3 frontSxBathWallPosition;
+	private Vector3 frontDxBathWallPosition;
+	private Vector3 overFrontBathWallPosition;
 	private Vector3 ceilingPosition;
 
 	private GameEntity sxWallEntity;
 	private GameEntity dxWallEntity;
 	private GameEntity frontWallEntity;
 	private GameEntity backWallEntity;
+	private GameEntity sxBathWallEntity;
+	private GameEntity frontBathWallEntity;
 	private ArrayList<GameEntity> walls;
 
 	private Model lampModel;
@@ -226,7 +234,7 @@ public class GameScreen implements Screen {
 		sxWallEntity = new GameEntity(sxWallPosition.x, 0, wallThickness, floorHeight);
 		dxWallEntity = new GameEntity(dxWallPosition.x, 0, wallThickness, floorHeight);
 		frontWallEntity = new GameEntity(10, 120, floorWidth / 2, wallThickness);
-		backWallEntity = new GameEntity(10, 0, floorWidth / 2, wallThickness);
+		backWallEntity = new GameEntity(0, 0, floorWidth / 2, wallThickness);
 
 		walls = new ArrayList<GameEntity>();
 		walls.add(sxWallEntity);
@@ -242,7 +250,7 @@ public class GameScreen implements Screen {
 
 		exitDoorInstance = new ModelInstance(entranceDoorModel);
 		exitDoorInstance.transform.scale(0.1f, 0.1f, 0.1f);
-		exitDoorInstance.transform.translate(0, 0, -floorHeight * 10);
+		exitDoorInstance.transform.translate(30 * 10, 0, -80 * 10);
 
 		lampInstance = new ModelInstance(lampModel);
 		lampInstance.transform.scale(0.02f, 0.02f, 0.02f);
@@ -313,17 +321,27 @@ public class GameScreen implements Screen {
 		sxWallPosition = new Vector3(-60, 20, -60);
 		dxWallPosition = new Vector3(60, 20, -60);
 		frontWallSxPosition = new Vector3(-33, 20, 0);
-		backWallSxPosition = new Vector3(-33, 20, -120);
+		backWallPosition = new Vector3(0, 20, -120);
 		frontWallDxPosition = new Vector3(33, 20, 0);
-		backWallDxPosition = new Vector3(33, 20, -120);
-		overBackDoorWallPosition = new Vector3(0, 30, -120);
+		sxBathWallPosition = new Vector3(0,20, -100);
+		
+		frontSxBathWallPosition = new Vector3(12,20,-80);
+		frontDxBathWallPosition = new Vector3(48,20,-80);
+		overFrontBathWallPosition = new Vector3(30,30,-80);
+
 		overFrontDoorWallPosition = new Vector3(0, 30, 0);
 		ceilingPosition = new Vector3(0, wallHeight, -floorHeight / 2);
 
 		wall = modelBuilder.createBox(wallThickness, wallHeight, floorWidth, wallMaterial,
 				Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+		
+		wallBath = modelBuilder.createBox(wallThickness, wallHeight, 40, wallMaterial,
+				Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 
 		wallDoor = modelBuilder.createBox(wallThickness, wallHeight, floorWidth / 2 - 4f, wallMaterial,
+				Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+		
+		wallBathDoor = modelBuilder.createBox(wallThickness, wallHeight, 26, wallMaterial,
 				Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 
 		overDoorWall = modelBuilder.createBox(wallThickness, wallHeight / 2, 10f, wallMaterial,
@@ -346,25 +364,33 @@ public class GameScreen implements Screen {
 		frontWallSxInstance.transform.translate(frontWallSxPosition);
 		frontWallSxInstance.transform.rotate(Vector3.Y, 270);
 
-		backWallSxInstance = new ModelInstance(wallDoor);
-		backWallSxInstance.transform.translate(backWallSxPosition);
-		backWallSxInstance.transform.rotate(Vector3.Y, 270);
+		backWallInstance = new ModelInstance(wall);
+		backWallInstance.transform.translate(backWallPosition);
+		backWallInstance.transform.rotate(Vector3.Y, 270);
 
 		frontWallDxInstance = new ModelInstance(wallDoor);
 		frontWallDxInstance.transform.translate(frontWallDxPosition);
 		frontWallDxInstance.transform.rotate(Vector3.Y, 270);
 
-		backWallDxInstance = new ModelInstance(wallDoor);
-		backWallDxInstance.transform.translate(backWallDxPosition);
-		backWallDxInstance.transform.rotate(Vector3.Y, 270);
-
 		overFrontWallInstance = new ModelInstance(overDoorWall);
 		overFrontWallInstance.transform.translate(overFrontDoorWallPosition);
 		overFrontWallInstance.transform.rotate(Vector3.Y, 270);
-
-		overBackWallInstance = new ModelInstance(overDoorWall);
-		overBackWallInstance.transform.translate(overBackDoorWallPosition);
-		overBackWallInstance.transform.rotate(Vector3.Y, 270);
+		
+		sxBathWallInstance = new ModelInstance(wallBath);
+		sxBathWallInstance.transform.translate(sxBathWallPosition);
+		
+		overFrontBathWallInstance = new ModelInstance(overDoorWall);
+		overFrontBathWallInstance.transform.translate(overFrontBathWallPosition);
+		overFrontBathWallInstance.transform.rotate(Vector3.Y, 270);
+		
+		frontSxBathWallInstance = new ModelInstance(wallBathDoor);
+		frontSxBathWallInstance.transform.translate(frontSxBathWallPosition);
+		frontSxBathWallInstance.transform.rotate(Vector3.Y, 270);
+		
+		frontDxBathWallInstance = new ModelInstance(wallBathDoor);
+		frontDxBathWallInstance.transform.translate(frontDxBathWallPosition);
+		frontDxBathWallInstance.transform.rotate(Vector3.Y, 270);
+		
 
 		// inizializzazione e settaggio della lingua italiana (funziona anche in
 		// inglese)
@@ -669,11 +695,13 @@ public class GameScreen implements Screen {
 			modelBatch.render(sxWallInstance, environment);
 			modelBatch.render(dxWallInstance, environment);
 			modelBatch.render(frontWallSxInstance, environment);
-			modelBatch.render(backWallSxInstance, environment);
+			modelBatch.render(backWallInstance, environment);
 			modelBatch.render(frontWallDxInstance, environment);
-			modelBatch.render(backWallDxInstance, environment);
 			modelBatch.render(overFrontWallInstance, environment);
-			modelBatch.render(overBackWallInstance, environment);
+			modelBatch.render(sxBathWallInstance, environment);
+			modelBatch.render(overFrontBathWallInstance, environment);
+			modelBatch.render(frontSxBathWallInstance, environment);
+			modelBatch.render(frontDxBathWallInstance, environment);
 			modelBatch.render(floorInstance, environment);
 			modelBatch.render(ceilingInstance, environment);
 
