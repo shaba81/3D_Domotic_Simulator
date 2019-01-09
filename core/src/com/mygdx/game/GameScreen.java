@@ -58,7 +58,8 @@ public class GameScreen implements Screen {
 	private ModelBatch modelBatch;
 	private ModelInstance floorInstance;
 	private Environment environment;
-	private AnimationController controller;
+	private AnimationController entranceDoorAnimationController;
+	private AnimationController bathDoorAnimationController;
 	private ModelBuilder modelBuilder;
 	private Material material; // used for the floor.
 	private Material wallMaterial;
@@ -72,7 +73,7 @@ public class GameScreen implements Screen {
 
 	private Model entranceDoorModel;
 	private ModelInstance entranceDoorInstance;
-	private ModelInstance exitDoorInstance; // Per exit intendo porta di uscita dalla stanza.
+	private ModelInstance bathDoorInstance; 
 
 	private Model wall;
 	private Model wallBath;
@@ -110,8 +111,7 @@ public class GameScreen implements Screen {
 	private GameEntity dxWallEntity;
 	private GameEntity frontWallEntity;
 	private GameEntity backWallEntity;
-	private GameEntity sxBathWallEntity;
-	private GameEntity frontBathWallEntity;
+	private GameEntity bathRoom;
 	private ArrayList<GameEntity> walls;
 
 	private Model lampModel;
@@ -148,6 +148,8 @@ public class GameScreen implements Screen {
 	private Label speakerMessage;
 	private Label tvMessage;
 	private Label lightMessage;
+	private Label bathRoomMessage;
+	private Label mainRoomMessage;
 
 	private DecalBatch decalBatch;
 
@@ -235,6 +237,7 @@ public class GameScreen implements Screen {
 		dxWallEntity = new GameEntity(dxWallPosition.x, 0, wallThickness, floorHeight);
 		frontWallEntity = new GameEntity(10, 120, floorWidth / 2, wallThickness);
 		backWallEntity = new GameEntity(0, 0, floorWidth / 2, wallThickness);
+		bathRoom = new GameEntity(0,-135,70,60);
 
 		walls = new ArrayList<GameEntity>();
 		walls.add(sxWallEntity);
@@ -248,9 +251,9 @@ public class GameScreen implements Screen {
 		entranceDoorInstance.transform.scale(0.1f, 0.1f, 0.1f);
 		entranceDoorInstance.transform.translate(0, 0, 0);
 
-		exitDoorInstance = new ModelInstance(entranceDoorModel);
-		exitDoorInstance.transform.scale(0.1f, 0.1f, 0.1f);
-		exitDoorInstance.transform.translate(30 * 10, 0, -80 * 10);
+		bathDoorInstance = new ModelInstance(entranceDoorModel);
+		bathDoorInstance.transform.scale(0.1f, 0.1f, 0.1f);
+		bathDoorInstance.transform.translate(30 * 10, 0, -80 * 10);
 
 		lampInstance = new ModelInstance(lampModel);
 		lampInstance.transform.scale(0.02f, 0.02f, 0.02f);
@@ -279,8 +282,11 @@ public class GameScreen implements Screen {
 		speaker2Instance.transform.rotate(Vector3.Y, 10);
 		speaker2Instance.transform.translate(-230 * 10,40,-90 * 10);
 
-		controller = new AnimationController(entranceDoorInstance);
-		controller.allowSameAnimation = true;
+		entranceDoorAnimationController = new AnimationController(entranceDoorInstance);
+		entranceDoorAnimationController.allowSameAnimation = true;
+		
+		bathDoorAnimationController = new AnimationController(bathDoorInstance);
+		bathDoorAnimationController.allowSameAnimation = true;
 		
 		speakerMessage = new Label("Speakers are ON", skin);
 		speakerMessage.setFontScale(2);
@@ -291,6 +297,12 @@ public class GameScreen implements Screen {
 		lightMessage = new Label("Light is ON", skin);
 		lightMessage.setFontScale(2);
 		lightMessage.setColor(Color.YELLOW);
+		bathRoomMessage = new Label("User is in the BATHROOM", skin);
+		bathRoomMessage.setFontScale(3);
+		bathRoomMessage.setColor(Color.BLUE);
+		mainRoomMessage = new Label("User is in the MAIN ROOM", skin);
+		mainRoomMessage.setFontScale(3);
+		mainRoomMessage.setColor(Color.BLUE);
 
 		// Finally we want some light, or we wont see our color. The environment gets
 		// passed in during
@@ -533,7 +545,18 @@ public class GameScreen implements Screen {
 
 		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
 
-			controller.setAnimation("Plane.001|Door", 1, new AnimationListener() {
+			entranceDoorAnimationController.setAnimation("Plane.001|Door", 1, new AnimationListener() {
+				@Override
+				public void onEnd(AnimationController.AnimationDesc animation) {
+					// controller.queue("other anim",-1,1f,null,0f);
+				}
+
+				@Override
+				public void onLoop(AnimationController.AnimationDesc animation) {
+				}
+			});
+			
+			bathDoorAnimationController.setAnimation("Plane.001|Door", 1, new AnimationListener() {
 				@Override
 				public void onEnd(AnimationController.AnimationDesc animation) {
 					// controller.queue("other anim",-1,1f,null,0f);
@@ -547,6 +570,10 @@ public class GameScreen implements Screen {
 	}
 	
 	public void showMessages() {
+		if(checkRoom().equals("bathroom")) {
+			messagesTable.add(bathRoomMessage);
+			messagesTable.row();
+		}
 		if(isTvOn) {
 			messagesTable.add(tvMessage);
 			messagesTable.row();
@@ -596,6 +623,13 @@ public class GameScreen implements Screen {
 			song1.pause();
 		}
 		
+	}
+	
+	public String checkRoom() {
+		if(bathRoom.contains(player))
+			return new String("bathroom");
+		
+		return new String("mainRoom");
 	}
 
 	public void walk(float timeElapsed) {
@@ -676,15 +710,18 @@ public class GameScreen implements Screen {
 			Gdx.gl.glClearColor(1, 1, 1, 1);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 			spriteBatch.setProjectionMatrix(camera.combined);
+			
+			checkRoom();
 
 			walk(Gdx.graphics.getDeltaTime());
 			OpenDoor();
 
-			controller.update(Gdx.graphics.getDeltaTime());
+			entranceDoorAnimationController.update(Gdx.graphics.getDeltaTime());
+			bathDoorAnimationController.update(Gdx.graphics.getDeltaTime());
 			modelBatch.begin(camera);
 
 			modelBatch.render(entranceDoorInstance, environment);
-			modelBatch.render(exitDoorInstance, environment);
+			modelBatch.render(bathDoorInstance, environment);
 			modelBatch.render(lampInstance, environment);
 			modelBatch.render(tvInstance, environment);
 //			modelBatch.render(sofaInstance, environment);

@@ -40,4 +40,14 @@ public class GameEntity {
 
 		return false;
 	}
+	
+	public boolean contains(GameEntity g) {
+		Rectangle thisRect = new Rectangle(x,z,width,height);
+		Rectangle otherRect = new Rectangle(g.x,g.z,g.width,g.height);
+
+		if (thisRect.contains(otherRect))
+			return true;
+
+		return false;
+	}
 }
