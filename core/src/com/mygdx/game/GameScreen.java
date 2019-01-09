@@ -120,11 +120,11 @@ public class GameScreen implements Screen {
 	private Model tvModel;
 	private ModelInstance tvInstance;
 
-	private Model sofaModel;
-	private ModelInstance sofaInstance;
+	private Model sinkModel;
+	private ModelInstance sinkInstance;
 
-	private Model tableModel;
-	private ModelInstance tableInstance;
+	private Model toiletModel;
+	private ModelInstance toiletInstance;
 
 	private Model speakerModel;
 	private ModelInstance speakerInstance;
@@ -206,8 +206,8 @@ public class GameScreen implements Screen {
 		entranceDoorModel = modelLoader.loadModel(Gdx.files.getFileHandle("Door_Component_BI3.g3db", FileType.Internal));
 		lampModel = modelLoader.loadModel(Gdx.files.getFileHandle("lamp.g3db", FileType.Internal));
 		tvModel = modelLoader.loadModel(Gdx.files.getFileHandle("TV.g3db", FileType.Internal));
-//		sofaModel = modelLoader.loadModel(Gdx.files.getFileHandle("sofa.g3db", FileType.Internal));
-//		tableModel = modelLoader.loadModel(Gdx.files.getFileHandle("table.g3db", FileType.Internal));
+		sinkModel = modelLoader.loadModel(Gdx.files.getFileHandle("sink3.g3db", FileType.Internal));
+		toiletModel = modelLoader.loadModel(Gdx.files.getFileHandle("Toilet.g3db", FileType.Internal));
 		speakerModel = modelLoader.loadModel(Gdx.files.getFileHandle("speaker.g3db", FileType.Internal));
 
 		tvScreenTexture = new Texture(Gdx.files.internal("tvScreen.jpg"));
@@ -264,13 +264,14 @@ public class GameScreen implements Screen {
 		tvInstance.transform.scale(0.06f, 0.06f, 0.06f);
 		tvInstance.transform.translate(-95 * 10, 25 * 10, -100 * 10);
 		
-//		sofaInstance = new ModelInstance(sofaModel);
-//		sofaInstance.transform.scale(0.3f, 0.3f, 0.3f);
-//		sofaInstance.transform.translate(0,30,40);
-//		
-//		tableInstance = new ModelInstance(tableModel);
-//		tableInstance.transform.scale(0.2f, 0.2f, 0.2f);
-//		tableInstance.transform.translate(0,20,60);
+		sinkInstance = new ModelInstance(sinkModel);
+		sinkInstance.transform.scale(0.3f, 0.3f, 0.3f);
+		sinkInstance.transform.translate(0,20,40);
+		
+		toiletInstance = new ModelInstance(toiletModel);
+		toiletInstance.transform.scale(0.07f, 0.07f, 0.07f);
+		toiletInstance.transform.translate(60 * 10,20,-160 * 10);
+		toiletInstance.transform.rotate(Vector3.Y, 270);
 		
 		speakerInstance = new ModelInstance(speakerModel);
 		speakerInstance.transform.scale(0.02f, 0.02f, 0.02f);
@@ -724,8 +725,8 @@ public class GameScreen implements Screen {
 			modelBatch.render(bathDoorInstance, environment);
 			modelBatch.render(lampInstance, environment);
 			modelBatch.render(tvInstance, environment);
-//			modelBatch.render(sofaInstance, environment);
-//			modelBatch.render(tableInstance, environment);
+			modelBatch.render(sinkInstance, environment);
+			modelBatch.render(toiletInstance, environment);
 			modelBatch.render(speakerInstance, environment);
 			modelBatch.render(speaker2Instance, environment);
 
@@ -788,8 +789,8 @@ public class GameScreen implements Screen {
 		this.lampModel.dispose();
 		this.tvModel.dispose();
 		this.speakerModel.dispose();
-		this.tableModel.dispose();
-		this.sofaModel.dispose();
+		this.toiletModel.dispose();
+		this.sinkModel.dispose();
 		this.spriteBatch.dispose();
 		this.stage.dispose();
 		this.song1.dispose();
