@@ -8,6 +8,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -33,7 +34,10 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -63,6 +67,8 @@ public class GameScreen implements Screen {
 	private Texture wallTexture;
 	private Texture ceilingTexture;
 	private GameEntity player;
+	private TextureAtlas atlas;
+	private Skin skin;
 
 	private Model entranceDoorModel;
 	private ModelInstance entranceDoorInstance;
@@ -130,11 +136,16 @@ public class GameScreen implements Screen {
 
 	private Texture micTexture;
 	private Image micImage;
+	
+	private Label speakerMessage;
+	private Label tvMessage;
+	private Label lightMessage;
 
 	private DecalBatch decalBatch;
 
 	private SpriteBatch spriteBatch;
 	private Stage stage;
+	private Table messagesTable;
 	private Viewport viewport;
 
 	private float movementSpeed = 25f;
@@ -158,6 +169,8 @@ public class GameScreen implements Screen {
 
 		// Create camera sized to screens width/height with Field of View of 75 degrees
 		camera = new PerspectiveCamera(70, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		atlas = new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas"));
+		skin = new Skin(Gdx.files.internal("skin/uiskin.json"), atlas);
 
 		// Move the camera 5 units back along the z-axis and look at the origin
 		camera.position.set(0f, 15f, 50f);
@@ -260,6 +273,16 @@ public class GameScreen implements Screen {
 
 		controller = new AnimationController(entranceDoorInstance);
 		controller.allowSameAnimation = true;
+		
+		speakerMessage = new Label("Speakers are ON", skin);
+		speakerMessage.setFontScale(2);
+		speakerMessage.setColor(Color.RED);
+		tvMessage = new Label("TV is ON", skin);
+		tvMessage.setFontScale(2);
+		tvMessage.setColor(Color.GREEN);
+		lightMessage = new Label("Light is ON", skin);
+		lightMessage.setFontScale(2);
+		lightMessage.setColor(Color.YELLOW);
 
 		// Finally we want some light, or we wont see our color. The environment gets
 		// passed in during
@@ -358,6 +381,9 @@ public class GameScreen implements Screen {
 		spriteBatch = new SpriteBatch();
 		viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		stage = new Stage(viewport, spriteBatch);
+		messagesTable = new Table();
+		messagesTable.setFillParent(true);
+		messagesTable.bottom();
 		
 		song1 = Gdx.audio.newMusic(Gdx.files.internal("song1.mp3"));
 
@@ -492,6 +518,27 @@ public class GameScreen implements Screen {
 				}
 			});
 		}
+	}
+	
+	public void showMessages() {
+		if(isTvOn) {
+			messagesTable.add(tvMessage);
+			messagesTable.row();
+		}
+		if(isLightOn) {
+			messagesTable.add(lightMessage);
+			messagesTable.row();
+		}
+			
+		if(activateSpeaker) {
+			messagesTable.add(speakerMessage);
+			messagesTable.row();
+		}
+			
+		stage.addActor(messagesTable);
+		stage.act();
+		stage.draw();
+		messagesTable.clear();
 	}
 
 	public void drawMic() {
@@ -634,10 +681,13 @@ public class GameScreen implements Screen {
 
 			if (isSpeaking)
 				drawMic();
+			
 
 			startTV();
 			turnLights();
 			startSpeakers();
+			
+			showMessages();
 
 			if (this.nAccessButton) {
 				this.nAccessButton = false;
