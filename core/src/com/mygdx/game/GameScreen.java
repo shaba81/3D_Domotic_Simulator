@@ -597,8 +597,8 @@ public class GameScreen implements Screen {
 			modelBatch.render(exitDoorInstance, environment);
 			modelBatch.render(lampInstance, environment);
 			modelBatch.render(tvInstance, environment);
-			modelBatch.render(sofaInstance, environment);
-			modelBatch.render(tableInstance, environment);
+//			modelBatch.render(sofaInstance, environment);
+//			modelBatch.render(tableInstance, environment);
 			modelBatch.render(speakerInstance, environment);
 			modelBatch.render(speaker2Instance, environment);
 
