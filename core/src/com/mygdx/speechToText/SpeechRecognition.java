@@ -1,5 +1,10 @@
 package com.mygdx.speechToText;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+
 import com.darkprograms.speech.microphone.Microphone;
 import com.darkprograms.speech.recognizer.GSpeechDuplex;
 import com.darkprograms.speech.recognizer.GSpeechResponseListener;
@@ -8,15 +13,14 @@ import com.darkprograms.speech.recognizer.GoogleResponse;
 import net.sourceforge.javaflacencoder.FLACFileWriter;
 
 public class SpeechRecognition implements GSpeechResponseListener {
-	
-	String resp = "";
+
+	public String resp = "";
 
 	public static void main(String[] args) {
 
 		// microfono
-		
+
 		// creiamo il duplex con la relativa chiave dei servizi Google Cloud
-		
 
 		// settiamo la lingua
 //		duplex.setLanguage("it"); // funziona anche in inglese
@@ -29,8 +33,7 @@ public class SpeechRecognition implements GSpeechResponseListener {
 
 	// funzione che fa iniziare il riconoscimento vocale
 	public void startingSpeechRecognition(GSpeechDuplex duplex, Microphone mic) {
-		resp = "";
-		
+
 		new Thread(() -> {
 			try {
 				duplex.recognize(mic.getTargetDataLine(), mic.getAudioFormat());
@@ -46,9 +49,15 @@ public class SpeechRecognition implements GSpeechResponseListener {
 		duplex.stopSpeechRecognition();
 	}
 
+	public void setResp(String text) {
+		System.out.println("SetResp text to assign: " + text);
+		resp = text;
+		System.out.println("Resp after assignment: " + resp);
+	}
+
 	// con questo metodo ricaviamo il testo della cattura audio
-	public String getResponse(GSpeechDuplex duplex) {
-		
+	public void getResponse(GSpeechDuplex duplex) {
+
 		duplex.addResponseListener(new GSpeechResponseListener() {
 
 			public void onResponse(GoogleResponse gr) {
@@ -62,14 +71,25 @@ public class SpeechRecognition implements GSpeechResponseListener {
 				}
 
 				// stampo in console quello che ha capito il riconoscitore
-				//System.out.println(output);
-				resp = output;
-				//System.out.println(resp);  QUI LA STAMPA
+				// System.out.println(output);
+				// resp = output;
+				writeToFile(output);
+				// System.out.println(resp); QUI LA STAMPA
 			}
 		});
-		System.out.println(resp);
-		return resp;
-
+	}
+	
+	private void writeToFile(String text) {
+		try {
+            FileOutputStream outputStream = new FileOutputStream("resources/vocalCommand.txt");
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, "UTF-16");
+            BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
+            bufferedWriter.write(text);
+             
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 	}
 
 	// gia' implementata

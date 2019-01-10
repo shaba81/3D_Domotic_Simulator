@@ -1,5 +1,8 @@
 package com.mygdx.game;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Files.FileType;
@@ -483,12 +486,10 @@ public class GameScreen implements Screen {
 					isLightOn = !isLightOn;
 				}
 				if (keycode == Input.Keys.R) {
-					vocalCommand = "";
 					isSpeaking = true;
 
 					speechRecognition.startingSpeechRecognition(duplex, mic);
-					vocalCommand = speechRecognition.getResponse(duplex);
-					System.out.println(vocalCommand);
+					speechRecognition.getResponse(duplex);
 
 				}
 				if (keycode == Input.Keys.B) {
@@ -554,6 +555,24 @@ public class GameScreen implements Screen {
 		});
 	}
 
+	public String readFromFile() {
+		try {
+			FileReader reader = new FileReader("resources/vocalCommand.txt");
+			BufferedReader bufferedReader = new BufferedReader(reader);
+
+			String line;
+
+			line = bufferedReader.readLine();
+			reader.close();
+
+			return line;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	public void OpenDoor() {
 
 		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
@@ -583,7 +602,9 @@ public class GameScreen implements Screen {
 	}
 
 	public void showMessages() {
-		if (isSpeaking) {
+		if (!isSpeaking) {
+			vocalCommand = readFromFile();
+			System.out.println(vocalCommand);
 			vocalMessage.setText(vocalCommand);
 			vocalMessageTable.add(vocalMessage);
 			vocalMessageTable.row();
