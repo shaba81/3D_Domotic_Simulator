@@ -518,6 +518,7 @@ public class GameScreen implements Screen {
 				if (keycode == Input.Keys.R) {
 					isSpeaking = false;
 					speechRecognition.stopSpeechRecognition(duplex, mic);
+					showCommandOnScreen();
 				}
 				return false;
 			}
@@ -601,14 +602,16 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	public void showCommandOnScreen() {
+		vocalMessageTable.clear();
+		vocalCommand = readFromFile();
+		System.out.println(vocalCommand);
+		vocalMessage.setText(vocalCommand);
+		vocalMessageTable.add(vocalMessage);
+		vocalMessageTable.row();
+	}
+
 	public void showMessages() {
-		if (!isSpeaking) {
-			vocalCommand = readFromFile();
-			System.out.println(vocalCommand);
-			vocalMessage.setText(vocalCommand);
-			vocalMessageTable.add(vocalMessage);
-			vocalMessageTable.row();
-		}
 
 		if (checkRoom().equals("bathroom")) {
 			messagesTable.add(bathRoomMessage);
@@ -633,7 +636,6 @@ public class GameScreen implements Screen {
 		stage.act();
 		stage.draw();
 		messagesTable.clear();
-		vocalMessageTable.clear();
 	}
 
 	public void drawMic() {
