@@ -73,7 +73,7 @@ public class GameScreen implements Screen {
 
 	private Model entranceDoorModel;
 	private ModelInstance entranceDoorInstance;
-	private ModelInstance bathDoorInstance; 
+	private ModelInstance bathDoorInstance;
 
 	private Model wall;
 	private Model wallBath;
@@ -144,18 +144,20 @@ public class GameScreen implements Screen {
 
 	private Texture micTexture;
 	private Image micImage;
-	
+
 	private Label speakerMessage;
 	private Label tvMessage;
 	private Label lightMessage;
 	private Label bathRoomMessage;
 	private Label mainRoomMessage;
+	private Label vocalMessage;
 
 	private DecalBatch decalBatch;
 
 	private SpriteBatch spriteBatch;
 	private Stage stage;
 	private Table messagesTable;
+	private Table vocalMessageTable;
 	private Viewport viewport;
 
 	private float movementSpeed = 25f;
@@ -169,6 +171,7 @@ public class GameScreen implements Screen {
 	private SpeechRecognition speechRecognition;
 	final Microphone mic = new Microphone(FLACFileWriter.FLAC);
 	GSpeechDuplex duplex = new GSpeechDuplex("AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw");
+	private String vocalCommand = "";
 
 	// Width and Height of the room's floor.
 	private float floorWidth = 120;
@@ -203,7 +206,8 @@ public class GameScreen implements Screen {
 		// Now load the model by name
 		// Note, the model (g3db file ) and textures need to be added to the assets
 		// folder of the Android proj
-		entranceDoorModel = modelLoader.loadModel(Gdx.files.getFileHandle("Door_Component_BI3.g3db", FileType.Internal));
+		entranceDoorModel = modelLoader
+				.loadModel(Gdx.files.getFileHandle("Door_Component_BI3.g3db", FileType.Internal));
 		lampModel = modelLoader.loadModel(Gdx.files.getFileHandle("lamp.g3db", FileType.Internal));
 		tvModel = modelLoader.loadModel(Gdx.files.getFileHandle("TV.g3db", FileType.Internal));
 		sinkModel = modelLoader.loadModel(Gdx.files.getFileHandle("sink3.g3db", FileType.Internal));
@@ -237,7 +241,7 @@ public class GameScreen implements Screen {
 		dxWallEntity = new GameEntity(dxWallPosition.x, 0, wallThickness, floorHeight);
 		frontWallEntity = new GameEntity(10, 120, floorWidth / 2, wallThickness);
 		backWallEntity = new GameEntity(0, 0, floorWidth / 2, wallThickness);
-		bathRoom = new GameEntity(0,-135,70,60);
+		bathRoom = new GameEntity(0, -135, 70, 60);
 
 		walls = new ArrayList<GameEntity>();
 		walls.add(sxWallEntity);
@@ -263,32 +267,32 @@ public class GameScreen implements Screen {
 		tvInstance = new ModelInstance(tvModel);
 		tvInstance.transform.scale(0.06f, 0.06f, 0.06f);
 		tvInstance.transform.translate(-95 * 10, 25 * 10, -100 * 10);
-		
+
 		sinkInstance = new ModelInstance(sinkModel);
 		sinkInstance.transform.scale(0.3f, 0.3f, 0.3f);
-		sinkInstance.transform.translate(0,20,40);
-		
+		sinkInstance.transform.translate(0, 20, 40);
+
 		toiletInstance = new ModelInstance(toiletModel);
 		toiletInstance.transform.scale(0.07f, 0.07f, 0.07f);
-		toiletInstance.transform.translate(60 * 10,20,-160 * 10);
+		toiletInstance.transform.translate(60 * 10, 20, -160 * 10);
 		toiletInstance.transform.rotate(Vector3.Y, 270);
-		
+
 		speakerInstance = new ModelInstance(speakerModel);
 		speakerInstance.transform.scale(0.02f, 0.02f, 0.02f);
 		speakerInstance.transform.rotate(Vector3.Y, 340);
-		speakerInstance.transform.translate(-290 * 14,40,-260 * 16);
-		
+		speakerInstance.transform.translate(-290 * 14, 40, -260 * 16);
+
 		speaker2Instance = new ModelInstance(speakerModel);
 		speaker2Instance.transform.scale(0.02f, 0.02f, 0.02f);
 		speaker2Instance.transform.rotate(Vector3.Y, 10);
-		speaker2Instance.transform.translate(-230 * 10,40,-90 * 10);
+		speaker2Instance.transform.translate(-230 * 10, 40, -90 * 10);
 
 		entranceDoorAnimationController = new AnimationController(entranceDoorInstance);
 		entranceDoorAnimationController.allowSameAnimation = true;
-		
+
 		bathDoorAnimationController = new AnimationController(bathDoorInstance);
 		bathDoorAnimationController.allowSameAnimation = true;
-		
+
 		speakerMessage = new Label("Speakers are ON", skin);
 		speakerMessage.setFontScale(2);
 		speakerMessage.setColor(Color.RED);
@@ -304,6 +308,9 @@ public class GameScreen implements Screen {
 		mainRoomMessage = new Label("User is in the MAIN ROOM", skin);
 		mainRoomMessage.setFontScale(3);
 		mainRoomMessage.setColor(Color.BLUE);
+		vocalMessage = new Label(vocalCommand, skin);
+		vocalMessage.setScale(2);
+		vocalMessage.setColor(Color.RED);
 
 		// Finally we want some light, or we wont see our color. The environment gets
 		// passed in during
@@ -336,24 +343,24 @@ public class GameScreen implements Screen {
 		frontWallSxPosition = new Vector3(-33, 20, 0);
 		backWallPosition = new Vector3(0, 20, -120);
 		frontWallDxPosition = new Vector3(33, 20, 0);
-		sxBathWallPosition = new Vector3(0,20, -100);
-		
-		frontSxBathWallPosition = new Vector3(12,20,-80);
-		frontDxBathWallPosition = new Vector3(48,20,-80);
-		overFrontBathWallPosition = new Vector3(30,30,-80);
+		sxBathWallPosition = new Vector3(0, 20, -100);
+
+		frontSxBathWallPosition = new Vector3(12, 20, -80);
+		frontDxBathWallPosition = new Vector3(48, 20, -80);
+		overFrontBathWallPosition = new Vector3(30, 30, -80);
 
 		overFrontDoorWallPosition = new Vector3(0, 30, 0);
 		ceilingPosition = new Vector3(0, wallHeight, -floorHeight / 2);
 
 		wall = modelBuilder.createBox(wallThickness, wallHeight, floorWidth, wallMaterial,
 				Usage.Position | Usage.Normal | Usage.TextureCoordinates);
-		
+
 		wallBath = modelBuilder.createBox(wallThickness, wallHeight, 40, wallMaterial,
 				Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 
 		wallDoor = modelBuilder.createBox(wallThickness, wallHeight, floorWidth / 2 - 4f, wallMaterial,
 				Usage.Position | Usage.Normal | Usage.TextureCoordinates);
-		
+
 		wallBathDoor = modelBuilder.createBox(wallThickness, wallHeight, 26, wallMaterial,
 				Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 
@@ -388,22 +395,21 @@ public class GameScreen implements Screen {
 		overFrontWallInstance = new ModelInstance(overDoorWall);
 		overFrontWallInstance.transform.translate(overFrontDoorWallPosition);
 		overFrontWallInstance.transform.rotate(Vector3.Y, 270);
-		
+
 		sxBathWallInstance = new ModelInstance(wallBath);
 		sxBathWallInstance.transform.translate(sxBathWallPosition);
-		
+
 		overFrontBathWallInstance = new ModelInstance(overDoorWall);
 		overFrontBathWallInstance.transform.translate(overFrontBathWallPosition);
 		overFrontBathWallInstance.transform.rotate(Vector3.Y, 270);
-		
+
 		frontSxBathWallInstance = new ModelInstance(wallBathDoor);
 		frontSxBathWallInstance.transform.translate(frontSxBathWallPosition);
 		frontSxBathWallInstance.transform.rotate(Vector3.Y, 270);
-		
+
 		frontDxBathWallInstance = new ModelInstance(wallBathDoor);
 		frontDxBathWallInstance.transform.translate(frontDxBathWallPosition);
 		frontDxBathWallInstance.transform.rotate(Vector3.Y, 270);
-		
 
 		// inizializzazione e settaggio della lingua italiana (funziona anche in
 		// inglese)
@@ -423,7 +429,10 @@ public class GameScreen implements Screen {
 		messagesTable = new Table();
 		messagesTable.setFillParent(true);
 		messagesTable.bottom();
-		
+		vocalMessageTable = new Table();
+		vocalMessageTable.setFillParent(true);
+		vocalMessageTable.top();
+
 		song1 = Gdx.audio.newMusic(Gdx.files.internal("song1.mp3"));
 
 		Gdx.input.setCursorCatched(true);
@@ -474,9 +483,12 @@ public class GameScreen implements Screen {
 					isLightOn = !isLightOn;
 				}
 				if (keycode == Input.Keys.R) {
+					vocalCommand = "";
 					isSpeaking = true;
+
 					speechRecognition.startingSpeechRecognition(duplex, mic);
-					speechRecognition.getResponse(duplex);
+					vocalCommand = speechRecognition.getResponse(duplex);
+					System.out.println(vocalCommand);
 
 				}
 				if (keycode == Input.Keys.B) {
@@ -556,7 +568,7 @@ public class GameScreen implements Screen {
 				public void onLoop(AnimationController.AnimationDesc animation) {
 				}
 			});
-			
+
 			bathDoorAnimationController.setAnimation("Plane.001|Door", 1, new AnimationListener() {
 				@Override
 				public void onEnd(AnimationController.AnimationDesc animation) {
@@ -569,30 +581,38 @@ public class GameScreen implements Screen {
 			});
 		}
 	}
-	
+
 	public void showMessages() {
-		if(checkRoom().equals("bathroom")) {
+		if (isSpeaking) {
+			vocalMessage.setText(vocalCommand);
+			vocalMessageTable.add(vocalMessage);
+			vocalMessageTable.row();
+		}
+
+		if (checkRoom().equals("bathroom")) {
 			messagesTable.add(bathRoomMessage);
 			messagesTable.row();
 		}
-		if(isTvOn) {
+		if (isTvOn) {
 			messagesTable.add(tvMessage);
 			messagesTable.row();
 		}
-		if(isLightOn) {
+		if (isLightOn) {
 			messagesTable.add(lightMessage);
 			messagesTable.row();
 		}
-			
-		if(activateSpeaker) {
+
+		if (activateSpeaker) {
 			messagesTable.add(speakerMessage);
 			messagesTable.row();
 		}
-			
+
 		stage.addActor(messagesTable);
+		stage.addActor(vocalMessageTable);
 		stage.act();
 		stage.draw();
 		messagesTable.clear();
+		vocalMessageTable.clear();
 	}
 
 	public void drawMic() {
@@ -616,20 +636,20 @@ public class GameScreen implements Screen {
 			decalBatch.flush();
 		}
 	}
-	
+
 	public void startSpeakers() {
-		if(activateSpeaker) {
+		if (activateSpeaker) {
 			song1.play();
 		} else {
 			song1.pause();
 		}
-		
+
 	}
-	
+
 	public String checkRoom() {
-		if(bathRoom.contains(player))
+		if (bathRoom.contains(player))
 			return new String("bathroom");
-		
+
 		return new String("mainRoom");
 	}
 
@@ -711,7 +731,7 @@ public class GameScreen implements Screen {
 			Gdx.gl.glClearColor(1, 1, 1, 1);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 			spriteBatch.setProjectionMatrix(camera.combined);
-			
+
 			checkRoom();
 
 			walk(Gdx.graphics.getDeltaTime());
@@ -747,12 +767,11 @@ public class GameScreen implements Screen {
 
 			if (isSpeaking)
 				drawMic();
-			
 
 			startTV();
 			turnLights();
 			startSpeakers();
-			
+
 			showMessages();
 
 			if (this.nAccessButton) {

@@ -9,7 +9,7 @@ import net.sourceforge.javaflacencoder.FLACFileWriter;
 
 public class SpeechRecognition implements GSpeechResponseListener {
 	
-	
+	String resp = "";
 
 	public static void main(String[] args) {
 
@@ -29,6 +29,8 @@ public class SpeechRecognition implements GSpeechResponseListener {
 
 	// funzione che fa iniziare il riconoscimento vocale
 	public void startingSpeechRecognition(GSpeechDuplex duplex, Microphone mic) {
+		resp = "";
+		
 		new Thread(() -> {
 			try {
 				duplex.recognize(mic.getTargetDataLine(), mic.getAudioFormat());
@@ -45,7 +47,8 @@ public class SpeechRecognition implements GSpeechResponseListener {
 	}
 
 	// con questo metodo ricaviamo il testo della cattura audio
-	public void getResponse(GSpeechDuplex duplex) {
+	public String getResponse(GSpeechDuplex duplex) {
+		
 		duplex.addResponseListener(new GSpeechResponseListener() {
 
 			public void onResponse(GoogleResponse gr) {
@@ -59,10 +62,13 @@ public class SpeechRecognition implements GSpeechResponseListener {
 				}
 
 				// stampo in console quello che ha capito il riconoscitore
-				System.out.println(output);
+				//System.out.println(output);
+				resp = output;
+				//System.out.println(resp);  QUI LA STAMPA
 			}
-
 		});
+		System.out.println(resp);
+		return resp;
 
 	}
 
