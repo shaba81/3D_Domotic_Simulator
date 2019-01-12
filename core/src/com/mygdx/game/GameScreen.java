@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
@@ -63,6 +64,7 @@ public class GameScreen implements Screen {
 	private Environment environment;
 	private AnimationController entranceDoorAnimationController;
 	private AnimationController bathDoorAnimationController;
+	private AnimationController fanAnimationController;
 	private ModelBuilder modelBuilder;
 	private Material material; // used for the floor.
 	private Material wallMaterial;
@@ -123,11 +125,14 @@ public class GameScreen implements Screen {
 	private Model tvModel;
 	private ModelInstance tvInstance;
 
-	private Model sinkModel;
-	private ModelInstance sinkInstance;
+	private Model fanModel;
+	private ModelInstance fanInstance;
+	private boolean activateFan = false;
 
-	private Model toiletModel;
-	private ModelInstance toiletInstance;
+	private Model safeModel;
+	private Material safeMaterial;
+	private Texture safeTexture;
+	private ModelInstance safeInstance;
 
 	private Model speakerModel;
 	private ModelInstance speakerInstance;
@@ -154,6 +159,9 @@ public class GameScreen implements Screen {
 	private Label bathRoomMessage;
 	private Label mainRoomMessage;
 	private Label vocalMessage;
+	private Label waitMessage;
+	private boolean showWait = false;
+	private Timer timer;
 
 	private DecalBatch decalBatch;
 
@@ -169,6 +177,7 @@ public class GameScreen implements Screen {
 	private boolean left = false;
 	private boolean right = false;
 	private boolean isSpeaking = false;
+	private boolean doCommand = false;
 	private boolean nAccessButton;
 
 	private SpeechRecognition speechRecognition;
@@ -213,9 +222,13 @@ public class GameScreen implements Screen {
 				.loadModel(Gdx.files.getFileHandle("Door_Component_BI3.g3db", FileType.Internal));
 		lampModel = modelLoader.loadModel(Gdx.files.getFileHandle("lamp.g3db", FileType.Internal));
 		tvModel = modelLoader.loadModel(Gdx.files.getFileHandle("TV.g3db", FileType.Internal));
-		sinkModel = modelLoader.loadModel(Gdx.files.getFileHandle("sink3.g3db", FileType.Internal));
-		toiletModel = modelLoader.loadModel(Gdx.files.getFileHandle("Toilet.g3db", FileType.Internal));
 		speakerModel = modelLoader.loadModel(Gdx.files.getFileHandle("speaker.g3db", FileType.Internal));
+		fanModel = modelLoader.loadModel(Gdx.files.getFileHandle("Fan_Done5_Rigged.g3db", FileType.Internal));
+		safeMaterial = new Material();
+		safeTexture = new Texture(Gdx.files.internal("safeTexture.png"));
+		safeMaterial.set(new TextureAttribute(TextureAttribute.Diffuse, safeTexture));
+		safeModel = modelBuilder.createBox(20, 20, 20, safeMaterial,
+				Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 
 		tvScreenTexture = new Texture(Gdx.files.internal("tvScreen.jpg"));
 		tvScreenRegion = new TextureRegion(tvScreenTexture);
@@ -271,14 +284,9 @@ public class GameScreen implements Screen {
 		tvInstance.transform.scale(0.06f, 0.06f, 0.06f);
 		tvInstance.transform.translate(-95 * 10, 25 * 10, -100 * 10);
 
-		sinkInstance = new ModelInstance(sinkModel);
-		sinkInstance.transform.scale(0.3f, 0.3f, 0.3f);
-		sinkInstance.transform.translate(0, 20, 40);
-
-		toiletInstance = new ModelInstance(toiletModel);
-		toiletInstance.transform.scale(0.07f, 0.07f, 0.07f);
-		toiletInstance.transform.translate(60 * 10, 20, -160 * 10);
-		toiletInstance.transform.rotate(Vector3.Y, 270);
+		safeInstance = new ModelInstance(safeModel);
+		safeInstance.transform.scale(0.6f, 0.6f, 0.6f);
+		safeInstance.transform.translate(10, 10, -170);
 
 		speakerInstance = new ModelInstance(speakerModel);
 		speakerInstance.transform.scale(0.02f, 0.02f, 0.02f);
@@ -290,11 +298,19 @@ public class GameScreen implements Screen {
 		speaker2Instance.transform.rotate(Vector3.Y, 10);
 		speaker2Instance.transform.translate(-230 * 10, 40, -90 * 10);
 
+		fanInstance = new ModelInstance(fanModel);
+		fanInstance.transform.scale(0.01f, 0.01f, 0.01f);
+		fanInstance.transform.translate(140 * 30, 25 * 40, -370 * 30);
+		fanInstance.transform.rotate(Vector3.Y, 90);
+
 		entranceDoorAnimationController = new AnimationController(entranceDoorInstance);
 		entranceDoorAnimationController.allowSameAnimation = true;
 
 		bathDoorAnimationController = new AnimationController(bathDoorInstance);
 		bathDoorAnimationController.allowSameAnimation = true;
+
+		fanAnimationController = new AnimationController(fanInstance);
+		fanAnimationController.allowSameAnimation = true;
 
 		speakerMessage = new Label("Speakers are ON", skin);
 		speakerMessage.setFontScale(2);
@@ -305,15 +321,18 @@ public class GameScreen implements Screen {
 		lightMessage = new Label("Light is ON", skin);
 		lightMessage.setFontScale(2);
 		lightMessage.setColor(Color.YELLOW);
-		bathRoomMessage = new Label("User is in the BATHROOM", skin);
+		bathRoomMessage = new Label("User is in ROOM B", skin);
 		bathRoomMessage.setFontScale(3);
 		bathRoomMessage.setColor(Color.BLUE);
-		mainRoomMessage = new Label("User is in the MAIN ROOM", skin);
+		mainRoomMessage = new Label("User is in ROOM A", skin);
 		mainRoomMessage.setFontScale(3);
 		mainRoomMessage.setColor(Color.BLUE);
 		vocalMessage = new Label(vocalCommand, skin);
-		vocalMessage.setScale(2);
+		vocalMessage.setScale(3);
 		vocalMessage.setColor(Color.RED);
+		waitMessage = new Label("Wait . . .", skin);
+		waitMessage.setScale(3);
+		waitMessage.setColor(Color.RED);
 
 		// Finally we want some light, or we wont see our color. The environment gets
 		// passed in during
@@ -486,6 +505,7 @@ public class GameScreen implements Screen {
 					isLightOn = !isLightOn;
 				}
 				if (keycode == Input.Keys.R) {
+					messagesTable.clear();
 					isSpeaking = true;
 
 					speechRecognition.startingSpeechRecognition(duplex, mic);
@@ -494,6 +514,12 @@ public class GameScreen implements Screen {
 				}
 				if (keycode == Input.Keys.B) {
 					activateSpeaker = !activateSpeaker;
+				}
+				if (keycode == Input.Keys.V) {
+					activateFan = !activateFan;
+				}
+				if (keycode == Input.Keys.M) {
+					doCommand = true;
 				}
 				if (keycode == Input.Keys.N) {
 					nAccessButton = true;
@@ -515,10 +541,13 @@ public class GameScreen implements Screen {
 				if (keycode == Input.Keys.D) {
 					right = false;
 				}
+				if (keycode == Input.Keys.M) {
+					doCommand = false;
+				}
 				if (keycode == Input.Keys.R) {
 					isSpeaking = false;
 					speechRecognition.stopSpeechRecognition(duplex, mic);
-					showCommandOnScreen();
+
 				}
 				return false;
 			}
@@ -599,19 +628,41 @@ public class GameScreen implements Screen {
 				public void onLoop(AnimationController.AnimationDesc animation) {
 				}
 			});
+
+		}
+
+	}
+
+	public void activateFan() {
+		if (activateFan) {
+			fanAnimationController.setAnimation("Armature|ArmatureAction", 1, new AnimationListener() {
+				@Override
+				public void onEnd(AnimationController.AnimationDesc animation) {
+				}
+
+				@Override
+				public void onLoop(AnimationController.AnimationDesc animation) {
+				}
+			});
+			activateFan = false;
 		}
 	}
 
 	public void showCommandOnScreen() {
-		vocalMessageTable.clear();
 		vocalCommand = readFromFile();
-		System.out.println(vocalCommand);
 		vocalMessage.setText(vocalCommand);
 		vocalMessageTable.add(vocalMessage);
 		vocalMessageTable.row();
 	}
 
 	public void showMessages() {
+		if (showWait) {
+			vocalMessageTable.add(waitMessage);
+			vocalMessageTable.row();
+		}
+
+		if (doCommand)
+			showCommandOnScreen();
 
 		if (checkRoom().equals("bathroom")) {
 			messagesTable.add(bathRoomMessage);
@@ -636,6 +687,7 @@ public class GameScreen implements Screen {
 		stage.act();
 		stage.draw();
 		messagesTable.clear();
+		vocalMessageTable.clear();
 	}
 
 	public void drawMic() {
@@ -762,16 +814,17 @@ public class GameScreen implements Screen {
 
 			entranceDoorAnimationController.update(Gdx.graphics.getDeltaTime());
 			bathDoorAnimationController.update(Gdx.graphics.getDeltaTime());
+			fanAnimationController.update(Gdx.graphics.getDeltaTime());
 			modelBatch.begin(camera);
 
 			modelBatch.render(entranceDoorInstance, environment);
 			modelBatch.render(bathDoorInstance, environment);
 			modelBatch.render(lampInstance, environment);
 			modelBatch.render(tvInstance, environment);
-			modelBatch.render(sinkInstance, environment);
-			modelBatch.render(toiletInstance, environment);
 			modelBatch.render(speakerInstance, environment);
 			modelBatch.render(speaker2Instance, environment);
+			modelBatch.render(safeInstance, environment);
+			modelBatch.render(fanInstance, environment);
 
 			modelBatch.render(sxWallInstance, environment);
 			modelBatch.render(dxWallInstance, environment);
@@ -794,6 +847,7 @@ public class GameScreen implements Screen {
 			startTV();
 			turnLights();
 			startSpeakers();
+			activateFan();
 
 			showMessages();
 
@@ -831,8 +885,6 @@ public class GameScreen implements Screen {
 		this.lampModel.dispose();
 		this.tvModel.dispose();
 		this.speakerModel.dispose();
-		this.toiletModel.dispose();
-		this.sinkModel.dispose();
 		this.spriteBatch.dispose();
 		this.stage.dispose();
 		this.song1.dispose();
