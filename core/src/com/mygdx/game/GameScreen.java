@@ -57,6 +57,8 @@ import utilis.Utils;
 public class GameScreen implements Screen {
 
 	// final Drop game;
+	
+	private InputManager inputManager;
 
 	private PerspectiveCamera camera;
 	private ModelBatch modelBatch;
@@ -127,7 +129,6 @@ public class GameScreen implements Screen {
 
 	private Model fanModel;
 	private ModelInstance fanInstance;
-	private boolean activateFan = false;
 
 	private Model safeModel;
 	private Material safeMaterial;
@@ -138,17 +139,14 @@ public class GameScreen implements Screen {
 	private ModelInstance speakerInstance;
 	private ModelInstance speaker2Instance;
 	private Music song1;
-	private boolean activateSpeaker = false;
 
 	private Texture tvScreenTexture;
 	private TextureRegion tvScreenRegion;
 	private Decal tvScreen;
-	private boolean isTvOn = false;
 
 	private Texture lightTexture;
 	private TextureRegion lightRegion;
 	private Decal light;
-	private boolean isLightOn = false;
 
 	private Texture micTexture;
 	private Image micImage;
@@ -159,9 +157,9 @@ public class GameScreen implements Screen {
 	private Label bathRoomMessage;
 	private Label mainRoomMessage;
 	private Label vocalMessage;
+	private String vocalCommand = "";
 	private Label waitMessage;
 	private boolean showWait = false;
-	private Timer timer;
 
 	private DecalBatch decalBatch;
 
@@ -170,20 +168,6 @@ public class GameScreen implements Screen {
 	private Table messagesTable;
 	private Table vocalMessageTable;
 	private Viewport viewport;
-
-	private float movementSpeed = 25f;
-	private boolean forward = false;
-	private boolean back = false;
-	private boolean left = false;
-	private boolean right = false;
-	private boolean isSpeaking = false;
-	private boolean doCommand = false;
-	private boolean nAccessButton;
-
-	private SpeechRecognition speechRecognition;
-	final Microphone mic = new Microphone(FLACFileWriter.FLAC);
-	GSpeechDuplex duplex = new GSpeechDuplex("AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw");
-	private String vocalCommand = "";
 
 	// Width and Height of the room's floor.
 	private float floorWidth = 120;
@@ -196,6 +180,8 @@ public class GameScreen implements Screen {
 		camera = new PerspectiveCamera(70, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		atlas = new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas"));
 		skin = new Skin(Gdx.files.internal("skin/uiskin.json"), atlas);
+		
+		inputManager = new InputManager(camera);
 
 		// Move the camera 5 units back along the z-axis and look at the origin
 		camera.position.set(0f, 15f, 50f);
@@ -341,7 +327,7 @@ public class GameScreen implements Screen {
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 1.0f));
 
-		this.nAccessButton = false;
+		inputManager.nAccessButton = false;
 	}
 
 	public void createRoom() {
@@ -433,10 +419,7 @@ public class GameScreen implements Screen {
 		frontDxBathWallInstance.transform.translate(frontDxBathWallPosition);
 		frontDxBathWallInstance.transform.rotate(Vector3.Y, 270);
 
-		// inizializzazione e settaggio della lingua italiana (funziona anche in
-		// inglese)
-		speechRecognition = new SpeechRecognition();
-		duplex.setLanguage("it");
+		
 	}
 
 	@Override
@@ -458,131 +441,7 @@ public class GameScreen implements Screen {
 		song1 = Gdx.audio.newMusic(Gdx.files.internal("song1.mp3"));
 
 		Gdx.input.setCursorCatched(true);
-		Gdx.input.setInputProcessor(new InputProcessor() {
-			private int dragX, dragY;
-			float rotateSpeed = 0.05f;
-
-			@Override
-			public boolean mouseMoved(int screenX, int screenY) {
-				Vector3 direction = camera.direction.cpy();
-
-				// rotating on the y axis
-				float x = dragX - screenX;
-
-				camera.rotate(Vector3.Y, x * rotateSpeed);
-
-				// rotating on the x and z axis is different
-				float y = (float) Math.sin((double) (dragY - screenY) / 180f);
-				if (Math.abs(camera.direction.y + y * (rotateSpeed * 5.0f)) < 0.9) {
-					camera.direction.y += y * (rotateSpeed * 5.0f);
-				}
-
-				camera.update();
-				dragX = screenX;
-				dragY = screenY;
-
-				return true;
-			}
-
-			@Override
-			public boolean keyDown(int keycode) {
-				if (keycode == Input.Keys.W) {
-					forward = true;
-				}
-				if (keycode == Input.Keys.A) {
-					left = true;
-				}
-				if (keycode == Input.Keys.S) {
-					back = true;
-				}
-				if (keycode == Input.Keys.D) {
-					right = true;
-				}
-				if (keycode == Input.Keys.T) {
-					isTvOn = !isTvOn;
-				}
-				if (keycode == Input.Keys.L) {
-					isLightOn = !isLightOn;
-				}
-				if (keycode == Input.Keys.R) {
-					messagesTable.clear();
-					isSpeaking = true;
-
-					speechRecognition.startingSpeechRecognition(duplex, mic);
-					speechRecognition.getResponse(duplex);
-
-				}
-				if (keycode == Input.Keys.B) {
-					activateSpeaker = !activateSpeaker;
-				}
-				if (keycode == Input.Keys.V) {
-					activateFan = !activateFan;
-				}
-				if (keycode == Input.Keys.M) {
-					doCommand = true;
-				}
-				if (keycode == Input.Keys.N) {
-					nAccessButton = true;
-				}
-				return false;
-			}
-
-			@Override
-			public boolean keyUp(int keycode) {
-				if (keycode == Input.Keys.W) {
-					forward = false;
-				}
-				if (keycode == Input.Keys.A) {
-					left = false;
-				}
-				if (keycode == Input.Keys.S) {
-					back = false;
-				}
-				if (keycode == Input.Keys.D) {
-					right = false;
-				}
-				if (keycode == Input.Keys.M) {
-					doCommand = false;
-				}
-				if (keycode == Input.Keys.R) {
-					isSpeaking = false;
-					speechRecognition.stopSpeechRecognition(duplex, mic);
-
-				}
-				return false;
-			}
-
-			@Override
-			public boolean keyTyped(char character) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public boolean touchDragged(int screenX, int screenY, int pointer) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public boolean scrolled(int amount) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-		});
+		Gdx.input.setInputProcessor(inputManager);
 	}
 
 	public String readFromFile() {
@@ -634,7 +493,7 @@ public class GameScreen implements Screen {
 	}
 
 	public void activateFan() {
-		if (activateFan) {
+		if (inputManager.activateFan) {
 			fanAnimationController.setAnimation("Armature|ArmatureAction", 1, new AnimationListener() {
 				@Override
 				public void onEnd(AnimationController.AnimationDesc animation) {
@@ -644,7 +503,7 @@ public class GameScreen implements Screen {
 				public void onLoop(AnimationController.AnimationDesc animation) {
 				}
 			});
-			activateFan = false;
+			inputManager.activateFan = false;
 		}
 	}
 
@@ -661,23 +520,23 @@ public class GameScreen implements Screen {
 			vocalMessageTable.row();
 		}
 
-		if (doCommand)
+		if (inputManager.doCommand)
 			showCommandOnScreen();
 
 		if (checkRoom().equals("bathroom")) {
 			messagesTable.add(bathRoomMessage);
 			messagesTable.row();
 		}
-		if (isTvOn) {
+		if (inputManager.isTvOn) {
 			messagesTable.add(tvMessage);
 			messagesTable.row();
 		}
-		if (isLightOn) {
+		if (inputManager.isLightOn) {
 			messagesTable.add(lightMessage);
 			messagesTable.row();
 		}
 
-		if (activateSpeaker) {
+		if (inputManager.activateSpeaker) {
 			messagesTable.add(speakerMessage);
 			messagesTable.row();
 		}
@@ -698,14 +557,14 @@ public class GameScreen implements Screen {
 	}
 
 	public void startTV() {
-		if (isTvOn) {
+		if (inputManager.isTvOn) {
 			decalBatch.add(tvScreen);
 			decalBatch.flush();
 		}
 	}
 
 	public void turnLights() {
-		if (isLightOn) {
+		if (inputManager.isLightOn) {
 			decalBatch.add(light);
 			light.lookAt(camera.position, camera.up);
 			decalBatch.flush();
@@ -713,7 +572,7 @@ public class GameScreen implements Screen {
 	}
 
 	public void startSpeakers() {
-		if (activateSpeaker) {
+		if (inputManager.activateSpeaker) {
 			song1.play();
 		} else {
 			song1.pause();
@@ -729,12 +588,12 @@ public class GameScreen implements Screen {
 	}
 
 	public void walk(float timeElapsed) {
-		float speed = movementSpeed;
-		if ((forward | back) & (right | left)) {
+		float speed = inputManager.movementSpeed;
+		if ((inputManager.forward | inputManager.back) & (inputManager.right | inputManager.left)) {
 			speed /= Math.sqrt(2);
 		}
 
-		if (forward) {
+		if (inputManager.forward) {
 			Vector3 v = camera.direction.cpy();
 			v.y = 0f;
 			v.x *= speed * timeElapsed;
@@ -743,7 +602,7 @@ public class GameScreen implements Screen {
 			camera.update();
 			player.updatePosition(camera.position.x, camera.position.z);
 		}
-		if (back) {
+		if (inputManager.back) {
 			Vector3 v = camera.direction.cpy();
 			v.y = 0f;
 			v.x = -v.x;
@@ -754,7 +613,7 @@ public class GameScreen implements Screen {
 			camera.update();
 			player.updatePosition(camera.position.x, camera.position.z);
 		}
-		if (left) {
+		if (inputManager.left) {
 			Vector3 v = camera.direction.cpy();
 			v.y = 0f;
 			v.rotate(Vector3.Y, 90);
@@ -764,7 +623,7 @@ public class GameScreen implements Screen {
 			camera.update();
 			player.updatePosition(camera.position.x, camera.position.z);
 		}
-		if (right) {
+		if (inputManager.right) {
 			Vector3 v = camera.direction.cpy();
 			v.y = 0f;
 			v.rotate(Vector3.Y, -90);
@@ -841,7 +700,7 @@ public class GameScreen implements Screen {
 
 			modelBatch.end();
 
-			if (isSpeaking)
+			if (inputManager.isSpeaking)
 				drawMic();
 
 			startTV();
@@ -851,8 +710,8 @@ public class GameScreen implements Screen {
 
 			showMessages();
 
-			if (this.nAccessButton) {
-				this.nAccessButton = false;
+			if (inputManager.nAccessButton) {
+				inputManager.nAccessButton = false;
 				PostgreDAOFactory postgreDAOFactory = new PostgreDAOFactory();
 				UserDAO utenteDAO = postgreDAOFactory.getUtenteDAO();
 
