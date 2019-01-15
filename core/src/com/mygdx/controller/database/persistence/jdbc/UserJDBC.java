@@ -284,12 +284,10 @@ public class UserJDBC implements UserDAO {
 			resultSet = statement.executeQuery();
 
 			if (resultSet.next()) {
-				if (resultSet.getString("email").equals("")) {
-					return true;
-				}
+					return false;
 			}
 
-			return false;
+			return true;
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw e;

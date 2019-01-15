@@ -144,7 +144,7 @@ public class LoginScreen extends AbstractScreen {
 					if( !Utils.isFirstAccess )
 						ScreenManager.getInstance().showScreen(ScreenEnum.ADMINISTRATION_SCREEN);
 					else{
-						ScreenManager.getInstance().showScreen(ScreenEnum.REGISTRATION_CREDENTIALS_SCREEN);
+						ScreenManager.getInstance().showScreen(ScreenEnum.FACE_DETECTION_SCREEN);
 					}
 				}
 				else {

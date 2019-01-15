@@ -717,6 +717,7 @@ public class GameScreen implements Screen {
 
 				if (utenteDAO.isFirstRegistrationForThisForniture(Utils.ID_SUPPLY, Utils.ID_USER)) {
 					Utils.isFirstAccess = true;
+					System.out.println("MMM");
 					ScreenManager.getInstance().showScreen(ScreenEnum.LOGIN_SCREEN);
 				} else {
 					ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);

@@ -53,7 +53,7 @@ public interface Configuration {
 	public String checkIfTelephoneNumberExist = "select u.id_user from ingswschema.users u where u.telephone_number=?;";
 	public String checkIfNickNameExist = "select u.id_user from ingswschema.users u where u.nick_name=?;";
 
-	public String isFirstRegistrationForThisForniture = " select u.email, u.nick_name, u.telephone_number from ingswschema.users u where u.id_supply=? or u.id_user=?;";
+	public String isFirstRegistrationForThisForniture = "select u.email from ingswschema.users u where u.path_image!='' and (u.id_supply=? or u.id_user=?);";
 
 	public String deleteUserById = "delete from ingswschema.users where id_user=?;";
 }

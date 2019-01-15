@@ -77,7 +77,6 @@ public class FaceDetectionScreen extends AbstractScreen {
 		this.imageTable.center();
 
 		this.faceController = new FaceDetectionController();
-		faceController.init();
 		Gdx.input.setInputProcessor(this.imgStage);
 
 		String text = "RegistrationOrAccess";
@@ -145,8 +144,8 @@ public class FaceDetectionScreen extends AbstractScreen {
 			}
 		});
 
-//		FaceDetectionController faceController = new FaceDetectionController();
-//		faceController.init();
+		FaceDetectionController faceController = new FaceDetectionController();
+		faceController.init();
 
 		this.mainTable.add(this.registrationOrAccessButton);
 		this.mainTable.row();
