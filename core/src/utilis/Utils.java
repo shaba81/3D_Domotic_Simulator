@@ -1,9 +1,13 @@
 package utilis;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Random;
+
+import org.opencv.core.Mat;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Gdx;
@@ -65,6 +69,33 @@ public class Utils {
 	public static final String LOGIN_SCREEN_NO_ID_INSERT_POPUP = "The ID's field is empty. Please enter your ID for log in.";
 	public static final String LOGIN_SCREEN_NO_PASSWORD_INSERT_POPUP = "The Password's field is empty. Please enter your Password for log in.";
 
+	/**
+	 * 
+	 * @param original
+	 * @return
+	 */
+	public static BufferedImage matToBufferedImage(Mat original)
+	{
+		// init
+		BufferedImage image = null;
+		int width = original.width(), height = original.height(), channels = original.channels();
+		byte[] sourcePixels = new byte[width * height * channels];
+		original.get(0, 0, sourcePixels);
+
+		if (original.channels() > 1)
+		{
+			image = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+		}
+		else
+		{
+			image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+		}
+		final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+		System.arraycopy(sourcePixels, 0, targetPixels, 0, sourcePixels.length);
+
+		return image;
+	}
+	
 	/**
 	 * Metodo che prende come parametri Il Tipo di classe che ha all'interno i dati
 	 * che saranno nel file .json {@link Configuration}, e il path dove si trova il

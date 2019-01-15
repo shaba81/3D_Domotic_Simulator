@@ -36,6 +36,10 @@ public interface Configuration {
 	/*
 	 * DB query
 	 */
+	public String selectFunction = "select * from ingswschema.expire_table_delete_old_rows();";
+	public String validateUserOneTimePAss = "select ingswschema.users.id_user, (one_time_pass= crypt(?, one_time_pass)) AS pswmatch from ingswschema.users where email=?;";
+	public String deleteOneTimaPAss = "UPDATE ingswschema.users SET timestamp_one_time_pass=NULL, one_time_pass='' WHERE email=?;";
+
 	public String nextId =  "select nextval('ingswschema.sequence_id') AS id;";
 	public String insertSupply = "insert into ingswschema.supply values(nextval('ingswschema.sequence_id'));";
 	public String updateUserAdminPass =  "update ingswschema.users set password_registration=crypt(?, gen_salt('bf')) where id_user=? and id_supply=?;";

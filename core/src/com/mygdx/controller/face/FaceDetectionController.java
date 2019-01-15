@@ -22,6 +22,8 @@ import org.opencv.videoio.VideoCapture;
 
 import com.mygdx.controller.face.compare.ImageComparison;
 
+import utilis.Utils;
+
 public class FaceDetectionController {
 	private boolean captured = false;
 	private boolean green = false;
