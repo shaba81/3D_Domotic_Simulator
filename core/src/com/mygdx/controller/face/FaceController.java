@@ -36,7 +36,8 @@ public class FaceController {
 
 		Mat image_roi = new Mat(image, rect_Crop);
 		Imgcodecs.imwrite(cropImagePath, image_roi);
-
+		System.out.println("cropImage: "+cropImagePath);
+		
 	}
 
 	public void compare(Image imgA, Image imgB) {

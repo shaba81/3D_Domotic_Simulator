@@ -4,12 +4,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Timer;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
@@ -763,7 +761,7 @@ public class GameScreen implements Screen {
 				PostgreDAOFactory postgreDAOFactory = new PostgreDAOFactory();
 				UserDAO utenteDAO = postgreDAOFactory.getUtenteDAO();
 
-				if (utenteDAO.isFirstRegistrationForThisForniture(Utils.ID_SUPPLY, Utils.ID_USER)) {
+				if (utenteDAO.isFirstRegistrationForThisForniture(Utils.ID_SUPPLY, Utils.ID_ADMIN_USER)) {
 					Utils.isFirstAccess = true;
 					System.out.println("MMM");
 					ScreenManager.getInstance().showScreen(ScreenEnum.LOGIN_SCREEN);

@@ -38,14 +38,16 @@ public class UserJDBC implements UserDAO {
 			if (Utils.isFirstAccess)
 				query = Configuration.updateUserAdmin;
 
+			System.out.println(query);
 			statement = conn.prepareStatement(query);
 
-			if (Utils.isFirstAccess) {
-				statement.setString(1, user.getEmail());
-				statement.setString(2, user.getNickName());
-				statement.setString(3, user.getTelefonNumber());
-				statement.setString(4, user.getPathImage());
-				statement.setBoolean(5, user.isAdministrator());
+			if (!Utils.isFirstAccess) {
+				statement.setString(1, user.getIdUser());
+				statement.setString(2, user.getEmail());
+				statement.setString(3, user.getNickName());
+				statement.setString(4, user.getTelefonNumber());
+				statement.setString(5, user.getPathImage());
+				statement.setBoolean(6, user.isAdministrator());
 			} else {
 				statement.setString(1, user.getPathImage());
 				statement.setString(2, user.getIdUser());

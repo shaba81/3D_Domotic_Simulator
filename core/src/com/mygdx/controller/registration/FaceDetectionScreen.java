@@ -12,10 +12,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.controller.database.model.User;
+import com.mygdx.controller.database.persistence.PostgreDAOFactory;
+import com.mygdx.controller.database.persistence.dao.UserDAO;
 import com.mygdx.controller.face.FaceDetectionController;
 import com.mygdx.game.ScreenEnum;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.interfaces.AbstractScreen;
+import com.mygdx.simulator.email.EmailSender;
+
+import utilis.Utils;
 
 public class FaceDetectionScreen extends AbstractScreen {
 
@@ -34,14 +40,10 @@ public class FaceDetectionScreen extends AbstractScreen {
 	private TextButton redoButton;
 	private boolean redo;
 
-	private boolean click;
-
 	private String user_telphone;
-
+	
 	// se l'utente vorrà accedere, sarà true; se l'amministratore dovrà registrarlo,
 	// sarà false
-	private boolean accesso;
-
 	private FaceDetectionController faceController;
 
 	public FaceDetectionScreen() {
@@ -51,7 +53,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 		imageTable = new Table();
 		imageTable.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		imageTable.center();
-//		imgStage.addActor(imageTable);
+		// imgStage.addActor(imageTable);
 		imageTable.debug();
 
 		frameTexture = new Texture(Gdx.files.internal("resources/frame1.jpg"));
@@ -61,13 +63,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 
 		this.back = false;
 		this.registrationOrAccess = false;
-		this.click = false;
 		this.redo = false;
-
-		// di default sarà un utente che vorrà accedere
-		this.accesso = false;
-//		this.user_telphone = "befana";
-
 	}
 
 	@Override
@@ -79,48 +75,27 @@ public class FaceDetectionScreen extends AbstractScreen {
 		this.faceController = new FaceDetectionController();
 		Gdx.input.setInputProcessor(this.imgStage);
 
-		String text = "RegistrationOrAccess";
+		String text = "FaceRegistration";
+
+		if (!Utils.isFirstAccess) {
+			
+            text = "RegistrationAndAccess";
+			if (Utils.isAccess)
+				text = "Access";
+		}
+
+		if(!Utils.isAccess)
+		{
 		this.registrationOrAccessButton = new TextButton(text, this.skin);
 
 		this.registrationOrAccessButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				registrationOrAccess = true;
-//				if(((FaceDetectionController)faceController).isCaptured())
-//				{
-//					//se l'utente deve accedere
-//					if(accesso)
-//					{
-//						if(((FaceDetectionController)faceController).compare())
-//						{
-//							//viene richiamato il 'gameScreen'
-//							System.out.println("puoi accedere");
-//							ScreenManager.getInstance().showScreen(ScreenEnum.GAME_SCREEN);
-//						}
-//						else
-//						{
-//							System.out.println("non puoi accedere. Riprova");
-//							//uscirà un popup e poi verrà richiamata la 'init' di faceDetection MASSIMO ALTRE 2 VOLTE(mi pare)
-//						}
-//					}
-//					//se l'utente deve registrarsi
-//					else if(!accesso){
-//						if(((FaceDetectionController)faceController).registerUser(user_telphone))
-//						{
-//							//viene richiamato il 'facecaptureScreen' per far registrare l'utente 
-//							System.out.println("puoi registrarti");
-//							ScreenManager.getInstance().showScreen(ScreenEnum.FACE_CAPTURE_SCREEN);
-//						}
-//						else
-//						{
-//							System.out.println("non puoi registrarti");
-//							//uscirà un popup e poi verrà richiamata la 'init' di faceDetection MASSIMO ALTRE 2 VOLTE(mi pare)
-//						}
-//					}
-//				}
 				System.out.println("OK");
 			}
 		});
+		
 
 		text = "Back to registrationScreen";
 		this.backButton = new TextButton(text, this.skin);
@@ -132,6 +107,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 				System.out.println("back");
 			}
 		});
+		}
 
 		text = "Redo photo";
 		this.redoButton = new TextButton(text, this.skin);
@@ -155,7 +131,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 		this.mainTable.row();
 
 		imgStage.addActor(imageTable);
-		//imageTable.addActor(this.mainTable);
+		// imageTable.addActor(this.mainTable);
 		imgStage.addActor(mainTable);
 
 	}
@@ -171,100 +147,158 @@ public class FaceDetectionScreen extends AbstractScreen {
 			this.updateFrame();
 			utilis.Utils.capturing = false;
 		}
-
-		if (this.registrationOrAccess) {
-			if (((FaceDetectionController) faceController).isCaptured()) {
-				// se l'utente deve accedere
-				if (this.accesso) {
-					if (((FaceDetectionController) faceController).compare()) {
-						// viene richiamato il 'gameScreen'
-						System.out.println("puoi accedere");
-						ScreenManager.getInstance().showScreen(ScreenEnum.GAME_SCREEN);
-					} else {
-						System.out.println("non puoi accedere. Riprova");
-						// uscirà un popup e poi verrà richiamata la 'init' di faceDetection MASSIMO
-						// ALTRE 2 VOLTE(mi pare)
-					}
+		
+		if(Utils.isAccess && !Utils.isFirstAccess && Utils.captured && !Utils.backToRegistrationScreen && !Utils.treeTimesAccessError)
+		{
+			
+			if (faceController.compare()) {
+				// viene richiamato il 'gameScreen'
+				System.out.println("puoi accedere");
+				Utils.captured = false;
+				ScreenManager.getInstance().showScreen(ScreenEnum.GAME_SCREEN);
+			} else {
+				System.out.println("non puoi accedere. Riprova");
+				
+				//se l'utente non è stato identificato per 3 volte, gli viene mandata un'email per permettergli di poter recuperare l'accesso
+				if(Utils.treeTimesAccessError)
+				{
+					System.out.println("tree volte non ti ha riconosciuuutoo. ");
+					//mandiamo l'email all'utente per fargli recuperare l'accesso alla casa
+					Utils.treeTimesAccessError = false;
 				}
+				Utils.captured = false;
+				Utils.showMessageDialog(Utils.ACCESS_FAILED_POPUP, skin, stage);
+				// uscirà un popup e poi verrà richiamata la 'init' di faceDetection MASSIMO
+				// ALTRE 2 VOLTE(mi pare)
+			}
+		}
+		//si vedrà solo quando gli screen saranno singleton
+		else if(Utils.captured && !Utils.backToRegistrationScreen && !Utils.treeTimesAccessError)
+			Utils.showMessageDialog(Utils.ALREADY_CAPTURE_FACE_POPUP, skin, stage);
+		
+		
+		if (this.registrationOrAccess) {
+			System.out.println("captured: " + Utils.captured);
+			if (Utils.captured) {
 				// se l'utente deve registrarsi
-				else if (!this.accesso) {
-					if (((FaceDetectionController) faceController).registerUser()) {
+				if (!Utils.isAccess) 
+				{
+					if (faceController.registerUser()) {
 						// viene richiamato il 'facecaptureScreen' per far registrare l'utente
 						System.out.println("puoi registrarti");
+						Utils.backToRegistrationScreen = false;
+						this.register();
 						ScreenManager.getInstance().showScreen(ScreenEnum.GAME_SCREEN);
 					} else {
 						System.out.println("non puoi registrarti");
+						Utils.showMessageDialog(Utils.REGISTRATION_FAILED_POPUP, skin, stage);
 						// uscirà un popup e poi verrà richiamata la 'init' di faceDetection MASSIMO
 						// ALTRE 2 VOLTE(mi pare)
 					}
 				}
-			}
+			} else
+				System.out.println("miao");
 
 			this.registrationOrAccess = false;
 		}
 
 		if (this.redo) {
-			this.faceController.setCaptured(false);
+			Utils.captured = false;
 			this.faceController.init();
 			this.redo = false;
+			Utils.backToRegistrationScreen = false;
 		}
 
 		if (this.back) {
 			this.back = false;
+			if(Utils.captured)
+				Utils.backToRegistrationScreen = true;
 			ScreenManager.getInstance().showScreen(ScreenEnum.REGISTRATION_CREDENTIALS_SCREEN);
 		}
 
-//		this.buttons();
+		// this.buttons();
+	}
+
+	private void register() {
+		PostgreDAOFactory postgreDAOFactory = new PostgreDAOFactory();
+		UserDAO userDAO = postgreDAOFactory.getUtenteDAO();
+
+		/*
+		 * Decommentare le funzioni per il salvataggio. Ora se si preme il bottone +
+		 * come se simulasse la registrazione. quindi la booleana la mette a false. Ma
+		 * successivamente sarà messa all'interno del metodo così da settarla solo
+		 * quando effettivamente il salvataggio è avvenuto con successo e questo
+		 * controllo lo facciamo dentro la funzione.
+		 */
+		if (Utils.isFirstAccess) {
+			System.out.println("FIRST ACCESS");
+			this.registrationUser(userDAO);
+		} else {
+			System.out.println("NORMAL USER REGISTRATION");
+			this.registrationUser(userDAO);
+		}
+	}
+
+	/**
+	 * Save User into DB.
+	 * 
+	 * @param userDAO
+	 * @param isAdministrator
+	 */
+	private void registrationUser(UserDAO userDAO) {
+		try {
+			/*
+			 * TODO: fare distinzione di popup, quando fallisce va benisismo. Quando ha
+			 * successo farlo accedere
+			 */
+			User user = new User();
+			System.out.println("1");
+			if (!Utils.isFirstAccess) {
+				System.out.println("2");
+				user.setEmail(Utils.credentials.get(0));
+				user.setAdministrator(false);
+				user.setNickName(Utils.credentials.get(2));
+				user.setTelefonNumber(Utils.credentials.get(1));
+				user.setIdUser(userDAO.getIdUser());
+
+			} else
+			{
+				System.out.println("3");
+				user.setIdUser(Utils.ID_ADMIN_USER);
+			}
+          
+			System.out.println("4");
+			user.setPathImage("resources/images/" + user.getIdUser() + ".jpg");
+			this.faceController.moveImages(user.getPathImage());
+
+			if (userDAO.registration(user)) {
+				System.out.println("5");
+				Utils.isAccess = true;
+			} 
+			System.out.println("7");
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
 	public void updateFrame() {
 		imageTable.clear();
-		this.frameTexture = new Texture(Gdx.files.internal("resources/temp_image/temp.jpg"));
+		this.frameTexture = new Texture(Gdx.files.internal("resources/frame.jpg"));
 		imgRegion.setRegion(frameTexture);
 		img = new Image(imgRegion);
 		imageTable.add(img).center();
 	}
 
-	public void buttons() {
-
-		this.registrationOrAccessButton.setVisible(true);
-
-//		this.okButton.addListener(new ClickListener() {
-//			@Override
-//			public void clicked(InputEvent event, float x, float y) {
-//				ok = true;
-//				System.out.println("OK");
-//			}
-//		});
-//		this.backButton.addListener(new ClickListener() {
-//			@Override
-//			public void clicked(InputEvent event, float x, float y) {
-//				back = true;
-//				System.out.println("back");
-//			}
-//		});
-//		
-//		this.registerButton.addListener(new ClickListener() {
-//			@Override
-//			public void clicked(InputEvent event, float x, float y) {
-//				register = true;
-//				System.out.println("registration");
-//			}
-//		});
-//		
-		this.imageTable.add(this.registrationOrAccessButton);
-//		this.imageTable.row();
-		this.imageTable.add(this.backButton);
-//		this.imageTable.row();
-//		
-		imgStage.addActor(imageTable);
-		imageTable.addActor(this.mainTable);
-	}
 
 	public void dispose() {
 		super.dispose();
 		imgRegion.getTexture().dispose();
 
+	}
+	
+	private void sendEmailToUser()
+	{
+//		EmailSender.sendMessage(emailTelephoneNumeberAdmin[0], Utils.OBJ_EMAIL_RECOVERY_PASS_ADMIN, bodyMessage);
 	}
 
 	@Override
@@ -298,5 +332,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 	public void setUser_telphone(String user_telphone) {
 		this.user_telphone = user_telphone;
 	}
+
+	
 
 }

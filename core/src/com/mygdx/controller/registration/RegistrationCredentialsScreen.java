@@ -1,8 +1,5 @@
 package com.mygdx.controller.registration;
 
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -38,7 +35,6 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 
 		this.faceCapture = false;
 		this.backToAdministration = false;
-		this.credentials = new ArrayList<String>();
 	}
 
 	@Override
@@ -111,16 +107,16 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 				PostgreDAOFactory postgreDAOFactory = new PostgreDAOFactory();
 				UserDAO utenteDAO = postgreDAOFactory.getUtenteDAO();
 				faceCapture = false;
-				this.credentials.add(0, this.txtEmail.getText());
-				this.credentials.add(1, this.txtTelephoneNumber.getText());
-				this.credentials.add(2, this.txtNickName.getText());
+				Utils.credentials.add(0, this.txtEmail.getText());
+				Utils.credentials.add(1, this.txtTelephoneNumber.getText());
+				Utils.credentials.add(2, this.txtNickName.getText());
 
 				/*
 				 * This function return: 1: if email already exist. 2: if telephone number
 				 * already exist. 3: if nickname already exist.
 				 */
-				int result = utenteDAO.userExist(this.credentials.get(0), this.credentials.get(1),
-						this.credentials.get(2));
+				int result = utenteDAO.userExist(Utils.credentials.get(0), Utils.credentials.get(1),
+						Utils.credentials.get(2));
 
 				String dialogText = this.errorOccurr(result);
 
@@ -153,20 +149,20 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_EMAIL_EXIST_POPUP;
 		else if (result == 2)
 			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_TELEPHONE_EXIST_POPUP;
-		else if (  !this.credentials.get(2).equals("")  && result == 3)
+		else if (  !Utils.credentials.get(2).equals("")  && result == 3)
 			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_NICKNAME_EXIST_POPUP;
-		else if (this.credentials.get(0).equals("") || this.credentials.get(1).equals("")
-				|| this.credentials.get(2).equals(""))
+		else if (Utils.credentials.get(0).equals("") || Utils.credentials.get(1).equals("")
+				|| Utils.credentials.get(2).equals(""))
 			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSING_CRED_POPUP;
-		else if (!this.credentials.get(0).contains("@"))
+		else if (!Utils.credentials.get(0).contains("@"))
 			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSING_AT_EMAIL_POPUP;
-		else if (!this.credentials.get(0).contains("."))
+		else if (!Utils.credentials.get(0).contains("."))
 			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSING_POINT_EMAIL_POPUP;
-		else if (!this.credentials.get(1).matches("[0-9+]+"))
+		else if (!Utils.credentials.get(1).matches("[0-9+]+"))
 			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_NUMBER_CONTAINS_LETTER_POPUP;
-		else if (this.credentials.get(1).length() != 13)
+		else if (Utils.credentials.get(1).length() != 13)
 			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_NUMBER_TOO_SHORT_POPUP;
-		else if (this.credentials.get(1).charAt(0) != '+')
+		else if (Utils.credentials.get(1).charAt(0) != '+')
 			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSIN_PLUS_NUMBER_POPUP;
 
 		return resultText;

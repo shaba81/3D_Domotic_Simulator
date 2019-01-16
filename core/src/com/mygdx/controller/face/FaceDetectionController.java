@@ -21,11 +21,14 @@ import org.opencv.objdetect.Objdetect;
 import org.opencv.videoio.VideoCapture;
 
 import com.mygdx.controller.face.compare.ImageComparison;
+import com.mygdx.controller.registration.FaceDetectionScreen;
+import com.mygdx.game.ScreenEnum;
+import com.mygdx.game.ScreenManager;
 
 import utilis.Utils;
 
 public class FaceDetectionController {
-	private boolean captured = false;
+//	private boolean captured = false;
 	private boolean green = false;
 
 	// a timer for acquiring the video stream
@@ -38,7 +41,7 @@ public class FaceDetectionController {
 	// face cascade classifier
 	private CascadeClassifier faceCascade;
 	private int absoluteFaceSize;
-
+	
 	private ImageComparison image_comparison;
 
 	public FaceDetectionController() {
@@ -71,7 +74,7 @@ public class FaceDetectionController {
 
 				@Override
 				public void run() {
-					while (!captured) {
+					while (!Utils.captured) {
 						try {
 							// effectively grab and process a single frame
 							Mat frame = grabFrame();
@@ -80,7 +83,7 @@ public class FaceDetectionController {
 							// VIDEO
 							if (!utilis.Utils.capturing) {
 								BufferedImage buffImg = Utils.matToBufferedImage(frame);
-								File outputfile = new File("resources/temp_image/temp.jpg");
+								File outputfile = new File("resources/frame.jpg");
 
 								ImageIO.write(buffImg, "jpg", outputfile);
 								utilis.Utils.capturing = true;
@@ -182,7 +185,24 @@ public class FaceDetectionController {
 		
 		if(this.image_comparison.compare())
 			return true;
+		
+		Utils.countErrorTimes++;
+		
+		if(Utils.countErrorTimes == 3)
+		{
+			this.direAlSimulatoreDiMandareAllUtenteLemail();
+			Utils.countErrorTimes = 0;
+		}
 		return false;
+	}
+	
+	/**
+	 * Sets true the 'TreeTimesAccessError' boolean to notify the Simulator to send to user an email to recover his housim access.
+	 */
+	private void direAlSimulatoreDiMandareAllUtenteLemail()
+	{
+		System.err.println("SO QUA PORCA TROIA");
+		Utils.treeTimesAccessError = true;
 	}
 
 	public boolean registerUser() {
@@ -191,11 +211,16 @@ public class FaceDetectionController {
 			return true;
 		return false;
 	}
+	
+	public void moveImages(String toimage_path)
+	{
+		this.image_comparison.moveNewUserToImageFolder(toimage_path);
+	}
 
 	private void captureAndCrop(MatOfRect faces, Mat frame, String path) {
 		System.out.println("cia");
 		this.green = true;
-		this.captured = true;
+		Utils.captured = true;
 		FaceController faceController = new FaceController();
 		faceController.crop(faces, frame, path);
 	}
@@ -228,13 +253,13 @@ public class FaceDetectionController {
 		this.stopAcquisition();
 	}
 
-	public boolean isCaptured() {
-		return captured;
-	}
-
-	public void setCaptured(boolean captured) {
-		this.captured = captured;
-	}
+//	public boolean isCaptured() {
+//		return captured;
+//	}
+//
+//	public void setCaptured(boolean captured) {
+//		this.captured = captured;
+//	}
 	
 	
 

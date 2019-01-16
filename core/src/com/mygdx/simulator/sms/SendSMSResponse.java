@@ -1,4 +1,4 @@
-package com.mygdx.controller.sms;
+package com.mygdx.simulator.sms;
 
 /**
  * This class represents the API Response. It is automatically created starting

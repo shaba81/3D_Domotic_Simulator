@@ -20,12 +20,12 @@ public class MainMenuScreen extends AbstractScreen {
 	private TextButton administrationButton;
 	private TextButton exitButton;
 
-	private boolean play;
+	private boolean access;
 	private boolean administration;
 	private boolean back;
 
 	public MainMenuScreen() {
-		this.play = false;
+		this.access = false;
 		this.administration = false;
 		this.back = false;
 //		System.out.println("hola: "+Gdx.files.getLocalStoragePath());
@@ -39,7 +39,7 @@ public class MainMenuScreen extends AbstractScreen {
         
 		title = new Texture(Gdx.files.internal("title.png"));
 		// Creo bottoni
-		playButton = new TextButton("Play", skin);
+		playButton = new TextButton("Access", skin);
 		administrationButton = new TextButton("Administration", skin);
 		exitButton = new TextButton("Exit", skin);
 
@@ -47,7 +47,7 @@ public class MainMenuScreen extends AbstractScreen {
 		playButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				play = true;
+				access = true;
 			}
 		});
 		administrationButton.addListener(new ClickListener() {
@@ -85,17 +85,21 @@ public class MainMenuScreen extends AbstractScreen {
 		stage.act();
 		stage.draw();
 
-		if (play) {
-			play = false;
-			ScreenManager.getInstance().showScreen(ScreenEnum.GAME_SCREEN);
+		if (access) {
+			access = false;
+			Utils.isAccess = true;
+			ScreenManager.getInstance().showScreen(ScreenEnum.FACE_DETECTION_SCREEN);
+//			ScreenManager.getInstance().showScreen(ScreenEnum.GAME_SCREEN);
 		}
 
 		if (administration) {
+			Utils.isAccess = false;
 			administration = false;
 			ScreenManager.getInstance().showScreen(ScreenEnum.LOGIN_SCREEN);
 		}
 
 		if( back ) {
+			Utils.isAccess = false;
 			back = false;
 			Utils.showPopUp(Utils.MAIN_MENU_BACK_POPUP, skin, stage, "main_menu_screen");
 		}

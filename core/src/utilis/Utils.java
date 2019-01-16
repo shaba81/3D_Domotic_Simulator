@@ -5,6 +5,7 @@ import java.awt.image.DataBufferByte;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.opencv.core.Mat;
@@ -28,9 +29,17 @@ public class Utils {
 
 	public static boolean isFirstAccess = false;
 	public static boolean capturing = false;
+	public static boolean isAccess = true;
+	public static boolean captured = false;
+	public static boolean backToRegistrationScreen = false;
+	public static boolean treeTimesAccessError = false;
+	
+	public static int countErrorTimes = 0;
+	
+	public static ArrayList<String> credentials = new ArrayList<String>();
 
 	public static final Long ID_SUPPLY = (long) 1;
-	public static final String ID_USER = "5";
+	public static final String ID_ADMIN_USER = "5";
 
 	public static final String OBJ_EMAIL_RECOVERY_PASS_ADMIN = "Recovery administrator credentials.";
 	public static final String MESSAGE_RECOVERY_PASS_ADMIN_EMAIL = "Dear customer, \nhere are the new login credentials. The mode is always the same as the ID can enter the same assigned to it during purchase and as a password the new password mentioned at the bottom of the message.";
@@ -68,6 +77,8 @@ public class Utils {
 	public static final String LOGIN_SCREEN_TOO_MANY_FAILED_ATTEMPTS_POPUP = "Sorry, you've reached the maximum attempt limit for entering your credentials. \nYou will receive an email and a text message with the new credentials to log in. The old ones will no longer be valid. \nPlease check your email and mobile phone in order to enter your new credentials.";
 	public static final String LOGIN_SCREEN_NO_ID_INSERT_POPUP = "The ID's field is empty. Please enter your ID for log in.";
 	public static final String LOGIN_SCREEN_NO_PASSWORD_INSERT_POPUP = "The Password's field is empty. Please enter your Password for log in.";
+	public static final String ALREADY_CAPTURE_FACE_POPUP = "Sorry, the face has already been captured.\n Press REDO to recapture the face or proceed with registration.";
+	public static final String ACCESS_FAILED_POPUP = "Access denied.\n Please, click OK or press ENTER to retry access.";
 	
 	/**
 	 * Vocal recognition variables

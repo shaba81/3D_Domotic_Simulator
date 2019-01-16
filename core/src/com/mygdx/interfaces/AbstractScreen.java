@@ -28,7 +28,6 @@ public abstract class AbstractScreen implements Screen{
 	protected TextureAtlas atlas;
 	protected Skin skin;
 	protected Table mainTable;
-	protected ArrayList<String> credentials;
 
 	public AbstractScreen() {
 		// TODO Auto-generated constructor stub

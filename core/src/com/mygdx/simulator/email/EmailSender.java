@@ -1,4 +1,4 @@
-package com.mygdx.controller.email;
+package com.mygdx.simulator.email;
 
 import java.io.FileNotFoundException;
 import java.util.Properties;

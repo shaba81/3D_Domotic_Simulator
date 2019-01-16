@@ -1,4 +1,4 @@
-package com.mygdx.controller.sms;
+package com.mygdx.simulator.sms;
 
 import java.io.BufferedReader;
 import java.io.IOException;

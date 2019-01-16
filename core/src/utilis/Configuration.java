@@ -44,7 +44,7 @@ public interface Configuration {
 	public String insertSupply = "insert into ingswschema.supply values(nextval('ingswschema.sequence_id'));";
 	public String updateUserAdminPass =  "update ingswschema.users set password_registration=crypt(?, gen_salt('bf')) where id_user=? and id_supply=?;";
 	public String validateUserAdminPass = "select ingswschema.users.id_user, (password_registration= crypt(?, password_registration)) AS pswmatch from ingswschema.users where id_user=?;";
-	public String insertUserNormal = "insert into ingswschema.users(id_user,email,nick_name,telephone_number,path_image,is_administrator,id_supply) values (nextval('ingswschema.sequence_id'),?,?,?,?,?,1);";
+	public String insertUserNormal = "insert into ingswschema.users(id_user,email,nick_name,telephone_number,path_image,is_administrator,id_supply) values (?,?,?,?,?,?,1);";
 	public String updateUserAdmin = "update ingswschema.users set path_image=? where id_user=?;";
 	public String findById = "select email, telephone_number from ingswschema.users where id_user=?;";
 
@@ -52,7 +52,7 @@ public interface Configuration {
 	public String checkIfTelephoneNumberExist = "select u.id_user from ingswschema.users u where u.telephone_number=?;";
 	public String checkIfNickNameExist = "select u.id_user from ingswschema.users u where u.nick_name=?;";
 
-	public String isFirstRegistrationForThisForniture = "select u.email from ingswschema.users u where u.path_image!='' and (u.id_supply=? or u.id_user=?);";
+	public String isFirstRegistrationForThisForniture = "select u.email from ingswschema.users u where u.path_image!='' and u.id_supply=? and u.id_user=?;";
 
 	public String deleteUserById = "delete from ingswschema.users where id_user=?;";
 }

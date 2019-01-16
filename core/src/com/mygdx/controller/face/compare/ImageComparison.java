@@ -34,7 +34,7 @@ public class ImageComparison {
 		// TODO Auto-generated constructor stub
 		this.users_faces_files = new HashMap<Long, File>();
 		this.users_faces_images = new HashMap<Long, Image>();
-		this.cont = 9;
+		this.cont = 10;
 		this.soloPERORA();
 	}
 
@@ -69,11 +69,11 @@ public class ImageComparison {
 	 * @param imageToCompare
 	 * @return
 	 */
-	private boolean isAnewUser(Image imageToCompare, String path) {
+	private boolean isAnewUser(Image imageToCompare, String imageFilePath) {
 		for (Long key : this.users_faces_images.keySet()) {
 			// se le due immagini sono le stesse, ritorno false, perché significa che non è
 			// un nuovo utente
-			if (this.compareTwoImages(this.users_faces_images.get(key), imageToCompare,key, path))
+			if (this.compareTwoImages(this.users_faces_images.get(key), imageToCompare,key, imageFilePath))
 				return false;
 		}
 		return true;
@@ -209,9 +209,8 @@ public class ImageComparison {
 			if (this.isAnewUser(im,fileA.getPath()))
 			{
 				System.out.println("REGISTRAZIONE AVVENUTA CON SUCCESSO!");
-				this.moveNewUserToImageFolder(base,base_image,"resources/images","a"+this.cont+".jpg");
+//				this.moveNewUserToImageFolder(base,base_image,"resources/images","a"+this.cont+".jpg");
 //				this.deleteAnElementInAfolder("resources/images", "a"+this.cont+".jpg");
-				this.cont++;
 				return true;
 			}
 			else
@@ -257,6 +256,17 @@ public class ImageComparison {
           System.out.println("fromfolder_path: "+fromfolder_path+" fromimage_path: "+fromimage_path+" tofolder_path: "+tofolder_path+" toimage_path: "+toimage_path);
 		try {
 			Files.move(Paths.get(fromfolder_path+"/"+fromimage_path), Paths.get(tofolder_path+"/"+toimage_path));
+			// this.cont++;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void moveNewUserToImageFolder(String toimage_path) {
+		// aggiungo il file nella cartella 'images'
+		try {
+			Files.move(Paths.get("resources/temp_image"+"/"+"temp.jpg"), Paths.get(toimage_path));
 			// this.cont++;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
