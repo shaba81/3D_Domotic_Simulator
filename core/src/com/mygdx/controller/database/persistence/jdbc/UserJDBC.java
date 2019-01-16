@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import com.mygdx.controller.database.model.User;
+import com.mygdx.controller.database.persistence.PostgreDAOFactory;
 import com.mygdx.controller.database.persistence.dao.UserDAO;
 import com.mygdx.controller.database.persistence.exception.PersistenceException;
 
@@ -35,14 +36,20 @@ public class UserJDBC implements UserDAO {
 			String query = Configuration.insertUserNormal;
 
 			if (Utils.isFirstAccess)
-				query = Configuration.insertUserAdmin;
+				query = Configuration.updateUserAdmin;
 
 			statement = conn.prepareStatement(query);
-			statement.setString(1, user.getEmail());
-			statement.setString(2, user.getNickName());
-			statement.setString(3, user.getTelefonNumber());
-			statement.setString(4, user.getPathImage());
-			statement.setBoolean(5, user.isAdministrator());
+
+			if (Utils.isFirstAccess) {
+				statement.setString(1, user.getEmail());
+				statement.setString(2, user.getNickName());
+				statement.setString(3, user.getTelefonNumber());
+				statement.setString(4, user.getPathImage());
+				statement.setBoolean(5, user.isAdministrator());
+			} else {
+				statement.setString(1, user.getPathImage());
+				statement.setString(2, user.getIdUser());
+			}
 
 			int result = statement.executeUpdate();
 
@@ -284,7 +291,7 @@ public class UserJDBC implements UserDAO {
 			resultSet = statement.executeQuery();
 
 			if (resultSet.next()) {
-					return false;
+				return false;
 			}
 
 			return true;
@@ -357,6 +364,34 @@ public class UserJDBC implements UserDAO {
 				System.out.println(e.getMessage());
 				throw e;
 			}
+		}
+	}
+
+	@Override
+	public String getIdUser() throws Exception {
+
+		Connection connection = null;
+		Long id = null;
+		PreparedStatement statement = null;
+		ResultSet result = null;
+
+		try {
+
+			connection = basicDataSource.getConnection();
+			statement = connection.prepareStatement(Configuration.nextId);
+
+			result = statement.executeQuery();
+			result.next();
+			id = result.getLong("id");
+
+			return id.toString();
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			if (statement != null)
+				statement.close();
+			if (result != null)
+				result.close();
 		}
 	}
 

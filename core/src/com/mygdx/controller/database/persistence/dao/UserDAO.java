@@ -4,6 +4,7 @@ import com.mygdx.controller.database.model.User;
 
 public interface UserDAO {
 
+	public String getIdUser()throws Exception;
 	public boolean registration(User user) throws Exception;
 	public void deleteUtente(String email) throws Exception;
 	public int userExist(String email, String telephoneNumber, String nickName ) throws Exception;
