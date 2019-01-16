@@ -65,24 +65,23 @@ public class SpeechRecognition implements GSpeechResponseListener {
 
 				// stampo in console quello che ha capito il riconoscitore
 				// System.out.println(output);
-				writeToFile(output);
 				Utils.resp = output;
 			}
 		});
 	}
 	
-	private void writeToFile(String text) {
-		try {
-            FileOutputStream outputStream = new FileOutputStream("resources/vocalCommand.txt");
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, "UTF-16");
-            BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
-            bufferedWriter.write(text);
-             
-            bufferedWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-	}
+//	private void writeToFile(String text) {
+//		try {
+//            FileOutputStream outputStream = new FileOutputStream("resources/vocalCommand.txt");
+//            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, "UTF-16");
+//            BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
+//            bufferedWriter.write(text);
+//             
+//            bufferedWriter.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//	}
 
 	// gia' implementata
 	@Override

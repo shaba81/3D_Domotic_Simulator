@@ -1,10 +1,10 @@
 package com.mygdx.controller.registration;
 
-import java.awt.event.MouseEvent;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.game.ScreenEnum;
@@ -14,6 +14,8 @@ import com.mygdx.interfaces.AbstractScreen;
 import utilis.Utils;
 
 public class AdministrationScreen extends AbstractScreen{
+
+	private Table rightTable;
 
 	private TextButton registrationButton;
 	private TextButton showHouseInteractionButton;
@@ -28,6 +30,11 @@ public class AdministrationScreen extends AbstractScreen{
 		this.registration = false;
 		this.showHouseInteraction = false;
 		this.back = false;
+
+		rightTable = new Table();
+		rightTable.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		rightTable.center();
+		rightTable.debug();
 	}
 
 	
@@ -37,6 +44,8 @@ public class AdministrationScreen extends AbstractScreen{
 
 		super.show();
 		this.mainTable.center();
+		this.rightTable.right();
+
 		this.registrationButton = new TextButton("Registration", skin);
 		this.showHouseInteractionButton = new TextButton("Show house interaction", skin);
 		this.backButton = new TextButton("Back to Menu", skin);
@@ -63,13 +72,17 @@ public class AdministrationScreen extends AbstractScreen{
 				}
 		});
 
-		this.add(this.registrationButton);
-		this.add(this.showHouseInteractionButton);
-		this.add(this.backButton);
+		this.rightTable.add(this.registrationButton);
+		this.rightTable.row();
+		this.rightTable.add(this.showHouseInteractionButton);
+		this.rightTable.row();
+		this.rightTable.add(this.backButton);
+		this.rightTable.row();
 
 		mainTable.setFillParent(true);
 		// Aggiungo table allo stage
 		stage.addActor(mainTable);
+		stage.addActor(this.rightTable);
 	}
 
 	@Override

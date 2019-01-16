@@ -79,7 +79,15 @@ public class Utils {
 	public static final String LOGIN_SCREEN_NO_PASSWORD_INSERT_POPUP = "The Password's field is empty. Please enter your Password for log in.";
 	public static final String ALREADY_CAPTURE_FACE_POPUP = "Sorry, the face has already been captured.\n Press REDO to recapture the face or proceed with registration.";
 	public static final String ACCESS_FAILED_POPUP = "Access denied.\n Please, click OK or press ENTER to retry access.";
-	
+
+	/*
+	 * command for log
+	 */
+	public static final String ACCESS_SUCCESS_LOG = "Access to the house successfully executed.";
+	public static final String ACCESS_FAILED_LOG = "Access to the house denied.";
+	public static final String LOGIN_ADMIN_SCREEN_SUCCESS_LOG = "Login to the administration screen successfully executed.";
+	public static final String LOGIN_ADMIN_SCREEN_FAILED_LOG = "Login to the administration screen denied.";
+
 	/**
 	 * Vocal recognition variables
 	 */

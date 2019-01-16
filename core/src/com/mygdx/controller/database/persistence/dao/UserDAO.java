@@ -1,6 +1,10 @@
 package com.mygdx.controller.database.persistence.dao;
 
+import java.util.ArrayList;
+
 import com.mygdx.controller.database.model.User;
+
+import utilis.Log;
 
 public interface UserDAO {
 
@@ -12,5 +16,7 @@ public interface UserDAO {
 	public boolean validateUserOneTimePAss(String password, String email) throws Exception;
 	public boolean isFirstRegistrationForThisForniture(Long idSupply, String idUser) throws Exception;
 	public String[] updateCredentilsAdministrator(String idUser, Long idSupply, String newPass) throws Exception;
+	public void insertCommand(String idUser, String command) throws Exception;
+	public ArrayList<Log> selectCommandLog() throws Exception;
 
 }

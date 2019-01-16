@@ -54,6 +54,10 @@ import utilis.Utils;
 
 public class GameScreen implements Screen {
 
+	private PostgreDAOFactory postgreDAOFactory;
+	private UserDAO utenteDAO;
+	private boolean logged;
+
 	// final Drop game;
 
 	private InputManager inputManager;
@@ -172,6 +176,11 @@ public class GameScreen implements Screen {
 	private float floorHeight = 120;
 
 	public GameScreen() {
+
+		postgreDAOFactory = new PostgreDAOFactory();
+		this.utenteDAO = postgreDAOFactory.getUtenteDAO();
+		logged = false;
+
 		// this.game = game;
 
 		// Create camera sized to screens width/height with Field of View of 75 degrees
@@ -556,7 +565,7 @@ public class GameScreen implements Screen {
 			}
 			System.out.println("Command not recognized. Retry");
 		}
-		
+
 		System.out.println("Command not recognized. Retry");
 	}
 
@@ -603,25 +612,52 @@ public class GameScreen implements Screen {
 	}
 
 	public void startTV() {
-		if (inputManager.isTvOn) {
-			decalBatch.add(tvScreen);
-			decalBatch.flush();
+		try {
+			if (inputManager.isTvOn) {
+				decalBatch.add(tvScreen);
+				decalBatch.flush();
+//				if (Utils.resp.contains("tv") || Utils.resp.contains("televisione")) {
+//					utenteDAO.insertCommand("5", Utils.resp);
+//					Utils.resp = "";
+//					System.out.println("LOG");
+//				}
+			}
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
 		}
 	}
 
 	public void turnLights() {
-		if (inputManager.isLightOn) {
-			decalBatch.add(light);
-			light.lookAt(camera.position, camera.up);
-			decalBatch.flush();
+		try {
+			if (inputManager.isLightOn) {
+				decalBatch.add(light);
+				light.lookAt(camera.position, camera.up);
+				decalBatch.flush();
+//				if (Utils.resp.contains("luce") || Utils.resp.contains("lampada")) {
+//					utenteDAO.insertCommand("5", Utils.resp);
+//					Utils.resp = "";
+//					System.out.println("LOG");
+//				}
+			}
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
 		}
 	}
 
 	public void startSpeakers() {
-		if (inputManager.activateSpeaker) {
-			song1.play();
-		} else {
-			song1.pause();
+		try {
+			if (inputManager.activateSpeaker) {
+				song1.play();
+//				if (Utils.resp.contains("stereo") || Utils.resp.contains("radio")) {
+//					utenteDAO.insertCommand("5", Utils.resp);
+//					Utils.resp = "";
+//					System.out.println("LOG");
+//				}
+			} else {
+				song1.pause();
+			}
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
 		}
 
 	}

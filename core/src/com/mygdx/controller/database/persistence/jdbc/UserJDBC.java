@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
@@ -13,6 +14,7 @@ import com.mygdx.controller.database.persistence.dao.UserDAO;
 import com.mygdx.controller.database.persistence.exception.PersistenceException;
 
 import utilis.Configuration;
+import utilis.Log;
 import utilis.Utils;
 
 public class UserJDBC implements UserDAO {
@@ -397,4 +399,83 @@ public class UserJDBC implements UserDAO {
 		}
 	}
 
+	@Override
+	public void insertCommand(String idUser, String command) throws Exception {
+
+		Connection conn = null;
+		PreparedStatement statement = null;
+
+		try {
+
+			conn = basicDataSource.getConnection();
+
+			statement = conn.prepareStatement(Configuration.insertCommandLog);
+
+			statement.setString(1, idUser);
+			statement.setString(2, command);
+
+			statement.executeUpdate();
+		} catch (SQLException e) {
+
+			if (e.getSQLState().equals("23505")) {
+				throw new PersistenceException(10006L);
+			} else {
+				System.out.println(e.getMessage());
+				throw e;
+			}
+
+		} finally {
+			try {
+				if (statement != null)
+					statement.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw e;
+			}
+		}
+
+	}
+
+
+	@Override
+	public ArrayList<Log> selectCommandLog() throws Exception {
+
+		Connection connection = null;
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		ArrayList<Log> logs = new ArrayList<>();
+
+		try {
+
+			connection = basicDataSource.getConnection();
+
+			statement = connection.prepareStatement(Configuration.selectCommandLog);
+
+			resultSet = statement.executeQuery();
+
+			while (resultSet.next()) {
+				Log log = new Log();
+				log.setNickname(resultSet.getString("nick_name"));
+				log.setTimestamp(resultSet.getTimestamp("time_request"));
+				log.setCommand(resultSet.getString("command"));
+
+				logs.add(log);
+			}
+
+			return logs;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw e;
+		} finally {
+			if (resultSet != null)
+				resultSet.close();
+			if (statement != null)
+				statement.close();
+			if (connection != null)
+				connection.close();
+		}
+
+	}
 }
