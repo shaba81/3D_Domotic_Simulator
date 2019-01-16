@@ -35,14 +35,20 @@ public class UserJDBC implements UserDAO {
 			String query = Configuration.insertUserNormal;
 
 			if (Utils.isFirstAccess)
-				query = Configuration.insertUserAdmin;
+				query = Configuration.updateUserAdmin;
 
 			statement = conn.prepareStatement(query);
-			statement.setString(1, user.getEmail());
-			statement.setString(2, user.getNickName());
-			statement.setString(3, user.getTelefonNumber());
-			statement.setString(4, user.getPathImage());
-			statement.setBoolean(5, user.isAdministrator());
+
+			if (Utils.isFirstAccess) {
+				statement.setString(1, user.getEmail());
+				statement.setString(2, user.getNickName());
+				statement.setString(3, user.getTelefonNumber());
+				statement.setString(4, user.getPathImage());
+				statement.setBoolean(5, user.isAdministrator());
+			} else {
+				statement.setString(1, user.getPathImage());
+				statement.setString(2, user.getIdUser());
+			}
 
 			int result = statement.executeUpdate();
 
@@ -284,7 +290,7 @@ public class UserJDBC implements UserDAO {
 			resultSet = statement.executeQuery();
 
 			if (resultSet.next()) {
-					return false;
+				return false;
 			}
 
 			return true;
