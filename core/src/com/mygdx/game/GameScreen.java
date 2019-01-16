@@ -57,7 +57,7 @@ import utilis.Utils;
 public class GameScreen implements Screen {
 
 	// final Drop game;
-	
+
 	private InputManager inputManager;
 
 	private PerspectiveCamera camera;
@@ -180,7 +180,7 @@ public class GameScreen implements Screen {
 		camera = new PerspectiveCamera(70, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		atlas = new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas"));
 		skin = new Skin(Gdx.files.internal("skin/uiskin.json"), atlas);
-		
+
 		inputManager = new InputManager(camera);
 
 		// Move the camera 5 units back along the z-axis and look at the origin
@@ -419,7 +419,6 @@ public class GameScreen implements Screen {
 		frontDxBathWallInstance.transform.translate(frontDxBathWallPosition);
 		frontDxBathWallInstance.transform.rotate(Vector3.Y, 270);
 
-		
 	}
 
 	@Override
@@ -507,11 +506,60 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	public void showCommandOnScreen() {
-		vocalCommand = readFromFile();
+	public void executeCommand() {
+		// vocalCommand = readFromFile();
+		vocalCommand = Utils.resp;
+		System.out.println("Utils Resp: " + vocalCommand);
 		vocalMessage.setText(vocalCommand);
 		vocalMessageTable.add(vocalMessage);
 		vocalMessageTable.row();
+
+		String commandTypeOpen1 = "Apri";
+		String commandTypeOpen2 = "Accendi";
+		String commandTypeClose1 = "Spegni";
+		String commandTypeClose2 = "Chiudi";
+		String objectToActivate = vocalCommand.substring(vocalCommand.lastIndexOf(" ") + 1);
+		objectToActivate = objectToActivate.toLowerCase();
+
+		if (vocalCommand.toLowerCase().contains(commandTypeOpen1.toLowerCase())
+				|| vocalCommand.toLowerCase().contains(commandTypeOpen2.toLowerCase())) {
+			if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
+				inputManager.isLightOn = true;
+				return;
+			}
+			if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
+				inputManager.isTvOn = true;
+				return;
+			}
+			if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
+				inputManager.activateSpeaker = true;
+				return;
+			}
+			if (objectToActivate.equals("ventilatore") || objectToActivate.contains("aria")) {
+				inputManager.activateFan = true;
+				return;
+			}
+			System.out.println("Command not recognized. Retry");
+		}
+
+		if (vocalCommand.toLowerCase().contains(commandTypeClose1.toLowerCase())
+				|| vocalCommand.toLowerCase().contains(commandTypeClose2.toLowerCase())) {
+			if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
+				inputManager.isLightOn = false;
+				return;
+			}
+			if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
+				inputManager.isTvOn = false;
+				return;
+			}
+			if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
+				inputManager.activateSpeaker = false;
+				return;
+			}
+			System.out.println("Command not recognized. Retry");
+		}
+		
+		System.out.println("Command not recognized. Retry");
 	}
 
 	public void showMessages() {
@@ -521,7 +569,7 @@ public class GameScreen implements Screen {
 		}
 
 		if (inputManager.doCommand)
-			showCommandOnScreen();
+			executeCommand();
 
 		if (checkRoom().equals("bathroom")) {
 			messagesTable.add(bathRoomMessage);

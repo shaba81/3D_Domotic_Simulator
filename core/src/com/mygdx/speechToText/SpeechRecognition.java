@@ -11,10 +11,9 @@ import com.darkprograms.speech.recognizer.GSpeechResponseListener;
 import com.darkprograms.speech.recognizer.GoogleResponse;
 
 import net.sourceforge.javaflacencoder.FLACFileWriter;
+import utilis.Utils;
 
 public class SpeechRecognition implements GSpeechResponseListener {
-
-	public String resp = "";
 
 	public static void main(String[] args) {
 
@@ -49,12 +48,6 @@ public class SpeechRecognition implements GSpeechResponseListener {
 		duplex.stopSpeechRecognition();
 	}
 
-	public void setResp(String text) {
-		System.out.println("SetResp text to assign: " + text);
-		resp = text;
-		System.out.println("Resp after assignment: " + resp);
-	}
-
 	// con questo metodo ricaviamo il testo della cattura audio
 	public void getResponse(GSpeechDuplex duplex) {
 
@@ -72,9 +65,8 @@ public class SpeechRecognition implements GSpeechResponseListener {
 
 				// stampo in console quello che ha capito il riconoscitore
 				// System.out.println(output);
-				// resp = output;
 				writeToFile(output);
-				// System.out.println(resp); QUI LA STAMPA
+				Utils.resp = output;
 			}
 		});
 	}

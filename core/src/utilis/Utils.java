@@ -68,7 +68,12 @@ public class Utils {
 	public static final String LOGIN_SCREEN_TOO_MANY_FAILED_ATTEMPTS_POPUP = "Sorry, you've reached the maximum attempt limit for entering your credentials. \nYou will receive an email and a text message with the new credentials to log in. The old ones will no longer be valid. \nPlease check your email and mobile phone in order to enter your new credentials.";
 	public static final String LOGIN_SCREEN_NO_ID_INSERT_POPUP = "The ID's field is empty. Please enter your ID for log in.";
 	public static final String LOGIN_SCREEN_NO_PASSWORD_INSERT_POPUP = "The Password's field is empty. Please enter your Password for log in.";
-
+	
+	/**
+	 * Vocal recognition variables
+	 */
+	public static String resp = "";
+	
 	/**
 	 * 
 	 * @param original

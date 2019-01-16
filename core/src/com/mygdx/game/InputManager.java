@@ -63,7 +63,7 @@ public class InputManager implements InputProcessor {
 		if (keycode == Input.Keys.R) {
 			// messagesTable.clear();
 			isSpeaking = true;
-
+			doCommand = false;
 			speechRecognition.startingSpeechRecognition(duplex, mic);
 			speechRecognition.getResponse(duplex);
 
@@ -73,9 +73,6 @@ public class InputManager implements InputProcessor {
 		}
 		if (keycode == Input.Keys.V) {
 			activateFan = !activateFan;
-		}
-		if (keycode == Input.Keys.M) {
-			doCommand = true;
 		}
 		if (keycode == Input.Keys.N) {
 			nAccessButton = true;
@@ -97,12 +94,10 @@ public class InputManager implements InputProcessor {
 		if (keycode == Input.Keys.D) {
 			right = false;
 		}
-		if (keycode == Input.Keys.M) {
-			doCommand = false;
-		}
 		if (keycode == Input.Keys.R) {
 			isSpeaking = false;
 			speechRecognition.stopSpeechRecognition(duplex, mic);
+			doCommand = true;
 
 		}
 		return false;
