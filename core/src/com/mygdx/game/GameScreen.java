@@ -48,6 +48,7 @@ import com.darkprograms.speech.recognizer.GSpeechDuplex;
 import com.mygdx.controller.database.persistence.PostgreDAOFactory;
 import com.mygdx.controller.database.persistence.dao.UserDAO;
 import com.mygdx.speechToText.SpeechRecognition;
+import com.mygdx.textToSpeech.TextToSpeech;
 
 import net.sourceforge.javaflacencoder.FLACFileWriter;
 import utilis.Utils;
@@ -170,6 +171,8 @@ public class GameScreen implements Screen {
 	private Table messagesTable;
 	private Table vocalMessageTable;
 	private Viewport viewport;
+	
+	private TextToSpeech textToSpeech;
 
 	// Width and Height of the room's floor.
 	private float floorWidth = 120;
@@ -181,6 +184,9 @@ public class GameScreen implements Screen {
 		this.utenteDAO = postgreDAOFactory.getUtenteDAO();
 		logged = false;
 
+		//ancora non serve
+		//textToSpeech = new TextToSpeech();
+		
 		// this.game = game;
 
 		// Create camera sized to screens width/height with Field of View of 75 degrees
@@ -661,6 +667,29 @@ public class GameScreen implements Screen {
 		}
 
 	}
+	
+	/*MANCANO COLLISIONI CASA PER IL CONTROLLO DENTRO/FUORI CASA
+	 * funzione che elenca le funzionalità possibili dentro la stanza in cui si trova
+	 * se l'utente entra dalla porta principale gli viene riprodotto il msg di benvenuto (solo una volta)
+	 * se dalla stanza B va alla stanza A gli vengono riprodotti solo i comandi.
+	
+	public void showAvailableCommands() {
+		if (checkRoom().equals("mainRoom")) {
+			if (firstTimeAccess) {
+				textToSpeech.speak("Benvenuto nella casa. Stai usando il sistema Housim, progetto sviluppato per l'esame di ingegneria del software all'inversità della calabria.");
+				//comandi disponibili stanza A
+			}
+			
+			//ripeti solo i comandi stanza A
+		}
+		if (checkRoom().equals("mainRoom")) {
+			//elenca comandi stanza B
+	
+		}
+		
+	}
+	*/
+	
 
 	public String checkRoom() {
 		if (bathRoom.contains(player))
