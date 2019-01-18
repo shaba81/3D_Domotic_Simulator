@@ -478,4 +478,42 @@ public class UserJDBC implements UserDAO {
 		}
 
 	}
+
+	@Override
+	public boolean currentlyUserIsAdministrator(String idUser) throws Exception {
+		Connection connection = null;
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		
+		try {
+
+			connection = basicDataSource.getConnection();
+
+			statement = connection.prepareStatement(Configuration.currentlyUserIsAdministrator);
+			
+			statement.setString(1, idUser);
+			
+			resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				
+				User user = new User();
+				user.setAdministrator(resultSet.getBoolean("is_administrator"));
+				
+				return user.isAdministrator();
+			}
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw e;
+		} finally {
+			if (resultSet != null)
+				resultSet.close();
+			if (statement != null)
+				statement.close();
+			if (connection != null)
+				connection.close();
+		}
+		return false;
+
+	}
 }

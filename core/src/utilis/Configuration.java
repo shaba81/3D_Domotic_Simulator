@@ -58,5 +58,5 @@ public interface Configuration {
 
 	public String insertCommandLog = "insert into ingswschema.interaction_user_home values(nextval('ingswschema.sequence_id'),?,18,NOW(),?);";
 	public String selectCommandLog = "select u.nick_name, iuh.time_request, iuh.command from ingswschema.interaction_user_home iuh, ingswschema.users u where iuh.id_user=u.id_user;";
-
+	public String currentlyUserIsAdministrator = "select * from ingswschema.users where id_user=?;";
 }

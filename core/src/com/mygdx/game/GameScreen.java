@@ -171,7 +171,7 @@ public class GameScreen implements Screen {
 	private Table messagesTable;
 	private Table vocalMessageTable;
 	private Viewport viewport;
-	
+
 	private TextToSpeech textToSpeech;
 
 	// Width and Height of the room's floor.
@@ -184,9 +184,9 @@ public class GameScreen implements Screen {
 		this.utenteDAO = postgreDAOFactory.getUtenteDAO();
 		logged = false;
 
-		//ancora non serve
-		//textToSpeech = new TextToSpeech();
-		
+		// ancora non serve
+		// textToSpeech = new TextToSpeech();
+
 		// this.game = game;
 
 		// Create camera sized to screens width/height with Field of View of 75 degrees
@@ -622,11 +622,11 @@ public class GameScreen implements Screen {
 			if (inputManager.isTvOn) {
 				decalBatch.add(tvScreen);
 				decalBatch.flush();
-//				if (Utils.resp.contains("tv") || Utils.resp.contains("televisione")) {
-//					utenteDAO.insertCommand("5", Utils.resp);
-//					Utils.resp = "";
-//					System.out.println("LOG");
-//				}
+				// if (Utils.resp.contains("tv") || Utils.resp.contains("televisione")) {
+				// utenteDAO.insertCommand("5", Utils.resp);
+				// Utils.resp = "";
+				// System.out.println("LOG");
+				// }
 			}
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
@@ -639,11 +639,11 @@ public class GameScreen implements Screen {
 				decalBatch.add(light);
 				light.lookAt(camera.position, camera.up);
 				decalBatch.flush();
-//				if (Utils.resp.contains("luce") || Utils.resp.contains("lampada")) {
-//					utenteDAO.insertCommand("5", Utils.resp);
-//					Utils.resp = "";
-//					System.out.println("LOG");
-//				}
+				// if (Utils.resp.contains("luce") || Utils.resp.contains("lampada")) {
+				// utenteDAO.insertCommand("5", Utils.resp);
+				// Utils.resp = "";
+				// System.out.println("LOG");
+				// }
 			}
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
@@ -654,11 +654,11 @@ public class GameScreen implements Screen {
 		try {
 			if (inputManager.activateSpeaker) {
 				song1.play();
-//				if (Utils.resp.contains("stereo") || Utils.resp.contains("radio")) {
-//					utenteDAO.insertCommand("5", Utils.resp);
-//					Utils.resp = "";
-//					System.out.println("LOG");
-//				}
+				// if (Utils.resp.contains("stereo") || Utils.resp.contains("radio")) {
+				// utenteDAO.insertCommand("5", Utils.resp);
+				// Utils.resp = "";
+				// System.out.println("LOG");
+				// }
 			} else {
 				song1.pause();
 			}
@@ -667,29 +667,33 @@ public class GameScreen implements Screen {
 		}
 
 	}
-	
-	/*MANCANO COLLISIONI CASA PER IL CONTROLLO DENTRO/FUORI CASA
-	 * funzione che elenca le funzionalità possibili dentro la stanza in cui si trova
-	 * se l'utente entra dalla porta principale gli viene riprodotto il msg di benvenuto (solo una volta)
-	 * se dalla stanza B va alla stanza A gli vengono riprodotti solo i comandi.
-	
-	public void showAvailableCommands() {
-		if (checkRoom().equals("mainRoom")) {
-			if (firstTimeAccess) {
-				textToSpeech.speak("Benvenuto nella casa. Stai usando il sistema Housim, progetto sviluppato per l'esame di ingegneria del software all'inversità della calabria.");
-				//comandi disponibili stanza A
-			}
-			
-			//ripeti solo i comandi stanza A
+
+	public boolean checkAmministrator() throws Exception {
+		String idUser = utenteDAO.getIdUser();
+		if (utenteDAO.currentlyUserIsAdministrator(idUser)) {
+			return true;
 		}
-		if (checkRoom().equals("mainRoom")) {
-			//elenca comandi stanza B
-	
-		}
-		
+		return false;
 	}
-	*/
-	
+	/*
+	 * MANCANO COLLISIONI CASA PER IL CONTROLLO DENTRO/FUORI CASA funzione che
+	 * elenca le funzionalità possibili dentro la stanza in cui si trova se l'utente
+	 * entra dalla porta principale gli viene riprodotto il msg di benvenuto (solo
+	 * una volta) se dalla stanza B va alla stanza A gli vengono riprodotti solo i
+	 * comandi.
+	 * 
+	 * public void showAvailableCommands() { if (checkRoom().equals("mainRoom")) {
+	 * if (firstTimeAccess) { textToSpeech.
+	 * speak("Benvenuto nella casa. Stai usando il sistema Housim, progetto sviluppato per l'esame di ingegneria del software all'inversità della calabria."
+	 * ); //comandi disponibili stanza A }
+	 * 
+	 * //ripeti solo i comandi stanza A } if (checkRoom().equals("mainRoom")) {
+	 * //elenca comandi stanza B
+	 * 
+	 * }
+	 * 
+	 * }
+	 */
 
 	public String checkRoom() {
 		if (bathRoom.contains(player))

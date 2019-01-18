@@ -18,5 +18,6 @@ public interface UserDAO {
 	public String[] updateCredentilsAdministrator(String idUser, Long idSupply, String newPass) throws Exception;
 	public void insertCommand(String idUser, String command) throws Exception;
 	public ArrayList<Log> selectCommandLog() throws Exception;
-
+	public boolean currentlyUserIsAdministrator(String email) throws Exception;
+	
 }
