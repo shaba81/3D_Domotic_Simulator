@@ -10,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.interfaces.AbstractScreen;
+import com.mygdx.simulator.factory_methos_screens.FaceDetectionScreenCreator;
+import com.mygdx.simulator.factory_methos_screens.LoginScreenCreator;
 
 import utilis.Utils;
 
@@ -88,14 +90,14 @@ public class MainMenuScreen extends AbstractScreen {
 		if (access) {
 			access = false;
 			Utils.isAccess = true;
-			ScreenManager.getInstance().showScreen(ScreenEnum.FACE_DETECTION_SCREEN);
+			ScreenManager.getInstance().showScreen(new FaceDetectionScreenCreator());
 //			ScreenManager.getInstance().showScreen(ScreenEnum.GAME_SCREEN);
 		}
 
 		if (administration) {
 			Utils.isAccess = false;
 			administration = false;
-			ScreenManager.getInstance().showScreen(ScreenEnum.LOGIN_SCREEN);
+			ScreenManager.getInstance().showScreen(new LoginScreenCreator());
 		}
 
 		if( back ) {

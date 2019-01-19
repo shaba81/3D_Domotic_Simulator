@@ -8,11 +8,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.ScreenEnum;
+import com.mygdx.game.ScreenManager;
+import com.mygdx.simulator.factory_methos_screens.GameScreenCreator;
 
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenManager;
+import utilis.Utils;
 
 
 public class Splash implements Screen {
@@ -40,7 +43,7 @@ public class Splash implements Screen {
 			//glielo diciamo ora!
 			@Override
 			public void onEvent(int arg0, BaseTween<?> arg1) {
-				((Game) Gdx.app.getApplicationListener()).setScreen(ScreenEnum.GAME_SCREEN.getScreen()); //apre un  nuovo main menu
+				((Game) Gdx.app.getApplicationListener()).setScreen(ScreenManager.getInstance().getScreen(new GameScreenCreator())); //apre un  nuovo main menu
 				
 			}
 		}).start(tweenManager);

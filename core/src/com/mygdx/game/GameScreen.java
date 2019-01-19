@@ -47,6 +47,8 @@ import com.darkprograms.speech.microphone.Microphone;
 import com.darkprograms.speech.recognizer.GSpeechDuplex;
 import com.mygdx.controller.database.persistence.PostgreDAOFactory;
 import com.mygdx.controller.database.persistence.dao.UserDAO;
+import com.mygdx.simulator.factory_methos_screens.LoginScreenCreator;
+import com.mygdx.simulator.factory_methos_screens.MainMenuScreenCreator;
 import com.mygdx.speechToText.SpeechRecognition;
 import com.mygdx.textToSpeech.TextToSpeech;
 
@@ -177,8 +179,10 @@ public class GameScreen implements Screen {
 	// Width and Height of the room's floor.
 	private float floorWidth = 120;
 	private float floorHeight = 120;
+	
+	private static GameScreen gameScreen;
 
-	public GameScreen() {
+	private GameScreen() {
 
 		postgreDAOFactory = new PostgreDAOFactory();
 		this.utenteDAO = postgreDAOFactory.getUtenteDAO();
@@ -342,6 +346,23 @@ public class GameScreen implements Screen {
 
 		inputManager.nAccessButton = false;
 	}
+	
+	
+
+	public static GameScreen getGameScreen() {
+		
+		if(gameScreen == null)
+			gameScreen = new GameScreen();
+		return gameScreen;
+	}
+
+
+
+	public static void setGameScreen(GameScreen gameScreen) {
+		GameScreen.gameScreen = gameScreen;
+	}
+
+
 
 	public void createRoom() {
 		// Floor Initialization
@@ -833,9 +854,9 @@ public class GameScreen implements Screen {
 				if (utenteDAO.isFirstRegistrationForThisForniture(Utils.ID_SUPPLY, Utils.ID_ADMIN_USER)) {
 					Utils.isFirstAccess = true;
 					System.out.println("MMM");
-					ScreenManager.getInstance().showScreen(ScreenEnum.LOGIN_SCREEN);
+					ScreenManager.getInstance().showScreen(new LoginScreenCreator());
 				} else {
-					ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
+					ScreenManager.getInstance().showScreen(new MainMenuScreenCreator());
 				}
 
 			}

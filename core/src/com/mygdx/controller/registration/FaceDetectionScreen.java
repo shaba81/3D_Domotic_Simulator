@@ -20,6 +20,8 @@ import com.mygdx.game.ScreenEnum;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.interfaces.AbstractScreen;
 import com.mygdx.simulator.email.EmailSender;
+import com.mygdx.simulator.factory_methos_screens.GameScreenCreator;
+import com.mygdx.simulator.factory_methos_screens.RegistrationCredentialsScreenCreator;
 
 import utilis.Utils;
 
@@ -42,6 +44,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 
 	private String user_telphone;
 	
+	private static FaceDetectionScreen faceDetectionScreen;
 	// se l'utente vorrà accedere, sarà true; se l'amministratore dovrà registrarlo,
 	// sarà false
 	private FaceDetectionController faceController;
@@ -65,6 +68,13 @@ public class FaceDetectionScreen extends AbstractScreen {
 		this.registrationOrAccess = false;
 		this.redo = false;
 	}
+	
+
+	public static void setFaceDetectionScreen(FaceDetectionScreen faceDetectionScreen) {
+		FaceDetectionScreen.faceDetectionScreen = faceDetectionScreen;
+	}
+
+
 
 	@Override
 	public void show() {
@@ -155,7 +165,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 				// viene richiamato il 'gameScreen'
 				System.out.println("puoi accedere");
 				Utils.captured = false;
-				ScreenManager.getInstance().showScreen(ScreenEnum.GAME_SCREEN);
+				ScreenManager.getInstance().showScreen(new GameScreenCreator());
 			} else {
 				System.out.println("non puoi accedere. Riprova");
 				
@@ -188,7 +198,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 						System.out.println("puoi registrarti");
 						Utils.backToRegistrationScreen = false;
 						this.register();
-						ScreenManager.getInstance().showScreen(ScreenEnum.GAME_SCREEN);
+						ScreenManager.getInstance().showScreen(new GameScreenCreator());
 					} else {
 						System.out.println("non puoi registrarti");
 						Utils.showMessageDialog(Utils.REGISTRATION_FAILED_POPUP, skin, stage);
@@ -213,7 +223,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 			this.back = false;
 			if(Utils.captured)
 				Utils.backToRegistrationScreen = true;
-			ScreenManager.getInstance().showScreen(ScreenEnum.REGISTRATION_CREDENTIALS_SCREEN);
+			ScreenManager.getInstance().showScreen(new RegistrationCredentialsScreenCreator());
 		}
 
 		// this.buttons();

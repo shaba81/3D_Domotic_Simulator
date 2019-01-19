@@ -15,6 +15,8 @@ import com.mygdx.game.ScreenEnum;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.interfaces.AbstractScreen;
 import com.mygdx.simulator.email.EmailSender;
+import com.mygdx.simulator.factory_methos_screens.AdministrationScreenCreator;
+import com.mygdx.simulator.factory_methos_screens.FaceDetectionScreenCreator;
 import com.mygdx.simulator.sms.SmsSender;
 
 import utilis.Configuration;
@@ -141,9 +143,9 @@ public class LoginScreen extends AbstractScreen {
 				}
 				else if( utenteDAO.validateUserAdminCredentials(this.loginCredentials.get(1), this.loginCredentials.get(0)) ) {
 					if( !Utils.isFirstAccess )
-						ScreenManager.getInstance().showScreen(ScreenEnum.ADMINISTRATION_SCREEN);
+						ScreenManager.getInstance().showScreen(new AdministrationScreenCreator());
 					else{
-						ScreenManager.getInstance().showScreen(ScreenEnum.FACE_DETECTION_SCREEN);
+						ScreenManager.getInstance().showScreen(new FaceDetectionScreenCreator());
 					}
 				}
 				else {

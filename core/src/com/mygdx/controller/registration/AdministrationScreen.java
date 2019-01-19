@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.game.ScreenEnum;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.interfaces.AbstractScreen;
+import com.mygdx.simulator.factory_methos_screens.RegistrationCredentialsScreenCreator;
 
 import utilis.Utils;
 
@@ -99,7 +100,7 @@ public class AdministrationScreen extends AbstractScreen{
 
 		if( this.registration ) {
 			this.registration = false;
-			ScreenManager.getInstance().showScreen(ScreenEnum.REGISTRATION_CREDENTIALS_SCREEN);
+			ScreenManager.getInstance().showScreen(new RegistrationCredentialsScreenCreator());
 		}
 
 		if( this.showHouseInteraction ) {

@@ -18,6 +18,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.google.gson.Gson;
 import com.mygdx.game.ScreenEnum;
 import com.mygdx.game.ScreenManager;
+import com.mygdx.simulator.factory_methos_screens.AdministrationScreenCreator;
+import com.mygdx.simulator.factory_methos_screens.GameScreenCreator;
+import com.mygdx.simulator.factory_methos_screens.LoginScreenCreator;
+import com.mygdx.simulator.factory_methos_screens.MainMenuScreenCreator;
 
 /**
  * Classe di utilità per la lettura del file .json
@@ -79,7 +83,7 @@ public class Utils {
 	public static final String LOGIN_SCREEN_NO_PASSWORD_INSERT_POPUP = "The Password's field is empty. Please enter your Password for log in.";
 	public static final String ALREADY_CAPTURE_FACE_POPUP = "Sorry, the face has already been captured.\n Press REDO to recapture the face or proceed with registration.";
 	public static final String ACCESS_FAILED_POPUP = "Access denied.\n Please, click OK or press ENTER to retry access.";
-
+	
 	/*
 	 * command for log
 	 */
@@ -144,16 +148,16 @@ public class Utils {
 			public void result(Object obj) {
 				if (obj.equals("true")) {
 					if (screenCall.equals("login_back_adm") || screenCall.equals("admin_screen"))
-						ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
+						ScreenManager.getInstance().showScreen(new MainMenuScreenCreator());
 					else if (screenCall.equals("login_back_game")
 							|| screenCall.equals("registration_credentials_screen_first_acc"))
-						ScreenManager.getInstance().showScreen(ScreenEnum.GAME_SCREEN);
+						ScreenManager.getInstance().showScreen(new GameScreenCreator());
 					else if (screenCall.equals("game_screen"))
-						ScreenManager.getInstance().showScreen(ScreenEnum.LOGIN_SCREEN);
+						ScreenManager.getInstance().showScreen(new LoginScreenCreator());
 					else if (screenCall.equals("registration_credentials_screen"))
-						ScreenManager.getInstance().showScreen(ScreenEnum.ADMINISTRATION_SCREEN);
+						ScreenManager.getInstance().showScreen(new AdministrationScreenCreator());
 					else if (screenCall.equals("face_capture_screen"))
-						ScreenManager.getInstance().showScreen(ScreenEnum.REGISTRATION_CREDENTIALS_SCREEN);
+						ScreenManager.getInstance().showScreen(new AdministrationScreenCreator());
 					else if (screenCall.equals("main_menu_screen"))
 						Gdx.app.exit();
 				}

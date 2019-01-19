@@ -12,6 +12,7 @@ import com.mygdx.controller.database.persistence.dao.UserDAO;
 import com.mygdx.game.ScreenEnum;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.interfaces.AbstractScreen;
+import com.mygdx.simulator.factory_methos_screens.FaceDetectionScreenCreator;
 
 import utilis.Utils;
 
@@ -123,10 +124,7 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 				if (dialogText != "")
 					Utils.showMessageDialog(dialogText, skin, stage);
 				else
-				{
-					ScreenManager.getInstance().showScreen(ScreenEnum.FACE_DETECTION_SCREEN);
-					((FaceDetectionScreen)ScreenManager.getInstance().getScreen(ScreenEnum.FACE_DETECTION_SCREEN)).setUser_telphone(this.nickNameLabel.toString());
-				}
+					ScreenManager.getInstance().showScreen(new FaceDetectionScreenCreator());
 
 			}
 
