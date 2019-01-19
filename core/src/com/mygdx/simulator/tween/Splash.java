@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mygdx.game.ScreenEnum;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.simulator.factory_methos_screens.GameScreenCreator;
 
@@ -15,7 +14,6 @@ import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenManager;
-import utilis.Utils;
 
 
 public class Splash implements Screen {

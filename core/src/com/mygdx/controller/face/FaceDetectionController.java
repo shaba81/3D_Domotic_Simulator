@@ -8,8 +8,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
-
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Rect;
@@ -21,16 +19,10 @@ import org.opencv.objdetect.Objdetect;
 import org.opencv.videoio.VideoCapture;
 
 import com.mygdx.controller.face.compare.ImageComparison;
-import com.mygdx.controller.registration.FaceDetectionScreen;
-import com.mygdx.game.ScreenEnum;
-import com.mygdx.game.ScreenManager;
 
 import utilis.Utils;
 
 public class FaceDetectionController {
-//	private boolean captured = false;
-	private boolean green = false;
-
 	// a timer for acquiring the video stream
 	private ScheduledExecutorService timer;
 	// the OpenCV object that performs the video capture
@@ -219,7 +211,6 @@ public class FaceDetectionController {
 
 	private void captureAndCrop(MatOfRect faces, Mat frame, String path) {
 		System.out.println("cia");
-		this.green = true;
 		Utils.captured = true;
 		FaceController faceController = new FaceController();
 		faceController.crop(faces, frame, path);

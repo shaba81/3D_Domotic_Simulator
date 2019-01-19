@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.google.gson.Gson;
-import com.mygdx.game.ScreenEnum;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.simulator.factory_methos_screens.AdministrationScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.GameScreenCreator;

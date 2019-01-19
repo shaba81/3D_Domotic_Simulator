@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.controller.database.persistence.PostgreDAOFactory;
 import com.mygdx.controller.database.persistence.dao.UserDAO;
-import com.mygdx.game.ScreenEnum;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.interfaces.AbstractScreen;
 import com.mygdx.simulator.factory_methos_screens.FaceDetectionScreenCreator;
