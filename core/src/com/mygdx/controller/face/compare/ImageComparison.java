@@ -176,7 +176,7 @@ public class ImageComparison {
 
 			Image im = ImageIO.read(fileA);
 			System.out.println("prima w: "+im.getWidth(null)+" h: "+im.getHeight(null));
-			
+
 			System.out.println("dopo w: "+im.getWidth(null)+" h: "+im.getHeight(null));
 
 			if (!this.isAnewUser(im,fileA.getPath()))

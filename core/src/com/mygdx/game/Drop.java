@@ -2,9 +2,6 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
 
-
-
-
 public class Drop extends Game {
 
 	@Override

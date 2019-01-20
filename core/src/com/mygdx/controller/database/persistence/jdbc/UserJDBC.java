@@ -254,7 +254,8 @@ public class UserJDBC implements UserDAO {
 				if (resultSet.getString("pswmatch").equals("t")) {
 					statement = null;
 					statement = connection.prepareStatement(Configuration.deleteOneTimaPAss);
-					statement.executeQuery();
+					statement.setString(1, email);					
+					statement.executeUpdate();
 					connection.commit();
 					return true;
 				}
@@ -514,6 +515,79 @@ public class UserJDBC implements UserDAO {
 				connection.close();
 		}
 		return false;
+
+	}
+
+	
+	@Override
+	public boolean emailIsRegister(String email) throws Exception {
+		Connection connection = null;
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+
+		try {
+
+			connection = basicDataSource.getConnection();
+
+			statement = connection.prepareStatement(Configuration.findByEmail);
+
+			statement.setString(1, email);
+			resultSet = statement.executeQuery();
+
+			if (resultSet.next())
+				return true;
+
+			return false;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw e;
+		} finally {
+			if (resultSet != null)
+				resultSet.close();
+			if (statement != null)
+				statement.close();
+			if (connection != null)
+				connection.close();
+		}
+
+	}
+
+
+	@Override
+	public void updateOneTimePass(String oneTimePass, String email) throws Exception {
+		Connection conn = null;
+		PreparedStatement statement = null;
+
+		try {
+
+			conn = basicDataSource.getConnection();
+
+			statement = conn.prepareStatement(Configuration.updateOneTimePass);
+
+			statement.setString(1, oneTimePass);
+			statement.setString(2, email);
+
+			statement.executeUpdate();
+		} catch (SQLException e) {
+
+			if (e.getSQLState().equals("23505")) {
+				throw new PersistenceException(10006L);
+			} else {
+				System.out.println(e.getMessage());
+				throw e;
+			}
+
+		} finally {
+			try {
+				if (statement != null)
+					statement.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw e;
+			}
+		}
 
 	}
 }

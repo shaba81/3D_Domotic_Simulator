@@ -1,11 +1,15 @@
 package com.mygdx.interfaces;
 
+import java.security.Principal;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -13,10 +17,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.controller.Controller;
+import com.mygdx.controller.database.persistence.PostgreDAOFactory;
+import com.mygdx.controller.database.persistence.dao.UserDAO;
+import com.mygdx.game.ScreenManager;
+import com.mygdx.simulator.email.EmailSender;
+import com.mygdx.simulator.factory_methos_screens.GameScreenCreator;
 
-//////////7
-public abstract class AbstractScreen implements Screen{
-	
+import utilis.Utils;
+
+public abstract class AbstractScreen implements Screen {
+
 	protected OrthographicCamera camera;
 	protected SpriteBatch batch;
 	protected Viewport viewport;
@@ -24,6 +35,9 @@ public abstract class AbstractScreen implements Screen{
 	protected TextureAtlas atlas;
 	protected Skin skin;
 	protected Table mainTable;
+	protected TextButton backButton;
+	protected boolean back;
+	String emailOneTime;
 
 	public AbstractScreen() {
 		// TODO Auto-generated constructor stub
@@ -34,13 +48,15 @@ public abstract class AbstractScreen implements Screen{
 
 		this.camera.update();
 		this.viewport.apply();
-		
+
 		this.atlas = new TextureAtlas(Gdx.files.internal("uiskin.atlas"));
 		this.skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
-		
+
 		Gdx.input.setCursorCatched(false);
+		emailOneTime = "";
+		this.back = false;
 	}
-	
+
 	public void show() {
 
 		this.batch = new SpriteBatch();
@@ -54,25 +70,84 @@ public abstract class AbstractScreen implements Screen{
 		// Allineo le cose nella table
 //		this.mainTable.center();
 	}
-	
-	public void add(Label x)
-	{
+
+	public void add(Label x) {
 		this.mainTable.add(x);
 		this.mainTable.row();
 	}
-	
-	public void add(TextField x)
-	{
+
+	public void add(TextField x) {
 		this.mainTable.add(x);
 		this.mainTable.row();
 	}
-	
-	public void add(TextButton x)
-	{
+
+	public void add(TextButton x) {
 		this.mainTable.add(x);
 		this.mainTable.row();
 	}
-	
+
+	public void showRecoveryAccessDialog(String text, Skin skin, Stage stage, TextField textInput, boolean isEmail) {
+
+		System.out.println("MMMM");
+		Dialog dialog = new Dialog("", skin, "dialog") {
+			public void result(Object obj) {
+				try {
+					if (obj.equals("true")) {
+						if (isEmail) {
+							String email = textInput.getText();
+							System.out.println("Email da mandare a: " + textInput.getText());
+							if (email.equals(""))
+								showRecoveryAccessDialog(Utils.ACCESS_FAILED_THREE_TIMES, skin, stage,
+										new TextField("", skin), true);
+							else {
+								PostgreDAOFactory postgreDAOFactory = new PostgreDAOFactory();
+								UserDAO utenteDAO = postgreDAOFactory.getUtenteDAO();
+								if (utenteDAO.emailIsRegister(email)) {
+									String pass = Controller.getController().generatePassword();
+									String bodyMessage = Utils.MESSAGE_ONE_TIME_PASS + "\n\n\n One-time-pass: " + pass;
+
+									EmailSender.sendMessage(email, Utils.OGJ_ONE_TIME_PASS, bodyMessage);
+									utenteDAO.updateOneTimePass(pass, email);
+									emailOneTime = email;
+
+									showRecoveryAccessDialog(Utils.ACCESS_ONE_TIME_PASS, skin, stage,
+											new TextField("", skin), false);
+								} else {
+									showRecoveryAccessDialog(Utils.ACCESS_RECOVERY_EMAIL_NOT_FOUND, skin, stage,
+											new TextField("", skin), true);
+								}
+							}
+						} else {
+							System.out.println("Password da validare: " + textInput.getText());
+							String password = textInput.getText();
+							PostgreDAOFactory postgreDAOFactory = new PostgreDAOFactory();
+							UserDAO utenteDAO = postgreDAOFactory.getUtenteDAO();
+							if (utenteDAO.validateUserOneTimePAss(password, emailOneTime)) {
+								ScreenManager.getInstance().showScreen(new GameScreenCreator());
+							} else {
+								showRecoveryAccessDialog(Utils.ACCESS_ONE_TIME_PASS_NOT_MATCH, skin, stage,
+										new TextField("", skin), false);
+							}
+						}
+					}
+				} catch (Exception e) {
+					System.err.println(e.getStackTrace());
+				}
+			}
+		};
+
+		dialog.button("SEND", "true");
+		dialog.key(Keys.ENTER, true);
+		Label emailLabel = new Label(text, skin);
+		dialog.getContentTable().row();
+		dialog.getContentTable().add(emailLabel).left();
+		dialog.getContentTable().row();
+		dialog.getContentTable().add(textInput);
+		dialog.show(stage);
+		stage.addActor(dialog);
+		stage.setKeyboardFocus(textInput);
+	}
+
 	@Override
 	public void dispose() {
 		batch.dispose();
@@ -83,4 +158,3 @@ public abstract class AbstractScreen implements Screen{
 	}
 
 }
-

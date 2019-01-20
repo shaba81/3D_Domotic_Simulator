@@ -14,13 +14,16 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.google.gson.Gson;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.simulator.factory_methos_screens.AdministrationScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.GameScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.LoginScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.MainMenuScreenCreator;
+import com.sun.webkit.dom.TextImpl;
 
 /**
  * Classe di utilità per la lettura del file .json
@@ -36,9 +39,9 @@ public class Utils {
 	public static boolean captured = false;
 	public static boolean backToRegistrationScreen = false;
 	public static boolean treeTimesAccessError = false;
-	
+
 	public static int countErrorTimes = 0;
-	
+
 	public static ArrayList<String> credentials = new ArrayList<String>();
 
 	public static final Long ID_SUPPLY = (long) 1;
@@ -47,6 +50,10 @@ public class Utils {
 	public static final String OBJ_EMAIL_RECOVERY_PASS_ADMIN = "Recovery administrator credentials.";
 	public static final String MESSAGE_RECOVERY_PASS_ADMIN_EMAIL = "Dear customer, \nhere are the new login credentials. The mode is always the same as the ID can enter the same assigned to it during purchase and as a password the new password mentioned at the bottom of the message.";
 	public static final String MESSAGE_RECOVERY_PASS_ADMIN_SMS = "Dear customer, \nhere are the new login credentials.";
+
+	public static final String MESSAGE_ONE_TIME_PASS = "Dear customer,\nbelow you will find the one-time-password to be entered in the appropriate field.\nRemember that this code will only be valid for one hour from now.";
+	public static final String OGJ_ONE_TIME_PASS = "One time password";
+
 	/*
 	 * PATH per i file di configurazione
 	 */
@@ -58,7 +65,8 @@ public class Utils {
 	/*
 	 * PopUp string
 	 */
-	public static final String SCREEN_BACK_GAME_POPUP = "Are you sure you want to return simulation without registration?";
+	public static final String SCREEN_BACK_GAME_POPUP = "Are you sure you want to return to simulation without registration?";
+	public static final String SCREEN_BACK_GAME_SIMU_POPUP = "Are you sure you want to return to simulation?";
 	public static final String MAIN_MENU_BACK_POPUP = "Are you sure do you want to exit from simulation?";
 	public static final String LOGIN_SCREEN_WRONG_CREDENTIAL_POPUP = "Wrong credentials, please click on ENTER or OK to reinsert the credentials.";
 	public static final String LOGIN_SCREEN_BACK_POPUP = "Are you sure you want to quit from the Login Screen?";
@@ -82,7 +90,10 @@ public class Utils {
 	public static final String LOGIN_SCREEN_NO_PASSWORD_INSERT_POPUP = "The Password's field is empty. Please enter your Password for log in.";
 	public static final String ALREADY_CAPTURE_FACE_POPUP = "Sorry, the face has already been captured.\n Press REDO to recapture the face or proceed with registration.";
 	public static final String ACCESS_FAILED_POPUP = "Access denied.\n Please, click OK or press ENTER to retry access.";
-	
+	public static final String ACCESS_FAILED_THREE_TIMES = "You tried too many times without success.\nPlease enter the email with which you registered.\nThe field doens't have to be empty.";
+	public static final String ACCESS_ONE_TIME_PASS = "Please check the email entered previously to which a code\nhas been sent from the validity of one hour with which you can access.\nPlease enter the code, the field doens't have to be empty..";
+	public static final String ACCESS_RECOVERY_EMAIL_NOT_FOUND = "Email doesn't eixists in our system.\nPlease retry to enter the email with which you registered.\\nThe field doens't have to be empty.";
+	public static final String ACCESS_ONE_TIME_PASS_NOT_MATCH = "Password entered not matches. Please check the email entered previously to which a code\nhas been sent from the validity of one hour with which you can access.\nPlease enter the code, the field doens't have to be empty..";
 	/*
 	 * command for log
 	 */
@@ -171,6 +182,7 @@ public class Utils {
 	}
 
 	public static void showMessageDialog(String text, Skin skin, Stage stage) {
+		System.err.println("MIAAAA");
 		Dialog dialog = new Dialog("", skin);
 		dialog.text(text);
 		dialog.button("Ok", "true");
@@ -178,26 +190,5 @@ public class Utils {
 		dialog.show(stage);
 		stage.addActor(dialog);
 	}
-
-	public static String generatePasswordAdministrator() {
-		String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-		String chars = CHARS.toLowerCase();
-		String string;
-		StringBuilder salt = new StringBuilder();
-		Random rnd = new Random();
-
-		while (salt.length() < 8) {
-
-			Random r = new Random();
-			boolean choice = r.nextBoolean();
-			string = chars;
-			if (choice)
-				string = CHARS;
-
-			int index = (int) (rnd.nextFloat() * string.length());
-			salt.append(string.charAt(index));
-		}
-		return salt.toString();
-	}
-
+	
 }

@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.controller.Controller;
 import com.mygdx.controller.database.persistence.PostgreDAOFactory;
 import com.mygdx.controller.database.persistence.dao.UserDAO;
 import com.mygdx.game.ScreenManager;
@@ -17,6 +18,8 @@ import com.mygdx.simulator.email.EmailSender;
 import com.mygdx.simulator.factory_methos_screens.AdministrationScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.FaceDetectionScreenCreator;
 import com.mygdx.simulator.sms.SmsSender;
+import com.sun.webkit.network.Util;
+
 import utilis.Utils;
 
 public class LoginScreen extends AbstractScreen {
@@ -166,7 +169,7 @@ public class LoginScreen extends AbstractScreen {
 	}
 
 	private void updateAndSendCredentials(UserDAO utenteDAO) throws Exception {
-		String newPass = Utils.generatePasswordAdministrator();
+		String newPass = Controller.getController().generatePassword();
 		String[] emailTelephoneNumeberAdmin = utenteDAO.updateCredentilsAdministrator(Utils.ID_ADMIN_USER, Utils.ID_SUPPLY, newPass);
 		String bodyMessage = Utils.MESSAGE_RECOVERY_PASS_ADMIN_EMAIL + "\n\n\n New password: " + newPass;
 		String bodyMessageSMS = Utils.MESSAGE_RECOVERY_PASS_ADMIN_SMS + "\nNew password: " + newPass;

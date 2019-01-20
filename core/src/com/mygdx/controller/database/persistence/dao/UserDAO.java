@@ -19,5 +19,7 @@ public interface UserDAO {
 	public void insertCommand(String idUser, String command) throws Exception;
 	public ArrayList<Log> selectCommandLog() throws Exception;
 	public boolean currentlyUserIsAdministrator(String email) throws Exception;
-	
+	public boolean emailIsRegister(String email) throws Exception;
+	public void updateOneTimePass(String oneTimePass, String email) throws Exception;
+
 }

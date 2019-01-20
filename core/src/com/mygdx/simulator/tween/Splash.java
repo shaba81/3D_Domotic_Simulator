@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.controller.Controller;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.simulator.factory_methos_screens.GameScreenCreator;
 
@@ -21,8 +22,7 @@ public class Splash implements Screen {
 	private SpriteBatch batch;
 	private Sprite splash;
 	private TweenManager tweenManager;
-	
-	
+
 	@Override
 	public void show() {
 

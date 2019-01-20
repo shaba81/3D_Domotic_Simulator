@@ -36,9 +36,10 @@ public interface Configuration {
 	/*
 	 * DB query
 	 */
-	public String selectFunction = "select * from ingswschema.expire_table_delete_old_rows();";
+	public String selectFunction = "select * from ingswschema.expire_value();";
 	public String validateUserOneTimePAss = "select ingswschema.users.id_user, (one_time_pass= crypt(?, one_time_pass)) AS pswmatch from ingswschema.users where email=?;";
 	public String deleteOneTimaPAss = "UPDATE ingswschema.users SET timestamp_one_time_pass=NULL, one_time_pass='' WHERE email=?;";
+	public String updateOneTimePass = "UPDATE ingswschema.users SET timestamp_one_time_pass=NOW(), one_time_pass=crypt(?, gen_salt('bf')) WHERE email=?;";
 
 	public String nextId =  "select nextval('ingswschema.sequence_id') AS id;";
 	public String insertSupply = "insert into ingswschema.supply values(nextval('ingswschema.sequence_id'));";
@@ -47,6 +48,7 @@ public interface Configuration {
 	public String insertUserNormal = "insert into ingswschema.users(id_user,email,nick_name,telephone_number,path_image,is_administrator,id_supply) values (?,?,?,?,?,?,1);";
 	public String updateUserAdmin = "update ingswschema.users set path_image=? where id_user=?;";
 	public String findById = "select email, telephone_number from ingswschema.users where id_user=?;";
+	public String findByEmail = "select email from ingswschema.users where email=?;";
 
 	public String checkIfEmailExist = "select u.id_user from ingswschema.users u where u.email=?;";
 	public String checkIfTelephoneNumberExist = "select u.id_user from ingswschema.users u where u.telephone_number=?;";
@@ -59,4 +61,5 @@ public interface Configuration {
 	public String insertCommandLog = "insert into ingswschema.interaction_user_home values(nextval('ingswschema.sequence_id'),?,18,NOW(),?);";
 	public String selectCommandLog = "select u.nick_name, iuh.time_request, iuh.command from ingswschema.interaction_user_home iuh, ingswschema.users u where iuh.id_user=u.id_user;";
 	public String currentlyUserIsAdministrator = "select * from ingswschema.users where id_user=?;";
+
 }
