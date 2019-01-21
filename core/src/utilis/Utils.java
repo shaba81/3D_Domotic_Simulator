@@ -102,6 +102,16 @@ public class Utils {
 	public static final String LOGIN_ADMIN_SCREEN_SUCCESS_LOG = "Login to the administration screen successfully executed.";
 	public static final String LOGIN_ADMIN_SCREEN_FAILED_LOG = "Login to the administration screen denied.";
 
+	/*
+	 * For popUp 
+	 */
+	public static final String MAIN_SCREEN_POP = "MainScreen";
+	public static final String GAME_SCREEN_POP = "GameScreen";
+	public static final String LOGIN_SCREEN_POP = "LoginScreen";
+	public static final String ADMIN_SCREEN_POP = "AdminScreen";
+	public static final String EXIT_POP = "Exit";
+
+
 	/**
 	 * Vocal recognition variables
 	 */
@@ -157,18 +167,15 @@ public class Utils {
 		Dialog dialog = new Dialog("", skin, "dialog") {
 			public void result(Object obj) {
 				if (obj.equals("true")) {
-					if (screenCall.equals("login_back_adm") || screenCall.equals("admin_screen"))
+					if (screenCall.equals(Utils.MAIN_SCREEN_POP))
 						ScreenManager.getInstance().showScreen(new MainMenuScreenCreator());
-					else if (screenCall.equals("login_back_game")
-							|| screenCall.equals("registration_credentials_screen_first_acc"))
+					else if (screenCall.equals(Utils.GAME_SCREEN_POP))
 						ScreenManager.getInstance().showScreen(new GameScreenCreator());
-					else if (screenCall.equals("game_screen"))
+					else if (screenCall.equals(Utils.LOGIN_SCREEN_POP))
 						ScreenManager.getInstance().showScreen(new LoginScreenCreator());
-					else if (screenCall.equals("registration_credentials_screen"))
+					else if (screenCall.equals(Utils.ADMIN_SCREEN_POP))
 						ScreenManager.getInstance().showScreen(new AdministrationScreenCreator());
-					else if (screenCall.equals("face_capture_screen"))
-						ScreenManager.getInstance().showScreen(new AdministrationScreenCreator());
-					else if (screenCall.equals("main_menu_screen"))
+					else if (screenCall.equals(Utils.EXIT_POP))
 						Gdx.app.exit();
 				}
 			}

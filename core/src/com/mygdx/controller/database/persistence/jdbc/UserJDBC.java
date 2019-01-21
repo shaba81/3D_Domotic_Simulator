@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import com.mygdx.controller.database.model.User;
-import com.mygdx.controller.database.persistence.PostgreDAOFactory;
 import com.mygdx.controller.database.persistence.dao.UserDAO;
 import com.mygdx.controller.database.persistence.exception.PersistenceException;
 
@@ -19,11 +18,39 @@ import utilis.Utils;
 
 public class UserJDBC implements UserDAO {
 
-	private BasicDataSource basicDataSource;
+	private static UserJDBC userJDBC;
+	private static BasicDataSource basicDataSource;
 
-	public UserJDBC(BasicDataSource basicDataSource) {
-		this.basicDataSource = basicDataSource;
+	static {
+		try {
+			System.out.println("B");
+			String url = String.format("jdbc:%s://%s:%s/%s", Configuration.jdbc, Configuration.host, Configuration.port, Configuration.database);
+
+			String username = Configuration.username;
+			String password = Configuration.password;
+			String driver = Configuration.driver;
+
+			basicDataSource = new BasicDataSource();
+			basicDataSource.setDriverClassName(driver);
+			basicDataSource.setUrl(url);
+			basicDataSource.setUsername(username);
+			basicDataSource.setPassword(password);
+			basicDataSource.setMaxIdle(0);
+			System.out.println("C");
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
+
+	private UserJDBC() {
+		System.out.println("A");
+	}
+
+	public static UserJDBC getUserJDBC() {
+		if( userJDBC == null)
+			userJDBC = new UserJDBC();
+		return userJDBC;
+	}	
 
 	@Override
 	public boolean registration(User user) throws Exception {
@@ -286,6 +313,7 @@ public class UserJDBC implements UserDAO {
 
 		try {
 
+			System.out.println("D");
 			connection = basicDataSource.getConnection();
 
 			statement = connection.prepareStatement(Configuration.isFirstRegistrationForThisForniture);
@@ -296,9 +324,11 @@ public class UserJDBC implements UserDAO {
 			resultSet = statement.executeQuery();
 
 			if (resultSet.next()) {
+				System.out.println("E");
 				return false;
 			}
 
+			System.out.println("F");
 			return true;
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());

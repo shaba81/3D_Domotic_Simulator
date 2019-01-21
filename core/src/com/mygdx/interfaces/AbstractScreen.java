@@ -18,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.controller.Controller;
-import com.mygdx.controller.database.persistence.PostgreDAOFactory;
 import com.mygdx.controller.database.persistence.dao.UserDAO;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.simulator.email.EmailSender;
@@ -37,7 +36,7 @@ public abstract class AbstractScreen implements Screen {
 	protected Table mainTable;
 	protected TextButton backButton;
 	protected boolean back;
-	String emailOneTime;
+	protected String emailOneTime;
 
 	public AbstractScreen() {
 		// TODO Auto-generated constructor stub
@@ -100,14 +99,12 @@ public abstract class AbstractScreen implements Screen {
 								showRecoveryAccessDialog(Utils.ACCESS_FAILED_THREE_TIMES, skin, stage,
 										new TextField("", skin), true);
 							else {
-								PostgreDAOFactory postgreDAOFactory = new PostgreDAOFactory();
-								UserDAO utenteDAO = postgreDAOFactory.getUtenteDAO();
-								if (utenteDAO.emailIsRegister(email)) {
+								if (Controller.getController().getUserDAO().emailIsRegister(email)) {
 									String pass = Controller.getController().generatePassword();
 									String bodyMessage = Utils.MESSAGE_ONE_TIME_PASS + "\n\n\n One-time-pass: " + pass;
 
 									EmailSender.sendMessage(email, Utils.OGJ_ONE_TIME_PASS, bodyMessage);
-									utenteDAO.updateOneTimePass(pass, email);
+									Controller.getController().getUserDAO().updateOneTimePass(pass, email);
 									emailOneTime = email;
 
 									showRecoveryAccessDialog(Utils.ACCESS_ONE_TIME_PASS, skin, stage,
@@ -120,9 +117,7 @@ public abstract class AbstractScreen implements Screen {
 						} else {
 							System.out.println("Password da validare: " + textInput.getText());
 							String password = textInput.getText();
-							PostgreDAOFactory postgreDAOFactory = new PostgreDAOFactory();
-							UserDAO utenteDAO = postgreDAOFactory.getUtenteDAO();
-							if (utenteDAO.validateUserOneTimePAss(password, emailOneTime)) {
+							if (Controller.getController().getUserDAO().validateUserOneTimePAss(password, emailOneTime)) {
 								ScreenManager.getInstance().showScreen(new GameScreenCreator());
 							} else {
 								showRecoveryAccessDialog(Utils.ACCESS_ONE_TIME_PASS_NOT_MATCH, skin, stage,

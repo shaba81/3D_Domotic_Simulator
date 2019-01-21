@@ -11,9 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.controller.Controller;
 import com.mygdx.controller.database.model.User;
-import com.mygdx.controller.database.persistence.PostgreDAOFactory;
-import com.mygdx.controller.database.persistence.dao.UserDAO;
 import com.mygdx.controller.face.FaceDetectionController;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.interfaces.AbstractScreen;
@@ -177,9 +176,11 @@ public class FaceDetectionScreen extends AbstractScreen {
 			}
 		}
 		// si vedrà solo quando gli screen saranno singleton
-		else if (Utils.captured && !Utils.backToRegistrationScreen && !Utils.treeTimesAccessError)
+		else if (Utils.captured && Utils.backToRegistrationScreen && !Utils.treeTimesAccessError)
+		{
+			Utils.backToRegistrationScreen = false;
 			Utils.showMessageDialog(Utils.ALREADY_CAPTURE_FACE_POPUP, skin, imgStage);
-
+		}
 		if (this.registrationOrAccess) {
 			System.out.println("captured: " + Utils.captured);
 			if (Utils.captured) {
@@ -222,9 +223,6 @@ public class FaceDetectionScreen extends AbstractScreen {
 	}
 
 	private void register() {
-		PostgreDAOFactory postgreDAOFactory = new PostgreDAOFactory();
-		UserDAO userDAO = postgreDAOFactory.getUtenteDAO();
-
 		/*
 		 * Decommentare le funzioni per il salvataggio. Ora se si preme il bottone +
 		 * come se simulasse la registrazione. quindi la booleana la mette a false. Ma
@@ -234,10 +232,10 @@ public class FaceDetectionScreen extends AbstractScreen {
 		 */
 		if (Utils.isFirstAccess) {
 			System.out.println("FIRST ACCESS");
-			this.registrationUser(userDAO);
+			this.registrationUser();
 		} else {
 			System.out.println("NORMAL USER REGISTRATION");
-			this.registrationUser(userDAO);
+			this.registrationUser();
 		}
 	}
 
@@ -247,7 +245,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 	 * @param userDAO
 	 * @param isAdministrator
 	 */
-	private void registrationUser(UserDAO userDAO) {
+	private void registrationUser() {
 		try {
 			/*
 			 * TODO: fare distinzione di popup, quando fallisce va benisismo. Quando ha
@@ -261,7 +259,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 				user.setAdministrator(false);
 				user.setNickName(Utils.credentials.get(2));
 				user.setTelefonNumber(Utils.credentials.get(1));
-				user.setIdUser(userDAO.getIdUser());
+				user.setIdUser(Controller.getController().getUserDAO().getIdUser());
 
 			} else {
 				System.out.println("3");
@@ -272,7 +270,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 			user.setPathImage("resources/images/" + user.getIdUser() + ".jpg");
 			this.faceController.moveImages(user.getPathImage());
 
-			if (userDAO.registration(user)) {
+			if (Controller.getController().getUserDAO().registration(user)) {
 				System.out.println("5");
 				Utils.isAccess = true;
 			}

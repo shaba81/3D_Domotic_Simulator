@@ -2,6 +2,13 @@ package com.mygdx.controller;
 
 import java.util.Random;
 
+import org.apache.commons.dbcp2.BasicDataSource;
+
+import com.mygdx.controller.database.persistence.dao.UserDAO;
+import com.mygdx.controller.database.persistence.jdbc.UserJDBC;
+
+import utilis.Configuration;
+
 public class Controller {
 
 	private static Controller controller;
@@ -12,6 +19,14 @@ public class Controller {
 		if( controller == null )
 			controller = new Controller();
 		return controller;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public UserDAO getUserDAO() {
+		return UserJDBC.getUserJDBC();
 	}
 
 	public String generatePassword() {
@@ -34,6 +49,5 @@ public class Controller {
 		}
 		return salt.toString();
 	}
-
 
 }

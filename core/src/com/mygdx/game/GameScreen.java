@@ -39,26 +39,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.darkprograms.speech.microphone.Microphone;
-import com.darkprograms.speech.recognizer.GSpeechDuplex;
-import com.mygdx.controller.database.persistence.PostgreDAOFactory;
-import com.mygdx.controller.database.persistence.dao.UserDAO;
+import com.mygdx.controller.Controller;
 import com.mygdx.simulator.factory_methos_screens.LoginScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.MainMenuScreenCreator;
-import com.mygdx.speechToText.SpeechRecognition;
 import com.mygdx.textToSpeech.TextToSpeech;
 
-import net.sourceforge.javaflacencoder.FLACFileWriter;
 import utilis.Utils;
 
 public class GameScreen implements Screen {
 
-	private PostgreDAOFactory postgreDAOFactory;
-	private UserDAO utenteDAO;
 	private boolean logged;
 
 	// final Drop game;
@@ -184,8 +176,6 @@ public class GameScreen implements Screen {
 
 	private GameScreen() {
 
-		postgreDAOFactory = new PostgreDAOFactory();
-		this.utenteDAO = postgreDAOFactory.getUtenteDAO();
 		logged = false;
 
 		// ancora non serve
@@ -350,7 +340,6 @@ public class GameScreen implements Screen {
 	
 
 	public static GameScreen getGameScreen() {
-		
 		if(gameScreen == null)
 			gameScreen = new GameScreen();
 		return gameScreen;
@@ -690,8 +679,8 @@ public class GameScreen implements Screen {
 	}
 
 	public boolean checkAmministrator() throws Exception {
-		String idUser = utenteDAO.getIdUser();
-		if (utenteDAO.currentlyUserIsAdministrator(idUser)) {
+		String idUser = Controller.getController().getUserDAO().getIdUser();
+		if (Controller.getController().getUserDAO().currentlyUserIsAdministrator(idUser)) {
 			return true;
 		}
 		return false;
@@ -848,10 +837,9 @@ public class GameScreen implements Screen {
 
 			if (inputManager.nAccessButton) {
 				inputManager.nAccessButton = false;
-				PostgreDAOFactory postgreDAOFactory = new PostgreDAOFactory();
-				UserDAO utenteDAO = postgreDAOFactory.getUtenteDAO();
 
-				if (utenteDAO.isFirstRegistrationForThisForniture(Utils.ID_SUPPLY, Utils.ID_ADMIN_USER)) {
+				System.out.println("MAMMATA");
+				if (Controller.getController().getUserDAO().isFirstRegistrationForThisForniture(Utils.ID_SUPPLY, Utils.ID_ADMIN_USER)) {
 					Utils.isFirstAccess = true;
 					System.out.println("MMM");
 					ScreenManager.getInstance().showScreen(new LoginScreenCreator());
@@ -871,6 +859,7 @@ public class GameScreen implements Screen {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
+			System.out.println(e.getLocalizedMessage());
 		}
 	}
 

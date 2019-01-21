@@ -7,8 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.mygdx.controller.database.persistence.PostgreDAOFactory;
-import com.mygdx.controller.database.persistence.dao.UserDAO;
+import com.mygdx.controller.Controller;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.interfaces.AbstractScreen;
 import com.mygdx.simulator.factory_methos_screens.FaceDetectionScreenCreator;
@@ -104,8 +103,6 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 			this.stage.draw();
 
 			if (faceCapture) {
-				PostgreDAOFactory postgreDAOFactory = new PostgreDAOFactory();
-				UserDAO utenteDAO = postgreDAOFactory.getUtenteDAO();
 				faceCapture = false;
 				Utils.credentials.add(0, this.txtEmail.getText());
 				Utils.credentials.add(1, this.txtTelephoneNumber.getText());
@@ -115,7 +112,7 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 				 * This function return: 1: if email already exist. 2: if telephone number
 				 * already exist. 3: if nickname already exist.
 				 */
-				int result = utenteDAO.userExist(Utils.credentials.get(0), Utils.credentials.get(1),
+				int result = Controller.getController().getUserDAO().userExist(Utils.credentials.get(0), Utils.credentials.get(1),
 						Utils.credentials.get(2));
 
 				String dialogText = this.errorOccurr(result);
@@ -130,9 +127,9 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 			if (backToAdministration) {
 				backToAdministration = false;
 				if( !Utils.isFirstAccess )
-					Utils.showPopUp(Utils.REGISTRATION_CREDENTIALS_SCREEN_BACK_POPUP, skin, stage, "registration_credentials_screen");
+					Utils.showPopUp(Utils.REGISTRATION_CREDENTIALS_SCREEN_BACK_POPUP, skin, stage, Utils.ADMIN_SCREEN_POP);
 				else {
-					Utils.showPopUp(Utils.SCREEN_BACK_GAME_POPUP, skin, stage, "registration_credentials_screen_first_acc");
+					Utils.showPopUp(Utils.SCREEN_BACK_GAME_POPUP, skin, stage, Utils.GAME_SCREEN_POP);
 				}
 			}
 		} catch (Exception e) {

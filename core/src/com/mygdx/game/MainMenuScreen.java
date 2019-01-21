@@ -106,13 +106,13 @@ public class MainMenuScreen extends AbstractScreen {
 
 		if( back ) {
 			back = false;
-			Utils.showPopUp(Utils.SCREEN_BACK_GAME_SIMU_POPUP, skin, stage, "login_back_game");
+			Utils.showPopUp(Utils.SCREEN_BACK_GAME_SIMU_POPUP, skin, stage, Utils.GAME_SCREEN_POP);
 		}
 
 		if( exit ) {
 			Utils.isAccess = false;
 			exit = false;
-			Utils.showPopUp(Utils.SCREEN_BACK_GAME_SIMU_POPUP, skin, stage, "main_menu_screen");
+			Utils.showPopUp(Utils.MAIN_MENU_BACK_POPUP, skin, stage, Utils.EXIT_POP);
 		}
 
 	}
