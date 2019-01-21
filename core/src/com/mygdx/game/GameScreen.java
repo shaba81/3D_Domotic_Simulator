@@ -171,7 +171,7 @@ public class GameScreen implements Screen {
 	// Width and Height of the room's floor.
 	private float floorWidth = 120;
 	private float floorHeight = 120;
-	
+
 	private static GameScreen gameScreen;
 
 	private GameScreen() {
@@ -336,22 +336,16 @@ public class GameScreen implements Screen {
 
 		inputManager.nAccessButton = false;
 	}
-	
-	
 
 	public static GameScreen getGameScreen() {
-		if(gameScreen == null)
+		if (gameScreen == null)
 			gameScreen = new GameScreen();
 		return gameScreen;
 	}
 
-
-
 	public static void setGameScreen(GameScreen gameScreen) {
 		GameScreen.gameScreen = gameScreen;
 	}
-
-
 
 	public void createRoom() {
 		// Floor Initialization
@@ -531,58 +525,70 @@ public class GameScreen implements Screen {
 
 	public void executeCommand() {
 		// vocalCommand = readFromFile();
-		vocalCommand = Utils.resp;
-		System.out.println("Utils Resp: " + vocalCommand);
-		vocalMessage.setText(vocalCommand);
-		vocalMessageTable.add(vocalMessage);
-		vocalMessageTable.row();
+		try {
+			vocalCommand = Utils.resp;
+			System.out.println("Utils Resp: " + vocalCommand);
+			vocalMessage.setText(vocalCommand);
+			vocalMessageTable.add(vocalMessage);
+			vocalMessageTable.row();
 
-		String commandTypeOpen1 = "Apri";
-		String commandTypeOpen2 = "Accendi";
-		String commandTypeClose1 = "Spegni";
-		String commandTypeClose2 = "Chiudi";
-		String objectToActivate = vocalCommand.substring(vocalCommand.lastIndexOf(" ") + 1);
-		objectToActivate = objectToActivate.toLowerCase();
+			String commandTypeOpen1 = "Apri";
+			String commandTypeOpen2 = "Accendi";
+			String commandTypeClose1 = "Spegni";
+			String commandTypeClose2 = "Chiudi";
+			String objectToActivate = vocalCommand.substring(vocalCommand.lastIndexOf(" ") + 1);
+			objectToActivate = objectToActivate.toLowerCase();
 
-		if (vocalCommand.toLowerCase().contains(commandTypeOpen1.toLowerCase())
-				|| vocalCommand.toLowerCase().contains(commandTypeOpen2.toLowerCase())) {
-			if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
-				inputManager.isLightOn = true;
-				return;
+			if (vocalCommand.toLowerCase().contains(commandTypeOpen1.toLowerCase())
+					|| vocalCommand.toLowerCase().contains(commandTypeOpen2.toLowerCase())) {
+				if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
+					inputManager.isLightOn = true;
+					Utils.commandLog("luce", "lampada");
+					return;
+				}
+				if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
+					inputManager.isTvOn = true;
+					Utils.commandLog("tv", "televisione");
+					return;
+				}
+				if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
+					inputManager.activateSpeaker = true;
+					Utils.commandLog("stereo", "radio");
+					return;
+				}
+				if (objectToActivate.equals("ventilatore") || objectToActivate.contains("aria")) {
+					inputManager.activateFan = true;
+					Utils.commandLog("ventilatore", "aria");
+					return;
+				}
+				System.out.println("Command not recognized. Retry");
 			}
-			if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
-				inputManager.isTvOn = true;
-				return;
+
+			else if (vocalCommand.toLowerCase().contains(commandTypeClose1.toLowerCase())
+					|| vocalCommand.toLowerCase().contains(commandTypeClose2.toLowerCase())) {
+				if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
+					inputManager.isLightOn = false;
+					Utils.commandLog("luce", "lampada");
+					return;
+				}
+				if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
+					inputManager.isTvOn = false;
+					Utils.commandLog("tv", "televisione");
+					return;
+				}
+				if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
+					inputManager.activateSpeaker = false;
+					Utils.commandLog("stereo", "radio");
+					return;
+				}
+				System.out.println("Command not recognized. Retry");
+
 			}
-			if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
-				inputManager.activateSpeaker = true;
-				return;
-			}
-			if (objectToActivate.equals("ventilatore") || objectToActivate.contains("aria")) {
-				inputManager.activateFan = true;
-				return;
-			}
+
 			System.out.println("Command not recognized. Retry");
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
-
-		if (vocalCommand.toLowerCase().contains(commandTypeClose1.toLowerCase())
-				|| vocalCommand.toLowerCase().contains(commandTypeClose2.toLowerCase())) {
-			if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
-				inputManager.isLightOn = false;
-				return;
-			}
-			if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
-				inputManager.isTvOn = false;
-				return;
-			}
-			if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
-				inputManager.activateSpeaker = false;
-				return;
-			}
-			System.out.println("Command not recognized. Retry");
-		}
-
-		System.out.println("Command not recognized. Retry");
 	}
 
 	public void showMessages() {
@@ -632,11 +638,11 @@ public class GameScreen implements Screen {
 			if (inputManager.isTvOn) {
 				decalBatch.add(tvScreen);
 				decalBatch.flush();
-				// if (Utils.resp.contains("tv") || Utils.resp.contains("televisione")) {
-				// utenteDAO.insertCommand("5", Utils.resp);
-				// Utils.resp = "";
-				// System.out.println("LOG");
-				// }
+//				if (Utils.resp.contains("tv") || Utils.resp.contains("televisione")) {
+//					Controller.getController().getUserDAO().insertCommand("5", Utils.resp);
+//					Utils.resp = "";
+//					System.out.println("LOG");
+//				}
 			}
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
@@ -649,11 +655,7 @@ public class GameScreen implements Screen {
 				decalBatch.add(light);
 				light.lookAt(camera.position, camera.up);
 				decalBatch.flush();
-				// if (Utils.resp.contains("luce") || Utils.resp.contains("lampada")) {
-				// utenteDAO.insertCommand("5", Utils.resp);
-				// Utils.resp = "";
-				// System.out.println("LOG");
-				// }
+
 			}
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
@@ -664,11 +666,11 @@ public class GameScreen implements Screen {
 		try {
 			if (inputManager.activateSpeaker) {
 				song1.play();
-				// if (Utils.resp.contains("stereo") || Utils.resp.contains("radio")) {
-				// utenteDAO.insertCommand("5", Utils.resp);
-				// Utils.resp = "";
-				// System.out.println("LOG");
-				// }
+//				if (Utils.resp.contains("stereo") || Utils.resp.contains("radio")) {
+//					Controller.getController().getUserDAO().insertCommand("5", Utils.resp);
+//					Utils.resp = "";
+//					System.out.println("LOG");
+//				}
 			} else {
 				song1.pause();
 			}
@@ -839,7 +841,8 @@ public class GameScreen implements Screen {
 				inputManager.nAccessButton = false;
 
 				System.out.println("MAMMATA");
-				if (Controller.getController().getUserDAO().isFirstRegistrationForThisForniture(Utils.ID_SUPPLY, Utils.ID_ADMIN_USER)) {
+				if (Controller.getController().getUserDAO().isFirstRegistrationForThisForniture(Utils.ID_SUPPLY,
+						Utils.ID_ADMIN_USER)) {
 					Utils.isFirstAccess = true;
 					System.out.println("MMM");
 					ScreenManager.getInstance().showScreen(new LoginScreenCreator());

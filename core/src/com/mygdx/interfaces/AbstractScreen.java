@@ -69,7 +69,7 @@ public abstract class AbstractScreen implements Screen {
 		// Allineo le cose nella table
 //		this.mainTable.center();
 	}
-
+	
 	public void add(Label x) {
 		this.mainTable.add(x);
 		this.mainTable.row();

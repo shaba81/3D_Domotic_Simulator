@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.google.gson.Gson;
+import com.mygdx.controller.Controller;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.simulator.factory_methos_screens.AdministrationScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.GameScreenCreator;
@@ -116,6 +117,20 @@ public class Utils {
 	 * Vocal recognition variables
 	 */
 	public static String resp = "";
+	
+	public static void commandLog(String word1, String word2)
+	{
+		try {
+		if (Utils.resp.contains(word1) || Utils.resp.contains(word2)) {
+			
+		    Controller.getController().getUserDAO().insertCommand("5", Utils.resp);
+			resp = "";
+			System.out.println("LOG");
+		}} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
 	
 	/**
 	 * 
