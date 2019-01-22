@@ -43,6 +43,7 @@ import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.controller.Controller;
+import com.mygdx.controller.proxy.AbstractCommand;
 import com.mygdx.simulator.factory_methos_screens.LoginScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.MainMenuScreenCreator;
 import com.mygdx.textToSpeech.TextToSpeech;
@@ -55,7 +56,7 @@ public class GameScreen implements Screen {
 
 	// final Drop game;
 
-	private InputManager inputManager;
+	public InputManager inputManager;
 
 	private PerspectiveCamera camera;
 	private ModelBatch modelBatch;
@@ -173,10 +174,13 @@ public class GameScreen implements Screen {
 	private float floorHeight = 120;
 
 	private static GameScreen gameScreen;
+	private AbstractCommand abstractCommand;
+	
 
 	private GameScreen() {
 
 		logged = false;
+		
 
 		// ancora non serve
 		// textToSpeech = new TextToSpeech();
@@ -536,6 +540,7 @@ public class GameScreen implements Screen {
 			String commandTypeOpen2 = "Accendi";
 			String commandTypeClose1 = "Spegni";
 			String commandTypeClose2 = "Chiudi";
+			
 			String objectToActivate = vocalCommand.substring(vocalCommand.lastIndexOf(" ") + 1);
 			objectToActivate = objectToActivate.toLowerCase();
 
@@ -680,6 +685,7 @@ public class GameScreen implements Screen {
 
 	}
 
+	//da eliminare
 	public boolean checkAmministrator() throws Exception {
 		String idUser = Controller.getController().getUserDAO().getIdUser();
 		if (Controller.getController().getUserDAO().currentlyUserIsAdministrator(idUser)) {
