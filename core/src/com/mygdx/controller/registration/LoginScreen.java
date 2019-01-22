@@ -1,7 +1,6 @@
 package com.mygdx.controller.registration;
 
 import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -10,14 +9,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.controller.Controller;
-import com.mygdx.controller.database.persistence.dao.UserDAO;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.interfaces.AbstractScreen;
 import com.mygdx.simulator.email.EmailSender;
 import com.mygdx.simulator.factory_methos_screens.AdministrationScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.FaceDetectionScreenCreator;
 import com.mygdx.simulator.sms.SmsSender;
-import com.sun.webkit.network.Util;
 
 import utilis.Utils;
 
@@ -138,22 +135,31 @@ public class LoginScreen extends AbstractScreen {
 				else if ( this.loginCredentials.get(1).equals("") ) {
 					Utils.showMessageDialog(Utils.LOGIN_SCREEN_NO_PASSWORD_INSERT_POPUP, skin, stage);
 				}
-				else if( Controller.getController().getUserDAO().validateUserAdminCredentials(this.loginCredentials.get(1), this.loginCredentials.get(0)) ) {
+				else if( Controller.getController().getUserDAO().validateUserAdminCredentials(this.loginCredentials.get(1), this.loginCredentials.get(0)) ) 
+				{
+					Utils.resp = Utils.LOGIN_ADMIN_SCREEN_SUCCESS_LOG;
+					Utils.saveOnLog();
+					
 					if( !Utils.isFirstAccess )
 						ScreenManager.getInstance().showScreen(new AdministrationScreenCreator());
 					else{
 						ScreenManager.getInstance().showScreen(new FaceDetectionScreenCreator());
 					}
+					
 				}
 				else {
 
 					if( this.countFailedLogin == 3 ) {
 						this.countFailedLogin = 0;
+						Utils.resp = Utils.LOGIN_ADMIN_SCREEN_FAILED_THREE_TIMES_LOG;
+						Utils.saveOnLog();
 						Utils.showMessageDialog(Utils.LOGIN_SCREEN_TOO_MANY_FAILED_ATTEMPTS_POPUP,skin, stage);
 						this.updateAndSendCredentials();
 					}
 					else {						
 						++this.countFailedLogin;
+						Utils.resp = Utils.LOGIN_ADMIN_SCREEN_FAILED_LOG;
+						Utils.saveOnLog();
 						Utils.showMessageDialog(Utils.LOGIN_SCREEN_WRONG_CREDENTIAL_POPUP, skin, stage);
 					}
 				}

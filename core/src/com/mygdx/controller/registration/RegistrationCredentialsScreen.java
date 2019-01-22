@@ -64,18 +64,30 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 			}
 		});
 
+		
+        
+		if(!Utils.backToRegistrationScreen)
+		{
+		   this.txtEmail = new TextField("", skin);
+		   this.txtTelephoneNumber = new TextField("", skin);
+		   this.txtNickName = new TextField("", skin);
+		}
+		else
+		{
+			this.txtEmail = new TextField(Utils.credentials.get(0), skin);
+			this.txtTelephoneNumber = new TextField(Utils.credentials.get(1), skin);
+			this.txtNickName = new TextField(Utils.credentials.get(2), skin);
+		}
+		
 		this.emailLabel = new Label("Email: ", skin);
-		this.txtEmail = new TextField("", skin);
 		this.txtEmail.setMessageText("Ex: ciao@caro.it");
 
 		this.telephoneNumberLabel = new Label("Telephone number: ", skin);
-		this.txtTelephoneNumber = new TextField("", skin);
 		this.txtTelephoneNumber.setMessageText("Ex: +390123456789");
 
 		this.nickNameLabel = new Label("Nickname: ", skin);
-		this.txtNickName = new TextField("", skin);
 		this.txtNickName.setMessageText("Ex: Maria");
-
+		
 		this.add(this.emailLabel);
 		this.add(this.txtEmail);
 		this.add(this.telephoneNumberLabel);
@@ -120,8 +132,11 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 				if (dialogText != "")
 					Utils.showMessageDialog(dialogText, skin, stage);
 				else
+				{
+					Utils.resp = Utils.REGISTRATION_CREDENTIALS_SUCCESSFULLY_INSERT;
+					Utils.saveOnLog();
 					ScreenManager.getInstance().showScreen(new FaceDetectionScreenCreator());
-
+				}
 			}
 
 			if (backToAdministration) {

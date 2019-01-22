@@ -54,8 +54,10 @@ public class FaceDetectionScreen extends AbstractScreen {
 		imageTable.center();
 		// imgStage.addActor(imageTable);
 		imageTable.debug();
-
-		frameTexture = new Texture(Gdx.files.internal("resources/frame1.jpg"));
+		if(Utils.backToRegistrationScreen)
+		     this.frameTexture = new Texture(Gdx.files.internal("resources/frame.jpg"));
+		else
+			 this.frameTexture = new Texture(Gdx.files.internal("resources/frame1.jpg"));
 		imgRegion = new TextureRegion(frameTexture);
 		img = new Image(imgRegion);
 		imageTable.add(img).center();
@@ -156,26 +158,31 @@ public class FaceDetectionScreen extends AbstractScreen {
 				// viene richiamato il 'gameScreen'
 				System.out.println("puoi accedere");
 				Utils.captured = false;
+				Utils.resp = Utils.ACCESS_SUCCESS_LOG;
+				Utils.saveOnLog();
 				ScreenManager.getInstance().showScreen(new GameScreenCreator());
 			} else {
 				System.out.println("non puoi accedere. Riprova");
 				Utils.captured = false;
-
+                
 				// se l'utente non è stato identificato per 3 volte, gli viene mandata un'email
 				// per permettergli di poter recuperare l'accesso
 				if (Utils.treeTimesAccessError) {
 					// mandiamo l'email all'utente per fargli recuperare l'accesso alla casa
 					Utils.treeTimesAccessError = false;
 					System.out.println("TRE VOLTE");
+					Utils.resp = Utils.ACCESS_FAILED_THREE_TIMES;
+					Utils.saveOnLog();
 					this.showRecoveryAccessDialog(Utils.ACCESS_FAILED_THREE_TIMES, skin, imgStage,
 							new TextField("", skin), true);
 					System.out.println("TRE VOLTE");
 				} else {
+					Utils.resp = Utils.ACCESS_FAILED_LOG;
+					Utils.saveOnLog();
 					Utils.showMessageDialog(Utils.ACCESS_FAILED_POPUP, skin, imgStage);
 				}
 			}
 		}
-		// si vedrà solo quando gli screen saranno singleton
 		else if (Utils.captured && Utils.backToRegistrationScreen && !Utils.treeTimesAccessError)
 		{
 			Utils.backToRegistrationScreen = false;
@@ -191,9 +198,12 @@ public class FaceDetectionScreen extends AbstractScreen {
 						System.out.println("puoi registrarti");
 						Utils.backToRegistrationScreen = false;
 						this.register();
+						Utils.credentials.clear();
 						ScreenManager.getInstance().showScreen(new GameScreenCreator());
 					} else {
 						System.out.println("non puoi registrarti");
+						Utils.resp = Utils.FAILURE_USER_REGISTRATION_LOG;
+						Utils.saveOnLog();
 						Utils.showMessageDialog(Utils.REGISTRATION_FAILED_POPUP, skin, imgStage);
 						// uscirà un popup e poi verrà richiamata la 'init' di faceDetection MASSIMO
 						// ALTRE 2 VOLTE(mi pare)
@@ -232,11 +242,14 @@ public class FaceDetectionScreen extends AbstractScreen {
 		 */
 		if (Utils.isFirstAccess) {
 			System.out.println("FIRST ACCESS");
-			this.registrationUser();
+			Utils.resp = Utils.SUCCESS_ADMIN_REGISTRATION_LOG;
 		} else {
 			System.out.println("NORMAL USER REGISTRATION");
-			this.registrationUser();
+			Utils.resp = Utils.SUCCESS_USER_REGISTRATION_LOG;
 		}
+		
+		this.registrationUser();
+		Utils.saveOnLog();
 	}
 
 	/**
@@ -292,10 +305,6 @@ public class FaceDetectionScreen extends AbstractScreen {
 		super.dispose();
 		imgRegion.getTexture().dispose();
 
-	}
-
-	private void sendEmailToUser() {
-//		EmailSender.sendMessage(emailTelephoneNumeberAdmin[0], Utils.OBJ_EMAIL_RECOVERY_PASS_ADMIN, bodyMessage);
 	}
 
 	@Override
