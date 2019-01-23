@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.interfaces.AbstractScreen;
+import com.mygdx.simulator.factory_methos_screens.LogScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.RegistrationCredentialsScreenCreator;
 
 import utilis.Utils;
@@ -108,7 +109,7 @@ public class AdministrationScreen extends AbstractScreen{
 			/*
 			 * TODO SCREEN PER IL LOG
 			 */
-			//ScreenManager.getInstance().showScreen(ScreenEnum.SHOW_INTERACTION_MENU);
+			ScreenManager.getInstance().showScreen(new LogScreenCreator());
 		}
 
 		if( this.back ) {

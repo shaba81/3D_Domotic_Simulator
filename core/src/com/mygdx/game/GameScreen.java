@@ -446,6 +446,8 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void show() {
+		
+//		createRoom();
 
 		modelBatch = new ModelBatch();
 		decalBatch = new DecalBatch(new CameraGroupStrategy(camera));
@@ -729,7 +731,7 @@ public class GameScreen implements Screen {
 		if (mainRoom2.contains(player))
 			return new String("mainRoom");
 
-		return null;
+		return "";
 	}
 
 	public void walk(float timeElapsed) {

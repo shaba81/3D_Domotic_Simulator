@@ -10,8 +10,7 @@ public class Drop extends Game {
 	public void create() {
 		ScreenManager.getInstance().initialize(this);
 //		ScreenManager.getInstance().showScreen(ScreenEnum.GAME_SCREEN);
-		//setScreen(new com.mygdx.simulator.tween.Splash());
-		ScreenManager.getInstance().showScreen(new LogScreenCreator());
+		setScreen(new com.mygdx.simulator.tween.Splash());
 	}
 
 	@Override
