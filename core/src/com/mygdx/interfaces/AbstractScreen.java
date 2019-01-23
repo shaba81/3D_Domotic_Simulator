@@ -48,8 +48,8 @@ public abstract class AbstractScreen implements Screen {
 		this.camera.update();
 		this.viewport.apply();
 
-		this.atlas = new TextureAtlas(Gdx.files.internal("uiskin.atlas"));
-		this.skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
+		this.atlas = new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas"));
+		this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"), atlas);
 
 		Gdx.input.setCursorCatched(false);
 		emailOneTime = "";
