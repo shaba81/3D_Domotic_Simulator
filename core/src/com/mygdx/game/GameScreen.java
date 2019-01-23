@@ -117,6 +117,8 @@ public class GameScreen implements Screen {
 	private GameEntity frontWallEntity;
 	private GameEntity backWallEntity;
 	private GameEntity bathRoom;
+	private GameEntity mainRoom1;
+	private GameEntity mainRoom2;
 	private ArrayList<GameEntity> walls;
 
 	private Model lampModel;
@@ -175,12 +177,10 @@ public class GameScreen implements Screen {
 
 	private static GameScreen gameScreen;
 	private AbstractCommand abstractCommand;
-	
 
 	private GameScreen() {
 
 		logged = false;
-		
 
 		// ancora non serve
 		// textToSpeech = new TextToSpeech();
@@ -255,6 +255,8 @@ public class GameScreen implements Screen {
 		frontWallEntity = new GameEntity(10, 120, floorWidth / 2, wallThickness);
 		backWallEntity = new GameEntity(0, 0, floorWidth / 2, wallThickness);
 		bathRoom = new GameEntity(0, -135, 70, 60);
+		mainRoom1 = new GameEntity(0, -80, 70, 85);
+		mainRoom2 = new GameEntity(-60, -135, 70, 140);
 
 		walls = new ArrayList<GameEntity>();
 		walls.add(sxWallEntity);
@@ -540,7 +542,7 @@ public class GameScreen implements Screen {
 			String commandTypeOpen2 = "Accendi";
 			String commandTypeClose1 = "Spegni";
 			String commandTypeClose2 = "Chiudi";
-			
+
 			String objectToActivate = vocalCommand.substring(vocalCommand.lastIndexOf(" ") + 1);
 			objectToActivate = objectToActivate.toLowerCase();
 
@@ -607,6 +609,10 @@ public class GameScreen implements Screen {
 
 		if (checkRoom().equals("bathroom")) {
 			messagesTable.add(bathRoomMessage);
+			messagesTable.row();
+		}
+		if (checkRoom().equals("mainRoom")) {
+			messagesTable.add(mainRoomMessage);
 			messagesTable.row();
 		}
 		if (inputManager.isTvOn) {
@@ -685,7 +691,7 @@ public class GameScreen implements Screen {
 
 	}
 
-	//da eliminare
+	// da eliminare
 	public boolean checkAmministrator() throws Exception {
 		String idUser = Controller.getController().getUserDAO().getIdUser();
 		if (Controller.getController().getUserDAO().currentlyUserIsAdministrator(idUser)) {
@@ -717,7 +723,13 @@ public class GameScreen implements Screen {
 		if (bathRoom.contains(player))
 			return new String("bathroom");
 
-		return new String("mainRoom");
+		if (mainRoom1.contains(player))
+			return new String("mainRoom");
+
+		if (mainRoom2.contains(player))
+			return new String("mainRoom");
+
+		return null;
 	}
 
 	public void walk(float timeElapsed) {
