@@ -179,6 +179,10 @@ public class GameScreen implements Screen {
 	private AbstractCommand abstractCommand;
 
 	private GameScreen() {
+		
+	}
+	
+	public void init() {
 
 		logged = false;
 
@@ -447,7 +451,7 @@ public class GameScreen implements Screen {
 	@Override
 	public void show() {
 		
-//		createRoom();
+		init();
 
 		modelBatch = new ModelBatch();
 		decalBatch = new DecalBatch(new CameraGroupStrategy(camera));
