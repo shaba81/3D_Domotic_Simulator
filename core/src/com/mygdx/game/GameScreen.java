@@ -9,7 +9,7 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -48,7 +48,9 @@ import com.mygdx.simulator.factory_methos_screens.LoginScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.MainMenuScreenCreator;
 import com.mygdx.textToSpeech.TextToSpeech;
 
+import utilis.Music;
 import utilis.Utils;
+
 
 public class GameScreen implements Screen {
 
@@ -138,7 +140,7 @@ public class GameScreen implements Screen {
 	private Model speakerModel;
 	private ModelInstance speakerInstance;
 	private ModelInstance speaker2Instance;
-	private Music song1;
+	private Sound song1;
 
 	private Texture tvScreenTexture;
 	private TextureRegion tvScreenRegion;
@@ -178,10 +180,12 @@ public class GameScreen implements Screen {
 	private static GameScreen gameScreen;
 	private AbstractCommand abstractCommand;
 
-	private GameScreen() {
-		
-	}
+	private Music music;
 	
+	private GameScreen() {
+
+	}
+
 	public void init() {
 
 		logged = false;
@@ -372,6 +376,8 @@ public class GameScreen implements Screen {
 		floorInstance.transform.translate(0, 0, -floorHeight / 2);
 		floorInstance.transform.rotate(Vector3.X, 270);
 
+		
+		
 		// Walls initialization
 		sxWallPosition = new Vector3(-60, 20, -60);
 		dxWallPosition = new Vector3(60, 20, -60);
@@ -446,11 +452,13 @@ public class GameScreen implements Screen {
 		frontDxBathWallInstance.transform.translate(frontDxBathWallPosition);
 		frontDxBathWallInstance.transform.rotate(Vector3.Y, 270);
 
+		//song1 = Gdx.audio.newSound(Gdx.files.internal("song1.mp3"));
+		//music = new Music();
 	}
 
 	@Override
 	public void show() {
-		
+
 		init();
 
 		modelBatch = new ModelBatch();
@@ -466,29 +474,29 @@ public class GameScreen implements Screen {
 		vocalMessageTable.setFillParent(true);
 		vocalMessageTable.top();
 
-		song1 = Gdx.audio.newMusic(Gdx.files.internal("song1.mp3"));
+		// da provare java
 
 		Gdx.input.setCursorCatched(true);
 		Gdx.input.setInputProcessor(inputManager);
 	}
 
-	public String readFromFile() {
-		try {
-			FileReader reader = new FileReader("resources/vocalCommand.txt");
-			BufferedReader bufferedReader = new BufferedReader(reader);
-
-			String line;
-
-			line = bufferedReader.readLine();
-			reader.close();
-
-			return line;
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+//	public String readFromFile() {
+//		try {
+//			FileReader reader = new FileReader("resources/vocalCommand.txt");
+//			BufferedReader bufferedReader = new BufferedReader(reader);
+//
+//			String line;
+//
+//			line = bufferedReader.readLine();
+//			reader.close();
+//
+//			return line;
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
 
 	public void OpenDoor() {
 
@@ -678,18 +686,23 @@ public class GameScreen implements Screen {
 			System.err.println(e.getMessage());
 		}
 	}
-
+	
+	boolean primo = true;
+	
 	public void startSpeakers() {
 		try {
 			if (inputManager.activateSpeaker) {
-				song1.play();
+				if (primo) {
+				music = new Music(); 
+				primo = false;}
 //				if (Utils.resp.contains("stereo") || Utils.resp.contains("radio")) {
 //					Controller.getController().getUserDAO().insertCommand("5", Utils.resp);
 //					Utils.resp = "";
 //					System.out.println("LOG");
 //				}
 			} else {
-				song1.pause();
+				music.close();
+				primo = true;
 			}
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
@@ -711,19 +724,21 @@ public class GameScreen implements Screen {
 	 * entra dalla porta principale gli viene riprodotto il msg di benvenuto (solo
 	 * una volta) se dalla stanza B va alla stanza A gli vengono riprodotti solo i
 	 * comandi.
-	 * 
-	 * public void showAvailableCommands() { if (checkRoom().equals("mainRoom")) {
-	 * if (firstTimeAccess) { textToSpeech.
-	 * speak("Benvenuto nella casa. Stai usando il sistema Housim, progetto sviluppato per l'esame di ingegneria del software all'inversità della calabria."
-	 * ); //comandi disponibili stanza A }
-	 * 
-	 * //ripeti solo i comandi stanza A } if (checkRoom().equals("mainRoom")) {
-	 * //elenca comandi stanza B
-	 * 
-	 * }
-	 * 
-	 * }
 	 */
+
+	boolean entrata = true;
+
+	public void showAvailableCommands() {
+
+		if (checkRoom().equals("mainRoom")) {
+			if (entrata) {
+
+				new TextToSpeech();
+			}
+			entrata = false;
+		}
+
+	}
 
 	public String checkRoom() {
 		if (bathRoom.contains(player))
@@ -818,6 +833,7 @@ public class GameScreen implements Screen {
 			spriteBatch.setProjectionMatrix(camera.combined);
 
 			checkRoom();
+			showAvailableCommands();
 
 			walk(Gdx.graphics.getDeltaTime());
 			OpenDoor();
