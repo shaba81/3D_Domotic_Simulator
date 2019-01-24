@@ -22,7 +22,7 @@ public class Music {
 		Thread thread = new Thread(() -> {
 		try {
 			fileInputStream = new FileInputStream(
-					"HouseSimulator-core//resources//song1.mp3//song1.mp3");
+					"resources/song1.mp3");
 			player = new Player(fileInputStream);
 			player.play();
 

@@ -690,6 +690,7 @@ public class GameScreen implements Screen {
 	boolean primo = true;
 	
 	public void startSpeakers() {
+		
 		try {
 			if (inputManager.activateSpeaker) {
 				if (primo) {
