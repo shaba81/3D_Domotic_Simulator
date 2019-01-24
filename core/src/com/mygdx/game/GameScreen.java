@@ -51,7 +51,6 @@ import com.mygdx.textToSpeech.TextToSpeech;
 import utilis.Music;
 import utilis.Utils;
 
-
 public class GameScreen implements Screen {
 
 	private boolean logged;
@@ -181,7 +180,7 @@ public class GameScreen implements Screen {
 	private AbstractCommand abstractCommand;
 
 	private Music music;
-	
+
 	private GameScreen() {
 
 	}
@@ -376,8 +375,6 @@ public class GameScreen implements Screen {
 		floorInstance.transform.translate(0, 0, -floorHeight / 2);
 		floorInstance.transform.rotate(Vector3.X, 270);
 
-		
-		
 		// Walls initialization
 		sxWallPosition = new Vector3(-60, 20, -60);
 		dxWallPosition = new Vector3(60, 20, -60);
@@ -452,8 +449,8 @@ public class GameScreen implements Screen {
 		frontDxBathWallInstance.transform.translate(frontDxBathWallPosition);
 		frontDxBathWallInstance.transform.rotate(Vector3.Y, 270);
 
-		//song1 = Gdx.audio.newSound(Gdx.files.internal("song1.mp3"));
-		//music = new Music();
+		// song1 = Gdx.audio.newSound(Gdx.files.internal("song1.mp3"));
+		// music = new Music();
 	}
 
 	@Override
@@ -686,24 +683,28 @@ public class GameScreen implements Screen {
 			System.err.println(e.getMessage());
 		}
 	}
-	
+
 	boolean primo = true;
-	
+
 	public void startSpeakers() {
-		
+
 		try {
 			if (inputManager.activateSpeaker) {
 				if (primo) {
-				music = new Music(); 
-				primo = false;}
+					music = new Music();
+					primo = false;
+					Utils.songPlay = true;
+				}
 //				if (Utils.resp.contains("stereo") || Utils.resp.contains("radio")) {
 //					Controller.getController().getUserDAO().insertCommand("5", Utils.resp);
 //					Utils.resp = "";
 //					System.out.println("LOG");
 //				}
 			} else {
-				music.close();
-				primo = true;
+				if (Utils.songPlay) {
+					music.close();
+					primo = true;
+				}
 			}
 		} catch (Exception e) {
 			System.err.println(e.getMessage());

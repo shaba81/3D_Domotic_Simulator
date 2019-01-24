@@ -25,6 +25,7 @@ public class Music {
 					"resources/song1.mp3");
 			player = new Player(fileInputStream);
 			player.play();
+			Utils.songPlay = true;
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -51,6 +52,8 @@ public class Music {
 //	}
 
 	public void close() {
+		System.err.println("MA");
 		player.close();
+		Utils.songPlay = false;
 	}
 }

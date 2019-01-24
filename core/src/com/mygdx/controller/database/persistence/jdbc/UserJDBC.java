@@ -331,7 +331,7 @@ public class UserJDBC implements UserDAO {
 			System.out.println("F");
 			return true;
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			System.err.println(e.getMessage());
 			throw e;
 		} finally {
 			if (resultSet != null)

@@ -40,6 +40,7 @@ public class Utils {
 	public static boolean captured = false;
 	public static boolean backToRegistrationScreen = false;
 	public static boolean treeTimesAccessError = false;
+	public static boolean songPlay = false;
 
 	public static int countErrorTimes = 0;
 
