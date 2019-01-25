@@ -163,23 +163,17 @@ public class FaceDetectionScreen extends AbstractScreen {
 					System.out.println("puoi accedere");
 					Utils.captured = false;
 //				Utils.resp = Utils.ACCESS_SUCCESS_LOG;
+
+					String pathOriginal = Utils.pathImageUser;
+					String idUser = getIdUserFromImage(pathOriginal);
+					User user = Controller.getController().getUserDAO().getUserByPathImage("resources/images/" +idUser +".jpg");
+					user.setIdUser(idUser);
+					Utils.userLogged = idUser;
 					Utils.saveOnLog(Utils.ACCESS_SUCCESS_LOG);
-					String path = Utils.pathImageUser;
-					for(int i = path.length()-1, slashI = 0, pointI=path.length()-4; i >= 0; i--  ) {
-						if( path.charAt(i) == 's' ) {
-							slashI = i+2;
-							path = path.substring(slashI, pointI);
-							break;
-						}
-					}
-					System.out.println(path);
-					User user = Controller.getController().getUserDAO().getUserByPathImage("resources/images/" +path +".jpg");
-					System.out.println(user.getEmail());
 					/*
 					 * Proxy o non proxy decision
 					 */
 					GameScreen.getGameScreen().setUser(user);
-					System.out.println(user.getEmail());
 					if( user.isAdministrator() )
 						GameScreen.getGameScreen().setCommand(new UserAdministratorCommand());
 					else
@@ -221,7 +215,9 @@ public class FaceDetectionScreen extends AbstractScreen {
 							System.out.println("puoi registrarti");
 							Utils.backToRegistrationScreen = false;
 							String pathImage = this.register();
+							String idUser = getIdUserFromImage(pathImage);
 							User user = new User(Utils.credentials.get(0), Utils.credentials.get(2), Utils.credentials.get(1), pathImage, false);
+							user.setIdUser(idUser);
 							Utils.credentials.clear();
 							GameScreen.getGameScreen().setUser(user);
 							GameScreen.getGameScreen().setCommand(new UserCommand());
@@ -291,7 +287,6 @@ public class FaceDetectionScreen extends AbstractScreen {
 			 * successo farlo accedere
 			 */
 			User user = new User();
-			System.out.println("1");
 			if (!Utils.isFirstAccess) {
 				System.out.println("2");
 				user.setEmail(Utils.credentials.get(0));
@@ -301,11 +296,9 @@ public class FaceDetectionScreen extends AbstractScreen {
 				user.setIdUser(Controller.getController().getUserDAO().getIdUser());
 
 			} else {
-				System.out.println("3");
 				user.setIdUser(Utils.ID_ADMIN_USER);
 			}
 
-			System.out.println("4");
 			user.setPathImage("resources/images/" + user.getIdUser() + ".jpg");
 			this.faceController.moveImages(user.getPathImage());
 
@@ -313,7 +306,6 @@ public class FaceDetectionScreen extends AbstractScreen {
 				System.out.println("5");
 				Utils.isAccess = true;
 			}
-			System.out.println("7");
 			path = user.getPathImage();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -368,4 +360,14 @@ public class FaceDetectionScreen extends AbstractScreen {
 		this.user_telphone = user_telphone;
 	}
 
+	private String getIdUserFromImage(String path) {
+		for(int i = path.length()-1, slashI = 0, pointI=path.length()-4; i >= 0; i--  ) {
+			if( path.charAt(i) == 's' ) {
+				slashI = i+2;
+				path = path.substring(slashI, pointI);
+				break;
+			}
+		}
+		return path;
+	}
 }

@@ -141,7 +141,7 @@ public class Utils {
 	/*
 	 * User logged
 	 */
-	public static String userLogged = "5";
+	public static String userLogged = "-1";
 
 	/*
 	 * path of user

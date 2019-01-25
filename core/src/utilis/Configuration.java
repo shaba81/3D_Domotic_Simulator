@@ -1,4 +1,4 @@
-package utilis;
+ package utilis;
 
 /**
  * Classe delegata ad avere Stringhe utilizzate dalle classi del codice

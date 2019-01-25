@@ -45,6 +45,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.controller.Controller;
 import com.mygdx.controller.database.model.User;
 import com.mygdx.controller.proxy.AbstractCommand;
+import com.mygdx.controller.proxy.UserAdministratorCommand;
 import com.mygdx.controller.proxy.UserCommand;
 import com.mygdx.simulator.factory_methos_screens.LoginScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.MainMenuScreenCreator;
@@ -354,10 +355,11 @@ public class GameScreen implements Screen {
 
 		if( user == null & command == null & checkRoom().equals("") ) {
 			user = new User();
+			user.setIdUser("-1");
 			command = new UserCommand();
 		}
 
-		System.out.println("Email: " + user.getEmail() + "\nNick: " + user.getNickName() + "\nNumero: " + user.getTelefonNumber() + "\nImage: " + user.getPathImage());
+		Utils.userLogged = user.getIdUser();
 	}
 
 	public static GameScreen getGameScreen() {
