@@ -352,6 +352,11 @@ public class GameScreen implements Screen {
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 1.0f));
 
 		inputManager.nAccessButton = false;
+
+		if( checkRoom().equals("") ) {
+			command = new UserCommand();
+		}
+
 	}
 
 	public static GameScreen getGameScreen() {

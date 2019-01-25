@@ -21,13 +21,13 @@ public class UserAdministratorCommand implements AbstractCommand {
 	@Override
 	public void fanOn() {
 		GameScreen.getGameScreen().inputManager.activateFan = true;
-		Utils.commandLog("stereo", "radio",Utils.RADIO_ON_LOG);
+		Utils.commandLog("ventilatore", "aria",Utils.FAN_ON_LOG);
 	}
 
 	@Override
 	public void speakerOn() {
 		GameScreen.getGameScreen().inputManager.activateSpeaker = true;
-		Utils.commandLog("ventilatore", "aria",Utils.FAN_ON_LOG);
+		Utils.commandLog("stereo", "radio",Utils.RADIO_ON_LOG);
 	}
 
 	@Override
