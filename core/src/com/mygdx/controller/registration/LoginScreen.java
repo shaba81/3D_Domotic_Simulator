@@ -137,8 +137,8 @@ public class LoginScreen extends AbstractScreen {
 				}
 				else if( Controller.getController().getUserDAO().validateUserAdminCredentials(this.loginCredentials.get(1), this.loginCredentials.get(0)) ) 
 				{
-					Utils.resp = Utils.LOGIN_ADMIN_SCREEN_SUCCESS_LOG;
-					Utils.saveOnLog();
+//					Utils.resp = Utils.LOGIN_ADMIN_SCREEN_SUCCESS_LOG;
+					Utils.saveOnLog(Utils.LOGIN_ADMIN_SCREEN_SUCCESS_LOG);
 					
 					if( !Utils.isFirstAccess )
 						ScreenManager.getInstance().showScreen(new AdministrationScreenCreator());
@@ -151,15 +151,15 @@ public class LoginScreen extends AbstractScreen {
 
 					if( this.countFailedLogin == 3 ) {
 						this.countFailedLogin = 0;
-						Utils.resp = Utils.LOGIN_ADMIN_SCREEN_FAILED_THREE_TIMES_LOG;
-						Utils.saveOnLog();
+//						Utils.resp = Utils.LOGIN_ADMIN_SCREEN_FAILED_THREE_TIMES_LOG;
+						Utils.saveOnLog(Utils.LOGIN_ADMIN_SCREEN_FAILED_THREE_TIMES_LOG);
 						Utils.showMessageDialog(Utils.LOGIN_SCREEN_TOO_MANY_FAILED_ATTEMPTS_POPUP,skin, stage);
 						this.updateAndSendCredentials();
 					}
 					else {						
 						++this.countFailedLogin;
-						Utils.resp = Utils.LOGIN_ADMIN_SCREEN_FAILED_LOG;
-						Utils.saveOnLog();
+//						Utils.resp = Utils.LOGIN_ADMIN_SCREEN_FAILED_LOG;
+						Utils.saveOnLog(Utils.LOGIN_ADMIN_SCREEN_FAILED_LOG);
 						Utils.showMessageDialog(Utils.LOGIN_SCREEN_WRONG_CREDENTIAL_POPUP, skin, stage);
 					}
 				}

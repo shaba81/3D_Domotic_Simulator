@@ -158,8 +158,8 @@ public class FaceDetectionScreen extends AbstractScreen {
 				// viene richiamato il 'gameScreen'
 				System.out.println("puoi accedere");
 				Utils.captured = false;
-				Utils.resp = Utils.ACCESS_SUCCESS_LOG;
-				Utils.saveOnLog();
+//				Utils.resp = Utils.ACCESS_SUCCESS_LOG;
+				Utils.saveOnLog(Utils.ACCESS_SUCCESS_LOG);
 				ScreenManager.getInstance().showScreen(new GameScreenCreator());
 			} else {
 				System.out.println("non puoi accedere. Riprova");
@@ -171,14 +171,14 @@ public class FaceDetectionScreen extends AbstractScreen {
 					// mandiamo l'email all'utente per fargli recuperare l'accesso alla casa
 					Utils.treeTimesAccessError = false;
 					System.out.println("TRE VOLTE");
-					Utils.resp = Utils.ACCESS_FAILED_THREE_TIMES;
-					Utils.saveOnLog();
+//					Utils.resp = Utils.ACCESS_FAILED_THREE_TIMES;
+					Utils.saveOnLog(Utils.ACCESS_FAILED_THREE_TIMES);
 					this.showRecoveryAccessDialog(Utils.ACCESS_FAILED_THREE_TIMES, skin, imgStage,
 							new TextField("", skin), true);
 					System.out.println("TRE VOLTE");
 				} else {
-					Utils.resp = Utils.ACCESS_FAILED_LOG;
-					Utils.saveOnLog();
+//					Utils.resp = Utils.ACCESS_FAILED_LOG;
+					Utils.saveOnLog(Utils.ACCESS_FAILED_LOG);
 					Utils.showMessageDialog(Utils.ACCESS_FAILED_POPUP, skin, imgStage);
 				}
 			}
@@ -202,8 +202,8 @@ public class FaceDetectionScreen extends AbstractScreen {
 						ScreenManager.getInstance().showScreen(new GameScreenCreator());
 					} else {
 						System.out.println("non puoi registrarti");
-						Utils.resp = Utils.FAILURE_USER_REGISTRATION_LOG;
-						Utils.saveOnLog();
+//						Utils.resp = Utils.FAILURE_USER_REGISTRATION_LOG;
+						Utils.saveOnLog(Utils.FAILURE_USER_REGISTRATION_LOG);
 						Utils.showMessageDialog(Utils.REGISTRATION_FAILED_POPUP, skin, imgStage);
 						// uscirà un popup e poi verrà richiamata la 'init' di faceDetection MASSIMO
 						// ALTRE 2 VOLTE(mi pare)
@@ -240,16 +240,16 @@ public class FaceDetectionScreen extends AbstractScreen {
 		 * quando effettivamente il salvataggio è avvenuto con successo e questo
 		 * controllo lo facciamo dentro la funzione.
 		 */
+		String logMessage  = Utils.SUCCESS_ADMIN_REGISTRATION_LOG;
 		if (Utils.isFirstAccess) {
 			System.out.println("FIRST ACCESS");
-			Utils.resp = Utils.SUCCESS_ADMIN_REGISTRATION_LOG;
 		} else {
 			System.out.println("NORMAL USER REGISTRATION");
-			Utils.resp = Utils.SUCCESS_USER_REGISTRATION_LOG;
+			logMessage = Utils.SUCCESS_USER_REGISTRATION_LOG;
 		}
 		
 		this.registrationUser();
-		Utils.saveOnLog();
+		Utils.saveOnLog(logMessage);
 	}
 
 	/**

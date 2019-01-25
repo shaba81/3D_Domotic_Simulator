@@ -99,8 +99,8 @@ public class AdministrationScreen extends AbstractScreen{
 
 		if( this.registration ) {
 			this.registration = false;
-			Utils.resp = Utils.ADMIN_REGISTERS_A_NEW_USER;
-			Utils.saveOnLog();
+//			Utils.resp = Utils.ADMIN_REGISTERS_A_NEW_USER;
+			Utils.saveOnLog(Utils.ADMIN_REGISTERS_A_NEW_USER);
 			ScreenManager.getInstance().showScreen(new RegistrationCredentialsScreenCreator());
 		}
 

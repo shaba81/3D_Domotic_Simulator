@@ -43,7 +43,9 @@ import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.controller.Controller;
+import com.mygdx.controller.database.model.User;
 import com.mygdx.controller.proxy.AbstractCommand;
+import com.mygdx.controller.proxy.UserCommand;
 import com.mygdx.simulator.factory_methos_screens.LoginScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.MainMenuScreenCreator;
 import com.mygdx.textToSpeech.TextToSpeech;
@@ -53,7 +55,11 @@ import utilis.Utils;
 
 public class GameScreen implements Screen {
 
-	private boolean logged;
+	/*
+	 * Come da caso d'uso 
+	 */
+	private User user;
+	private AbstractCommand command;
 
 	// final Drop game;
 
@@ -186,8 +192,6 @@ public class GameScreen implements Screen {
 	}
 
 	public void init() {
-
-		logged = false;
 
 		// ancora non serve
 		// textToSpeech = new TextToSpeech();
@@ -560,23 +564,27 @@ public class GameScreen implements Screen {
 			if (vocalCommand.toLowerCase().contains(commandTypeOpen1.toLowerCase())
 					|| vocalCommand.toLowerCase().contains(commandTypeOpen2.toLowerCase())) {
 				if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
-					inputManager.isLightOn = true;
-					Utils.commandLog("luce", "lampada");
+//					inputManager.isLightOn = true;
+//					Utils.commandLog("luce", "lampada",Utils.LIGHT_ON_LOG);
+					command.lightOn();
 					return;
 				}
 				if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
-					inputManager.isTvOn = true;
-					Utils.commandLog("tv", "televisione");
+//					inputManager.isTvOn = true;
+//					Utils.commandLog("tv", "televisione", Utils.TV_ON_LOG);
+					command.tvOn();
 					return;
 				}
 				if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
-					inputManager.activateSpeaker = true;
-					Utils.commandLog("stereo", "radio");
+//					inputManager.activateSpeaker = true;
+//					Utils.commandLog("stereo", "radio",Utils.RADIO_ON_LOG);
+					command.speakerOn();
 					return;
 				}
 				if (objectToActivate.equals("ventilatore") || objectToActivate.contains("aria")) {
-					inputManager.activateFan = true;
-					Utils.commandLog("ventilatore", "aria");
+//					inputManager.activateFan = true;
+//					Utils.commandLog("ventilatore", "aria",Utils.FAN_ON_LOG);
+					command.fanOn();
 					return;
 				}
 				System.out.println("Command not recognized. Retry");
@@ -584,19 +592,23 @@ public class GameScreen implements Screen {
 
 			else if (vocalCommand.toLowerCase().contains(commandTypeClose1.toLowerCase())
 					|| vocalCommand.toLowerCase().contains(commandTypeClose2.toLowerCase())) {
+				String idUser = "5";
 				if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
-					inputManager.isLightOn = false;
-					Utils.commandLog("luce", "lampada");
+//					inputManager.isLightOn = false;
+//					Utils.commandLog("luce", "lampada", Utils.LIGHT_OFF_LOG);
+					command.lightOff();
 					return;
 				}
 				if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
-					inputManager.isTvOn = false;
-					Utils.commandLog("tv", "televisione");
+//					inputManager.isTvOn = false;
+//					Utils.commandLog("tv", "televisione",Utils.TV_OFF_LOG);
+					command.tvOff();
 					return;
 				}
 				if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
-					inputManager.activateSpeaker = false;
-					Utils.commandLog("stereo", "radio");
+//					inputManager.activateSpeaker = false;
+//					Utils.commandLog("stereo", "radio",Utils.RADIO_OFF_LOG);
+					command.speakerOff();
 					return;
 				}
 				System.out.println("Command not recognized. Retry");
@@ -734,8 +746,7 @@ public class GameScreen implements Screen {
 
 		if (checkRoom().equals("mainRoom")) {
 			if (entrata) {
-
-				new TextToSpeech();
+				new TextToSpeech("ciao a tutti, questo il text to speech del progetto di ingegneria del software");
 			}
 			entrata = false;
 		}

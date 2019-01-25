@@ -108,11 +108,20 @@ public class Utils {
 	public static final String LOGIN_ADMIN_SCREEN_FAILED_THREE_TIMES_LOG = "Login to the administration screen denied for three times.";
 	public static final String GO_OUT_HOME_LOG = "User goes out home.";
 	public static final String EXIT_THE_SIMULATION_LOG = "User exits the simulation.";
-	public static final String SUCCESS_USER_REGISTRATION_LOG = "User registration has been successful";
-	public static final String FAILURE_USER_REGISTRATION_LOG = "User registration has failed";
-	public static final String SUCCESS_ADMIN_REGISTRATION_LOG = "Administration registration has been successful";
+	public static final String SUCCESS_USER_REGISTRATION_LOG = "User registration has been successful.";
+	public static final String FAILURE_USER_REGISTRATION_LOG = "User registration has failed.";
+	public static final String SUCCESS_ADMIN_REGISTRATION_LOG = "Administration registration has been successful.";
 	public static final String REGISTRATION_CREDENTIALS_SUCCESSFULLY_INSERT = "User has successfully insered his registraion credentials.";
 	public static final String ADMIN_REGISTERS_A_NEW_USER = "Admin registers a new user.";
+	public static final String TV_ON_LOG = "He asked to switch on the television.";
+	public static final String TV_OFF_LOG = "He asked to switch off the television.";
+	public static final String LIGHT_ON_LOG = "He asked to switch on the light.";
+	public static final String LIGHT_OFF_LOG = "He asked to switch off the light.";
+	public static final String RADIO_ON_LOG = "He asked to switch on the stereo.";
+	public static final String RADIO_OFF_LOG = "He asked to switch off the stereo.";
+	public static final String FAN_ON_LOG = "He asked to switch on the fan.";
+	public static final String FAN_OFF_LOG = "He asked to switch off the fan.";
+
 	
 	/*
 	 * For popUp 
@@ -128,25 +137,31 @@ public class Utils {
 	 * Vocal recognition variables
 	 */
 	public static String resp = "";
+
+	/*
+	 * User logged
+	 */
+	public static String userLogged = "5";
 	
 	/**
 	 * Useful log method. If user vocal command contains one of the two words below, it will be saved on log.
 	 * @param word1 -> Possible user word command 1
 	 * @param word2 -> Possible user word command 2
+	 * @param lightOnLog 
 	 */
-	public static void commandLog(String word1, String word2)
+	public static void commandLog(String word1, String word2, String command)
 	{
 		if (Utils.resp.contains(word1) || Utils.resp.contains(word2))
-			saveOnLog();
+			saveOnLog( command);
 	}
 	
 	/**
 	 * It's the method which saves on log the actual state of user(Ex: user home access, etc...)
 	 */
-	public static void saveOnLog()
+	public static void saveOnLog(String command)
 	{
 		try {
-			Controller.getController().getUserDAO().insertCommand("5", Utils.resp);
+			Controller.getController().getUserDAO().insertCommand(userLogged,command);
 		     resp = "";
 		     System.out.println("LOG");
 		} catch (Exception e) {

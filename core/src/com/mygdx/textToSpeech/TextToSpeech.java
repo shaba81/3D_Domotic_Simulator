@@ -9,17 +9,15 @@ import javazoom.jl.player.advanced.AdvancedPlayer;
 
 public class TextToSpeech {
 
-	public static void main(String[] args) {
-		new TextToSpeech();
-	}
-
+	String message;
 	// creiamo un sintetizzatore con la relativa chiave google
 	SynthesiserV2 synthesizer = new SynthesiserV2("AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw");
 
 	// costrutore di prova
-	public TextToSpeech() {
+	public TextToSpeech(String message) {
 		// prova
-		speak("ciao a tutti, questo il text to speech del progetto di ingegneria del software");
+		this.message = message;
+		speak(this.message);
 	}
 
 	// funzione che riproduce la stringa che gli si passa

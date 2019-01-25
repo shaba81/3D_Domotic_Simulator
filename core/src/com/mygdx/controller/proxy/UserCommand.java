@@ -1,9 +1,16 @@
 package com.mygdx.controller.proxy;
 
+import com.mygdx.textToSpeech.TextToSpeech;
+
+import utilis.Utils;
+
 public class UserCommand implements AbstractCommand {
 
-	UserAdministratorCommand uac = new UserAdministratorCommand();
-	
+	UserAdministratorCommand uac;
+
+	public UserCommand() {
+		uac = new UserAdministratorCommand();
+	}
 
 	@Override
 	public void lightOn() {
@@ -12,8 +19,8 @@ public class UserCommand implements AbstractCommand {
 
 	@Override
 	public void tvOn() {
-		throw new CommandPermissionException();
-
+		Utils.saveOnLog(Utils.TV_ON_LOG);
+		new TextToSpeech("Mi dispiace il comando non è permesso a questo tipo di utente.");
 	}
 
 	@Override
@@ -30,26 +37,24 @@ public class UserCommand implements AbstractCommand {
 
 	@Override
 	public void lightOff() {
-		// TODO Auto-generated method stub
+		uac.lightOff();
 		
 	}
 
 	@Override
 	public void tvOff() {
-		// TODO Auto-generated method stub
-		
+		uac.tvOff();
 	}
 
 	@Override
 	public void fanOff() {
-		// TODO Auto-generated method stub
+		uac.fanOff();
 		
 	}
 
 	@Override
 	public void speakerOff() {
-		// TODO Auto-generated method stub
-		
+		uac.speakerOff();
 	}
 
 

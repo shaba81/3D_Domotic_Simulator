@@ -133,8 +133,8 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 					Utils.showMessageDialog(dialogText, skin, stage);
 				else
 				{
-					Utils.resp = Utils.REGISTRATION_CREDENTIALS_SUCCESSFULLY_INSERT;
-					Utils.saveOnLog();
+//					Utils.resp = Utils.REGISTRATION_CREDENTIALS_SUCCESSFULLY_INSERT;
+					Utils.saveOnLog(Utils.REGISTRATION_CREDENTIALS_SUCCESSFULLY_INSERT);
 					ScreenManager.getInstance().showScreen(new FaceDetectionScreenCreator());
 				}
 			}

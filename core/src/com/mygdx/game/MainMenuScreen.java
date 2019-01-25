@@ -112,8 +112,8 @@ public class MainMenuScreen extends AbstractScreen {
 		if( exit ) {
 			Utils.isAccess = false;
 			exit = false;
-			Utils.resp = Utils.EXIT_THE_SIMULATION_LOG;
-			Utils.saveOnLog();
+			//Utils.resp = Utils.EXIT_THE_SIMULATION_LOG;
+			Utils.saveOnLog(Utils.EXIT_THE_SIMULATION_LOG);
 			Utils.showPopUp(Utils.MAIN_MENU_BACK_POPUP, skin, stage, Utils.EXIT_POP);
 		}
 
