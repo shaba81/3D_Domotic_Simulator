@@ -21,5 +21,6 @@ public interface UserDAO {
 	public boolean currentlyUserIsAdministrator(String email) throws Exception;
 	public boolean emailIsRegister(String email) throws Exception;
 	public void updateOneTimePass(String oneTimePass, String email) throws Exception;
+	public User getUserByPathImage(String path) throws Exception;
 
 }

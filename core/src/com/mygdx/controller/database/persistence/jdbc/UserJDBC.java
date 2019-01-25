@@ -620,4 +620,46 @@ public class UserJDBC implements UserDAO {
 		}
 
 	}
+
+	@Override
+	public User getUserByPathImage(String path) throws Exception {
+
+		Connection connection = null;
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		User user = null;
+
+		try {
+
+			connection = basicDataSource.getConnection();
+
+			statement = connection.prepareStatement(Configuration.selectUserByPathImage);
+
+			statement.setString(1, path);
+			resultSet = statement.executeQuery();
+
+			if (resultSet.next()) {
+				user = new User();
+				user.setEmail(resultSet.getString("email"));
+				user.setTelefonNumber(resultSet.getString("telephone_number"));
+				user.setNickName(resultSet.getString("nick_name"));
+				user.setPathImage(resultSet.getString("path_image"));
+				user.setAdministrator(resultSet.getBoolean("is_administrator"));
+			}
+
+			return user;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw e;
+		} finally {
+			if (resultSet != null)
+				resultSet.close();
+			if (statement != null)
+				statement.close();
+			if (connection != null)
+				connection.close();
+		}
+
+
+	}
 }

@@ -132,7 +132,6 @@ public abstract class AbstractScreen implements Screen {
 		};
 
 		dialog.button("SEND", "true");
-		dialog.key(Keys.ENTER, true);
 		Label emailLabel = new Label(text, skin);
 		dialog.getContentTable().row();
 		dialog.getContentTable().add(emailLabel).left();
@@ -145,6 +144,7 @@ public abstract class AbstractScreen implements Screen {
 
 	@Override
 	public void dispose() {
+		System.out.println("SUPER");
 		batch.dispose();
 		stage.dispose();
 		skin.dispose();

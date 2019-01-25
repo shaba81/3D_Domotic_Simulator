@@ -142,7 +142,11 @@ public class Utils {
 	 * User logged
 	 */
 	public static String userLogged = "5";
-	
+
+	/*
+	 * path of user
+	 */
+	public static String pathImageUser = "";
 	/**
 	 * Useful log method. If user vocal command contains one of the two words below, it will be saved on log.
 	 * @param word1 -> Possible user word command 1

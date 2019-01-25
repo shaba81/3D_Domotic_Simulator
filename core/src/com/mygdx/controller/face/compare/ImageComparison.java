@@ -4,6 +4,9 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+
+import utilis.Utils;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -132,6 +135,7 @@ public class ImageComparison {
 //		System.out.println("keyimA: "+key+", path imgA: "+this.users_faces_files.get(key).getPath()+", path imgB: "+pathB+", ");
 		if (percentage < 9.1) {
 			System.out.println("I due volti SONO gli stessi.");
+			Utils.pathImageUser = this.users_faces_files.get(key).getAbsolutePath();
 			return true;
 		}
 

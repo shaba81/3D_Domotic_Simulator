@@ -99,10 +99,10 @@ public class AdministrationScreen extends AbstractScreen {
 		user2.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				// accedo al panel dell'utente
+				System.out.println("Uno");
 			}
-
 		});
-		
+
 		Label nameLabel3 = new Label("User:", skin);
 		Image img_user_unclicked3= new Image(new Texture("resources/images/a3.jpg"));
 		Image img_user_clicked3 = new Image(new Texture("resources/images/a3.jpg"));

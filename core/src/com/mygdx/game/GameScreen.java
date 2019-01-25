@@ -59,7 +59,6 @@ public class GameScreen implements Screen {
 	 * Come da caso d'uso 
 	 */
 	private User user;
-	private AbstractCommand command;
 
 	// final Drop game;
 
@@ -183,7 +182,7 @@ public class GameScreen implements Screen {
 	private float floorHeight = 120;
 
 	private static GameScreen gameScreen;
-	private AbstractCommand abstractCommand;
+	private AbstractCommand command;
 
 	private Music music;
 
@@ -353,10 +352,12 @@ public class GameScreen implements Screen {
 
 		inputManager.nAccessButton = false;
 
-		if( checkRoom().equals("") ) {
+		if( user == null & command == null & checkRoom().equals("") ) {
+			user = new User();
 			command = new UserCommand();
 		}
 
+		System.out.println("Email: " + user.getEmail() + "\nNick: " + user.getNickName() + "\nNumero: " + user.getTelefonNumber() + "\nImage: " + user.getPathImage());
 	}
 
 	public static GameScreen getGameScreen() {
@@ -926,6 +927,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
+		System.out.println("GAME");
 		this.modelBatch.dispose();
 		this.entranceDoorModel.dispose();
 		this.lampModel.dispose();
@@ -962,13 +964,12 @@ public class GameScreen implements Screen {
 		this.user = user;
 	}
 
-	public AbstractCommand getAbstractCommand() {
-		return abstractCommand;
+	public AbstractCommand getCommand() {
+		return command;
 	}
 
-	public void setAbstractCommand(AbstractCommand abstractCommand) {
-		this.abstractCommand = abstractCommand;
+	public void setCommand(AbstractCommand command) {
+		this.command = command;
 	}
-
 	
 }

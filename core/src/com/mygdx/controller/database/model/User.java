@@ -15,10 +15,14 @@ public class User {
 	private String telefonNumber;
 	private String pathImage;
 	private boolean isAdministrator;
-	private BigInteger idSupply;
 
 	public User() {
-
+		idUser = "";
+		nickName = "";
+		email = "";
+		telefonNumber = "";
+		pathImage = "";
+		isAdministrator = false;
 	}
 
 	public User(String email, String nickName, String telefonNumber, String pathImage, boolean isAdministrator) {
@@ -44,15 +48,7 @@ public class User {
 	public void setAdministrator(boolean isAdministrator) {
 		this.isAdministrator = isAdministrator;
 	}
-
-	public BigInteger getIdSupply() {
-		return idSupply;
-	}
-
-	public void setIdSupply(BigInteger idSupply) {
-		this.idSupply = idSupply;
-	}
-
+	
 	public String getNickName() {
 		return nickName;
 	}
