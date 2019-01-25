@@ -953,4 +953,22 @@ public class GameScreen implements Screen {
 		// TODO Auto-generated method stub
 
 	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public AbstractCommand getAbstractCommand() {
+		return abstractCommand;
+	}
+
+	public void setAbstractCommand(AbstractCommand abstractCommand) {
+		this.abstractCommand = abstractCommand;
+	}
+
+	
 }
