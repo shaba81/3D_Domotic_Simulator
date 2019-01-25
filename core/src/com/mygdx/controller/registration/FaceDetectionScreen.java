@@ -165,7 +165,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 //				Utils.resp = Utils.ACCESS_SUCCESS_LOG;
 
 					String pathOriginal = Utils.pathImageUser;
-					String idUser = getIdUserFromImage(pathOriginal);
+					String idUser = Utils.getIdUserFromImage(pathOriginal);
 					User user = Controller.getController().getUserDAO().getUserByPathImage("resources/images/" +idUser +".jpg");
 					user.setIdUser(idUser);
 					Utils.userLogged = idUser;
@@ -191,7 +191,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 						Utils.treeTimesAccessError = false;
 						System.out.println("TRE VOLTE");
 //					Utils.resp = Utils.ACCESS_FAILED_THREE_TIMES;
-						Utils.saveOnLog(Utils.ACCESS_FAILED_THREE_TIMES);
+						Utils.saveOnLog(Utils.ACCESS_FAILED_THREE_TIMES_LOG);
 						this.showRecoveryAccessDialog(Utils.ACCESS_FAILED_THREE_TIMES, skin, imgStage,
 								new TextField("", skin), true);
 						System.out.println("TRE VOLTE");
@@ -215,7 +215,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 							System.out.println("puoi registrarti");
 							Utils.backToRegistrationScreen = false;
 							String pathImage = this.register();
-							String idUser = getIdUserFromImage(pathImage);
+							String idUser = Utils.getIdUserFromImage(pathImage);
 							User user = new User(Utils.credentials.get(0), Utils.credentials.get(2), Utils.credentials.get(1), pathImage, false);
 							user.setIdUser(idUser);
 							Utils.credentials.clear();
@@ -360,14 +360,4 @@ public class FaceDetectionScreen extends AbstractScreen {
 		this.user_telphone = user_telphone;
 	}
 
-	private String getIdUserFromImage(String path) {
-		for(int i = path.length()-1, slashI = 0, pointI=path.length()-4; i >= 0; i--  ) {
-			if( path.charAt(i) == 's' ) {
-				slashI = i+2;
-				path = path.substring(slashI, pointI);
-				break;
-			}
-		}
-		return path;
-	}
 }

@@ -18,7 +18,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.controller.Controller;
+import com.mygdx.controller.database.model.User;
 import com.mygdx.controller.database.persistence.dao.UserDAO;
+import com.mygdx.controller.proxy.UserAdministratorCommand;
+import com.mygdx.controller.proxy.UserCommand;
+import com.mygdx.game.GameScreen;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.simulator.email.EmailSender;
 import com.mygdx.simulator.factory_methos_screens.GameScreenCreator;
@@ -118,6 +122,25 @@ public abstract class AbstractScreen implements Screen {
 							System.out.println("Password da validare: " + textInput.getText());
 							String password = textInput.getText();
 							if (Controller.getController().getUserDAO().validateUserOneTimePAss(password, emailOneTime)) {
+								/*
+								 * TO DO User and command for GAME SCREEN, fare la query con la mail
+								 */
+								User user = Controller.getController().getUserDAO().getUserByEmail(emailOneTime);
+								String idUser = Utils.getIdUserFromImage(user.getPathImage());
+								user.setIdUser(idUser);
+								Utils.userLogged = idUser;
+								Utils.saveOnLog(Utils.ACCESS_SUCCESS_LOG);
+
+								/*
+								 * Proxy o non proxy decision
+								 */
+								GameScreen.getGameScreen().setUser(user);
+
+								if( user.isAdministrator() )
+									GameScreen.getGameScreen().setCommand(new UserAdministratorCommand());
+								else
+									GameScreen.getGameScreen().setCommand(new UserCommand());
+
 								ScreenManager.getInstance().showScreen(new GameScreenCreator());
 							} else {
 								showRecoveryAccessDialog(Utils.ACCESS_ONE_TIME_PASS_NOT_MATCH, skin, stage,

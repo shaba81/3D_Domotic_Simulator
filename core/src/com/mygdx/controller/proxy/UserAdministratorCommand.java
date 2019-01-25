@@ -1,6 +1,9 @@
 package com.mygdx.controller.proxy;
 
 import com.mygdx.game.GameScreen;
+import com.mygdx.game.ScreenManager;
+import com.mygdx.simulator.factory_methos_screens.LoginScreenCreator;
+import com.mygdx.simulator.factory_methos_screens.MainMenuScreenCreator;
 
 import utilis.Utils;
 
@@ -51,6 +54,11 @@ public class UserAdministratorCommand implements AbstractCommand {
 	public void speakerOff() {
 		GameScreen.getGameScreen().inputManager.activateSpeaker = false;
 		Utils.commandLog("stereo", "radio",Utils.RADIO_OFF_LOG);
+	}
+
+	@Override
+	public void goToMainMenuScreen() {
+		ScreenManager.getInstance().showScreen(new MainMenuScreenCreator());
 	}
 
 }

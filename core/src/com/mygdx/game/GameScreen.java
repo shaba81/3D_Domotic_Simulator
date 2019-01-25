@@ -1,8 +1,5 @@
 package com.mygdx.game;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Files.FileType;
@@ -57,7 +54,7 @@ import utilis.Utils;
 public class GameScreen implements Screen {
 
 	/*
-	 * Come da caso d'uso 
+	 * Come da caso d'uso
 	 */
 	private User user;
 
@@ -353,7 +350,10 @@ public class GameScreen implements Screen {
 
 		inputManager.nAccessButton = false;
 
-		if( user == null & command == null & checkRoom().equals("") ) {
+		/*
+		 * Da togliere tanto i comandi si potranno impartire solo da dentro la casa.
+		 */
+		if (user == null & command == null & checkRoom().equals("")) {
 			user = new User();
 			user.setIdUser("-1");
 			command = new UserCommand();
@@ -489,24 +489,6 @@ public class GameScreen implements Screen {
 		Gdx.input.setInputProcessor(inputManager);
 	}
 
-//	public String readFromFile() {
-//		try {
-//			FileReader reader = new FileReader("resources/vocalCommand.txt");
-//			BufferedReader bufferedReader = new BufferedReader(reader);
-//
-//			String line;
-//
-//			line = bufferedReader.readLine();
-//			reader.close();
-//
-//			return line;
-//
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			return null;
-//		}
-//	}
-
 	public void OpenDoor() {
 
 		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
@@ -572,58 +554,41 @@ public class GameScreen implements Screen {
 			if (vocalCommand.toLowerCase().contains(commandTypeOpen1.toLowerCase())
 					|| vocalCommand.toLowerCase().contains(commandTypeOpen2.toLowerCase())) {
 				if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
-//					inputManager.isLightOn = true;
-//					Utils.commandLog("luce", "lampada",Utils.LIGHT_ON_LOG);
 					command.lightOn();
 					return;
-				}
-				if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
-//					inputManager.isTvOn = true;
-//					Utils.commandLog("tv", "televisione", Utils.TV_ON_LOG);
+				} else if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
 					command.tvOn();
 					return;
-				}
-				if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
-//					inputManager.activateSpeaker = true;
-//					Utils.commandLog("stereo", "radio",Utils.RADIO_ON_LOG);
+				} else if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
 					command.speakerOn();
 					return;
-				}
-				if (objectToActivate.equals("ventilatore") || objectToActivate.contains("aria")) {
-//					inputManager.activateFan = true;
-//					Utils.commandLog("ventilatore", "aria",Utils.FAN_ON_LOG);
+				} else if (objectToActivate.equals("ventilatore") || objectToActivate.contains("aria")) {
 					command.fanOn();
 					return;
+				} else {
+					//new TextToSpeech("Comando non riconosciuto. Ritenta.");
+					return;
 				}
-				System.out.println("Command not recognized. Retry");
 			}
 
 			else if (vocalCommand.toLowerCase().contains(commandTypeClose1.toLowerCase())
 					|| vocalCommand.toLowerCase().contains(commandTypeClose2.toLowerCase())) {
-				String idUser = "5";
 				if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
-//					inputManager.isLightOn = false;
-//					Utils.commandLog("luce", "lampada", Utils.LIGHT_OFF_LOG);
 					command.lightOff();
 					return;
-				}
-				if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
-//					inputManager.isTvOn = false;
-//					Utils.commandLog("tv", "televisione",Utils.TV_OFF_LOG);
+				} else if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
 					command.tvOff();
 					return;
-				}
-				if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
-//					inputManager.activateSpeaker = false;
-//					Utils.commandLog("stereo", "radio",Utils.RADIO_OFF_LOG);
+				} else if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
 					command.speakerOff();
 					return;
+				} else {
+					//new TextToSpeech("Comando non riconosciuto. Ritenta.");
+					return;
 				}
-				System.out.println("Command not recognized. Retry");
-
+			} else {
+				//new TextToSpeech("Comando non riconosciuto. Ritenta.");
 			}
-
-			System.out.println("Command not recognized. Retry");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -680,11 +645,6 @@ public class GameScreen implements Screen {
 			if (inputManager.isTvOn) {
 				decalBatch.add(tvScreen);
 				decalBatch.flush();
-//				if (Utils.resp.contains("tv") || Utils.resp.contains("televisione")) {
-//					Controller.getController().getUserDAO().insertCommand("5", Utils.resp);
-//					Utils.resp = "";
-//					System.out.println("LOG");
-//				}
 			}
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
@@ -715,11 +675,6 @@ public class GameScreen implements Screen {
 					primo = false;
 					Utils.songPlay = true;
 				}
-//				if (Utils.resp.contains("stereo") || Utils.resp.contains("radio")) {
-//					Controller.getController().getUserDAO().insertCommand("5", Utils.resp);
-//					Utils.resp = "";
-//					System.out.println("LOG");
-//				}
 			} else {
 				if (Utils.songPlay) {
 					music.close();
@@ -901,13 +856,12 @@ public class GameScreen implements Screen {
 			if (inputManager.nAccessButton) {
 				inputManager.nAccessButton = false;
 
-				System.out.println("MAMMATA");
 				if (Controller.getController().getUserDAO().isFirstRegistrationForThisForniture(Utils.ID_SUPPLY,
 						Utils.ID_ADMIN_USER)) {
 					Utils.isFirstAccess = true;
-					System.out.println("MMM");
 					ScreenManager.getInstance().showScreen(new LoginScreenCreator());
 				} else {
+					//command.goToMainMenuScreen();
 					ScreenManager.getInstance().showScreen(new MainMenuScreenCreator());
 				}
 
@@ -915,11 +869,8 @@ public class GameScreen implements Screen {
 
 			// Use this to change Screen
 			if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-
 				// gestire i vari casi in cui si può volere uscire
 				Gdx.app.exit();
-				// ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU);
-				// game.setScreen(game.menu);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -973,5 +924,5 @@ public class GameScreen implements Screen {
 	public void setCommand(AbstractCommand command) {
 		this.command = command;
 	}
-	
+
 }

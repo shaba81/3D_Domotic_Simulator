@@ -100,6 +100,7 @@ public class Utils {
 	/*
 	 * command for log
 	 */
+	public static final String ACCESS_FAILED_THREE_TIMES_LOG = "He tried to access three times without success.";
 	public static final String ACCESS_SUCCESS_LOG = "Access to the house successfully executed.";
 	public static final String ACCESS_FAILED_LOG = "Access to the house denied.";
 	public static final String ACCESS_THREE_TIMES_FAILED_LOG = "Access to the house denied for three times.";
@@ -256,5 +257,15 @@ public class Utils {
 		dialog.show(stage);
 		stage.addActor(dialog);
 	}
-	
+
+	public static String getIdUserFromImage(String path) {
+		for(int i = path.length()-1, slashI = 0, pointI=path.length()-4; i >= 0; i--  ) {
+			if( path.charAt(i) == 's' ) {
+				slashI = i+2;
+				path = path.substring(slashI, pointI);
+				break;
+			}
+		}
+		return path;
+	}
 }

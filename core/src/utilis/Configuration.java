@@ -37,6 +37,7 @@ public interface Configuration {
 	 * DB query
 	 */
 	public String selectUserByPathImage = "select u.email, u.telephone_number, u.nick_name, u.path_image, u.is_administrator from ingswschema.users u where u.path_image=?;";
+	public String selectUserEmail = "select u.email, u.telephone_number, u.nick_name, u.path_image, u.is_administrator from ingswschema.users u where u.email=?;";
 
 	public String selectFunction = "select * from ingswschema.expire_value();";
 	public String validateUserOneTimePAss = "select ingswschema.users.id_user, (one_time_pass= crypt(?, one_time_pass)) AS pswmatch from ingswschema.users where email=?;";

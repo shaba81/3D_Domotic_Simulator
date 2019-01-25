@@ -57,6 +57,9 @@ public class UserCommand implements AbstractCommand {
 		uac.speakerOff();
 	}
 
-
+	@Override
+	public void goToMainMenuScreen() {
+		new TextToSpeech("Mi dispiace il comando non è permesso a questo tipo di utente.");
+	}
 
 }

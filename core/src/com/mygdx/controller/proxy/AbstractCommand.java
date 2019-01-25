@@ -11,6 +11,6 @@ public abstract interface AbstractCommand {
 	public void fanOff();
 	public void speakerOff();
 	
-	
+	public void goToMainMenuScreen();
 	
 }
