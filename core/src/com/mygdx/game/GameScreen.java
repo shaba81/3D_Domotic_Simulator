@@ -76,7 +76,7 @@ public class GameScreen implements Screen {
 	private Texture floorTexture;
 	private Texture wallTexture;
 	private Texture ceilingTexture;
-	private GameEntity player;
+	private static GameEntity player;
 	private TextureAtlas atlas;
 	private Skin skin;
 
@@ -120,9 +120,9 @@ public class GameScreen implements Screen {
 	private GameEntity dxWallEntity;
 	private GameEntity frontWallEntity;
 	private GameEntity backWallEntity;
-	private GameEntity bathRoom;
-	private GameEntity mainRoom1;
-	private GameEntity mainRoom2;
+	private static GameEntity bathRoom;
+	private static GameEntity mainRoom1;
+	private static GameEntity mainRoom2;
 	private ArrayList<GameEntity> walls;
 
 	private Model lampModel;
@@ -535,10 +535,12 @@ public class GameScreen implements Screen {
 	}
 
 	public void executeCommand() {
+		if (checkRoom().equals("mainRoom") || checkRoom().equals("bathroom"))
+		{
 		// vocalCommand = readFromFile();
 		try {
 			vocalCommand = Utils.resp;
-			System.out.println("Utils Resp: " + vocalCommand);
+			//System.out.println("Utils Resp: " + vocalCommand);
 			vocalMessage.setText(vocalCommand);
 			vocalMessageTable.add(vocalMessage);
 			vocalMessageTable.row();
@@ -592,6 +594,7 @@ public class GameScreen implements Screen {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
+	}
 	}
 
 	public void showMessages() {
@@ -716,7 +719,7 @@ public class GameScreen implements Screen {
 
 	}
 
-	public String checkRoom() {
+	public static String checkRoom() {
 		if (bathRoom.contains(player))
 			return new String("bathroom");
 
@@ -861,7 +864,7 @@ public class GameScreen implements Screen {
 					Utils.isFirstAccess = true;
 					ScreenManager.getInstance().showScreen(new LoginScreenCreator());
 				} else {
-					//command.goToMainMenuScreen();
+					// command.goToMainMenuScreen();
 					ScreenManager.getInstance().showScreen(new MainMenuScreenCreator());
 				}
 
