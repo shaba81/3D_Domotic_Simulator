@@ -15,5 +15,7 @@ public class DesktopLauncher {
 
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		new LwjglApplication(new Drop(), config);
+		
+		
 	}
 }
