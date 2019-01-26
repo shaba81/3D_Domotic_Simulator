@@ -535,66 +535,70 @@ public class GameScreen implements Screen {
 	}
 
 	public void executeCommand() {
-		if (checkRoom().equals("mainRoom") || checkRoom().equals("bathroom"))
-		{
-		// vocalCommand = readFromFile();
-		try {
-			vocalCommand = Utils.resp;
-			//System.out.println("Utils Resp: " + vocalCommand);
-			vocalMessage.setText(vocalCommand);
-			vocalMessageTable.add(vocalMessage);
-			vocalMessageTable.row();
+		if (checkRoom().equals("mainRoom") || checkRoom().equals("bathroom")) {
+			// vocalCommand = readFromFile();
+			try {
+				vocalCommand = Utils.resp;
+				// System.out.println("Utils Resp: " + vocalCommand);
+				vocalMessage.setText(vocalCommand);
+				vocalMessageTable.add(vocalMessage);
+				vocalMessageTable.row();
 
-			String commandTypeOpen1 = "Apri";
-			String commandTypeOpen2 = "Accendi";
-			String commandTypeClose1 = "Spegni";
-			String commandTypeClose2 = "Chiudi";
+				String commandTypeOpen1 = "Apri";
+				String commandTypeOpen2 = "Accendi";
+				String commandTypeClose1 = "Spegni";
+				String commandTypeClose2 = "Chiudi";
 
-			String objectToActivate = vocalCommand.substring(vocalCommand.lastIndexOf(" ") + 1);
-			objectToActivate = objectToActivate.toLowerCase();
+				String objectToActivate = vocalCommand.substring(vocalCommand.lastIndexOf(" ") + 1);
+				objectToActivate = objectToActivate.toLowerCase();
 
-			if (vocalCommand.toLowerCase().contains(commandTypeOpen1.toLowerCase())
-					|| vocalCommand.toLowerCase().contains(commandTypeOpen2.toLowerCase())) {
-				if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
-					command.lightOn();
-					return;
-				} else if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
-					command.tvOn();
-					return;
-				} else if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
-					command.speakerOn();
-					return;
-				} else if (objectToActivate.equals("ventilatore") || objectToActivate.contains("aria")) {
-					command.fanOn();
-					return;
-				} else {
-					//new TextToSpeech("Comando non riconosciuto. Ritenta.");
-					return;
+				if (vocalCommand.toLowerCase().contains(commandTypeOpen1.toLowerCase())
+						|| vocalCommand.toLowerCase().contains(commandTypeOpen2.toLowerCase())) {
+					
+
+					
+
+					if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
+						command.lightOn();
+						return;
+					} else if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
+						command.tvOn();
+						return;
+					} else if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
+						command.speakerOn();
+						return;
+
+					} else if (objectToActivate.equals("ventilatore") || objectToActivate.contains("aria")) {
+						command.fanOn();
+						return;
+					} else {
+						// new TextToSpeech("Comando non riconosciuto. Ritenta.");
+						return;
+					}
 				}
-			}
 
-			else if (vocalCommand.toLowerCase().contains(commandTypeClose1.toLowerCase())
-					|| vocalCommand.toLowerCase().contains(commandTypeClose2.toLowerCase())) {
-				if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
-					command.lightOff();
-					return;
-				} else if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
-					command.tvOff();
-					return;
-				} else if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
-					command.speakerOff();
-					return;
+				else if (vocalCommand.toLowerCase().contains(commandTypeClose1.toLowerCase())
+						|| vocalCommand.toLowerCase().contains(commandTypeClose2.toLowerCase())) {
+					if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
+						command.lightOff();
+						return;
+					} else if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
+						command.tvOff();
+						return;
+					} else if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
+						command.speakerOff();
+						return;
+					} else {
+						// new TextToSpeech("Comando non riconosciuto. Ritenta.");
+						return;
+					}
 				} else {
-					//new TextToSpeech("Comando non riconosciuto. Ritenta.");
-					return;
+					// new TextToSpeech("Comando non riconosciuto. Ritenta.");
 				}
-			} else {
-				//new TextToSpeech("Comando non riconosciuto. Ritenta.");
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
 			}
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
 		}
-	}
 	}
 
 	public void showMessages() {
@@ -698,6 +702,7 @@ public class GameScreen implements Screen {
 		}
 		return false;
 	}
+
 	/*
 	 * MANCANO COLLISIONI CASA PER IL CONTROLLO DENTRO/FUORI CASA funzione che
 	 * elenca le funzionalità possibili dentro la stanza in cui si trova se l'utente
@@ -705,17 +710,25 @@ public class GameScreen implements Screen {
 	 * una volta) se dalla stanza B va alla stanza A gli vengono riprodotti solo i
 	 * comandi.
 	 */
-
+	// variabile per quando entra in casa
 	boolean entrata = true;
 
-	public void showAvailableCommands() {
-
-		if (checkRoom().equals("mainRoom")) {
-			if (entrata) {
-				new TextToSpeech("ciao a tutti, questo il text to speech del progetto di ingegneria del software");
-			}
+	public void showAvailableCommandsRoomA() {
+		String nome = user.getNickName();
+		if (entrata) {
+			new TextToSpeech(
+					"Benvenuto " + nome + "In questa stanza potrai interagire con: la televisione, lo stereo, la luce");
 			entrata = false;
+		} else {
+
+			new TextToSpeech("In questa stanza potrai interagire con: la televisione, lo stereo, la luce");
 		}
+
+	}
+
+	public void showAvailableCommandsRoomB() {
+
+		new TextToSpeech("In questa stanza potrai interagire con la cassaforte e il ventilatore");
 
 	}
 
@@ -733,6 +746,8 @@ public class GameScreen implements Screen {
 	}
 
 	public void walk(float timeElapsed) {
+		// if (!playerIsColliding()) {
+
 		float speed = inputManager.movementSpeed;
 		if ((inputManager.forward | inputManager.back) & (inputManager.right | inputManager.left)) {
 			speed /= Math.sqrt(2);
@@ -767,6 +782,7 @@ public class GameScreen implements Screen {
 			camera.translate(v);
 			camera.update();
 			player.updatePosition(camera.position.x, camera.position.z);
+
 		}
 		if (inputManager.right) {
 			Vector3 v = camera.direction.cpy();
@@ -779,12 +795,21 @@ public class GameScreen implements Screen {
 			player.updatePosition(camera.position.x, camera.position.z);
 
 		}
-
-		for (GameEntity w : walls) {
-			// System.out.println(player.isColliding(w));
-		}
-
 	}
+
+	// }
+
+//	public boolean playerIsColliding() {
+//
+//		for (GameEntity w : walls) {
+//			if (player.isColliding(w)) {
+//				System.out.println("collido");
+//				return true;
+//			}
+//
+//		}
+//		return false;
+//	}
 
 	private Model createPlaneModel(final float width, final float height, final Material material, final float u1,
 			final float v1, final float u2, final float v2) {
@@ -801,6 +826,9 @@ public class GameScreen implements Screen {
 		return (modelBuilder.end());
 	}
 
+	int cont = 0;
+	int cont1 = 0;
+
 	@Override
 	public void render(float delta) {
 		try {
@@ -812,7 +840,23 @@ public class GameScreen implements Screen {
 			spriteBatch.setProjectionMatrix(camera.combined);
 
 			checkRoom();
-			showAvailableCommands();
+			// playerIsColliding();
+
+			if (checkRoom().equals("mainRoom")) {
+				if (cont == 0) {
+					showAvailableCommandsRoomA();
+					cont += 1;
+					cont1 = 0;
+				}
+			}
+			if (checkRoom().equals("bathroom")) {
+				if (cont1 == 0) {
+					showAvailableCommandsRoomB();
+					cont1 += 1;
+					cont = 0;
+				}
+
+			}
 
 			walk(Gdx.graphics.getDeltaTime());
 			OpenDoor();
@@ -848,6 +892,7 @@ public class GameScreen implements Screen {
 
 			if (inputManager.isSpeaking)
 				drawMic();
+			
 
 			startTV();
 			turnLights();
@@ -865,7 +910,7 @@ public class GameScreen implements Screen {
 					ScreenManager.getInstance().showScreen(new LoginScreenCreator());
 				} else {
 					// command.goToMainMenuScreen();
-					if( checkRoom().equals("") )
+					if (checkRoom().equals(""))
 						ScreenManager.getInstance().showScreen(new MainMenuScreenCreator());
 					else
 						command.goToMainMenuScreen();

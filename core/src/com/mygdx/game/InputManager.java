@@ -43,18 +43,20 @@ public class InputManager implements InputProcessor {
 	@Override
 	public boolean keyDown(int keycode) {
 
-		if (keycode == Input.Keys.W) {
-			forward = true;
-		}
-		if (keycode == Input.Keys.A) {
-			left = true;
-		}
-		if (keycode == Input.Keys.S) {
-			back = true;
-		}
-		if (keycode == Input.Keys.D) {
-			right = true;
-		}
+			if (keycode == Input.Keys.W) {
+				forward = true;
+			}
+			if (keycode == Input.Keys.A) {
+				left = true;
+			}
+			if (keycode == Input.Keys.S) {
+				back = true;
+			}
+			if (keycode == Input.Keys.D) {
+				right = true;
+				
+			}
+
 		if (GameScreen.checkRoom().equals("mainRoom") || GameScreen.checkRoom().equals("bathroom")) {
 			if (keycode == Input.Keys.T) {
 				isTvOn = !isTvOn;

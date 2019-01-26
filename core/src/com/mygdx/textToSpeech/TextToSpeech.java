@@ -16,6 +16,8 @@ public class TextToSpeech {
 	// costrutore di prova
 	public TextToSpeech(String message) {
 		// prova
+		synthesizer.setLanguage("it");
+	
 		this.message = message;
 		speak(this.message);
 	}

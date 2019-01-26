@@ -25,6 +25,7 @@ public class GameEntity {
 	public Vector3 getPosition() {
 		Vector3 v = new Vector3(x, 0, z);
 		return v;
+		
 	}
 
 	public Rectangle getBounds() {
@@ -35,8 +36,12 @@ public class GameEntity {
 		Rectangle thisRect = this.getBounds();
 		Rectangle otherRect = g.getBounds();
 
-		if (thisRect.overlaps(otherRect))
+		if (thisRect.overlaps(otherRect)) {
+			
 			return true;
+			
+		}
+			
 
 		return false;
 	}

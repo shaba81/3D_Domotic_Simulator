@@ -20,20 +20,19 @@ public class Music {
 
 	public void start() {
 		Thread thread = new Thread(() -> {
-		try {
-			fileInputStream = new FileInputStream(
-					"resources/song1.mp3");
-			player = new Player(fileInputStream);
-			player.play();
-			Utils.songPlay = true;
+			try {
+				fileInputStream = new FileInputStream("resources/song1.mp3");
+				player = new Player(fileInputStream);
+				player.play();
+				Utils.songPlay = true;
 
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JavaLayerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JavaLayerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		});
 
 		// non facciamo terminare l'app prima del thread
