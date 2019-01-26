@@ -248,7 +248,8 @@ public class AdministrationScreen extends AbstractScreen {
 		Utils.credentials.add(1,users.get(index).getTelefonNumber());
 		Utils.credentials.add(2,users.get(index).getNickName());
 		Utils.credentials.add(3,pathLabelName[index]);
-		Utils.showPopUp(Utils.ADMIN_REG_CRED_CHANGE_POPUP + labelName[index] + "?", skin, stage, Utils.CRED_CHANGE_SCREEN_POP);
+		Utils.credentials.add(4,users.get(index).getIdUser());
+		Utils.showPopUp(Utils.ADMIN_REG_CRED_CHANGE_POPUP + labelName[index] + "?", skin, stage, Utils.REGISTRATION_SCREEN_POP);
 	}
 
 	@Override

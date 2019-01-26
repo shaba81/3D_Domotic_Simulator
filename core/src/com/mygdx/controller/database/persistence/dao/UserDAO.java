@@ -26,5 +26,6 @@ public interface UserDAO {
 	public User getUserByPathImage(String path) throws Exception;
 	public User getUserByEmail(String email) throws Exception;
 	public HashMap<Integer, User> getAllUser() throws Exception;
+	public void updateUserCredentials(String email, String telephoneNumbre, String nickName, String pathImage, String idUser) throws Exception;
 
 }

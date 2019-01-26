@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Random;
 
 import org.opencv.core.Mat;
 
@@ -14,18 +13,15 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.google.gson.Gson;
 import com.mygdx.controller.Controller;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.simulator.factory_methos_screens.AdministrationScreenCreator;
-import com.mygdx.simulator.factory_methos_screens.CredentialsChangeScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.GameScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.LoginScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.MainMenuScreenCreator;
-import com.sun.webkit.dom.TextImpl;
+import com.mygdx.simulator.factory_methos_screens.RegistrationCredentialsScreenCreator;
 
 /**
  * Classe di utilità per la lettura del file .json
@@ -130,7 +126,7 @@ public class Utils {
 	/*
 	 * For popUp 
 	 */
-	public static final String CRED_CHANGE_SCREEN_POP = "CredentialChangeScreen";
+	public static final String REGISTRATION_SCREEN_POP = "RegistrationScreen";
 	public static final String MAIN_SCREEN_POP = "MainScreen";
 	public static final String GAME_SCREEN_POP = "GameScreen";
 	public static final String LOGIN_SCREEN_POP = "LoginScreen";
@@ -233,8 +229,8 @@ public class Utils {
 				if (obj.equals("true")) {
 					if (screenCall.equals(MAIN_SCREEN_POP))
 						ScreenManager.getInstance().showScreen(new MainMenuScreenCreator());
-					else if(screenCall.equals(CRED_CHANGE_SCREEN_POP))
-						ScreenManager.getInstance().showScreen(new CredentialsChangeScreenCreator());
+					else if(screenCall.equals(REGISTRATION_SCREEN_POP))
+						ScreenManager.getInstance().showScreen(new RegistrationCredentialsScreenCreator());
 					else if (screenCall.equals(GAME_SCREEN_POP))
 						ScreenManager.getInstance().showScreen(new GameScreenCreator());
 					else if (screenCall.equals(LOGIN_SCREEN_POP))

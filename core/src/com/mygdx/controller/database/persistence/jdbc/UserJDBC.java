@@ -746,4 +746,45 @@ public class UserJDBC implements UserDAO {
 
 	}
 
+	@Override
+	public void updateUserCredentials(String email, String telephoneNumbre, String nickName, String pathImage,
+			String idUser) throws Exception {
+		Connection conn = null;
+		PreparedStatement statement = null;
+
+		try {
+
+			conn = basicDataSource.getConnection();
+
+			statement = conn.prepareStatement(Configuration.updateUserCredentials);
+
+			statement.setString(1, email);
+			statement.setString(2, telephoneNumbre);
+			statement.setString(3, nickName);
+			statement.setString(4, pathImage);
+			statement.setString(5, idUser);
+
+			statement.executeUpdate();
+		} catch (SQLException e) {
+
+			if (e.getSQLState().equals("23505")) {
+				throw new PersistenceException(10006L);
+			} else {
+				System.out.println(e.getMessage());
+				throw e;
+			}
+
+		} finally {
+			try {
+				if (statement != null)
+					statement.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw e;
+			}
+		}
+	}
+
 }
