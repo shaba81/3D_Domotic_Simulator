@@ -93,7 +93,7 @@ public class Utils {
 	public static final String LOGIN_SCREEN_NO_PASSWORD_INSERT_POPUP = "The Password's field is empty. Please enter your Password for log in.";
 	public static final String ALREADY_CAPTURE_FACE_POPUP = "Attention, the face has already been captured.\n Press REDO to recapture the face or proceed with registration.";
 	public static final String ACCESS_FAILED_POPUP = "Access denied.\n Please, click OK or press ENTER to retry access.";
-	public static final String ACCESS_FAILED_THREE_TIMES = "You tried too many times without success.\nPlease enter the email with which you registered.\nThe field doens't have to be empty.";
+	public static final String ACCESS_FAILED_THREE_TIMES = "You tried too many times without success.\nPlease enter the email with which you registered or press ESCAPE to retry to access.\nThe field doens't have to be empty.";
 	public static final String ACCESS_ONE_TIME_PASS = "Please check the email entered previously to which a code\nhas been sent from the validity of one hour with which you can access.\nPlease enter the code, the field doens't have to be empty..";
 	public static final String ACCESS_RECOVERY_EMAIL_NOT_FOUND = "Email doesn't eixists in our system.\nPlease retry to enter the email with which you registered.\\nThe field doens't have to be empty.";
 	public static final String ACCESS_ONE_TIME_PASS_NOT_MATCH = "Password entered not matches. Please check the email entered previously to which a code\nhas been sent from the validity of one hour with which you can access.\nPlease enter the code, the field doens't have to be empty..";

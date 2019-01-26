@@ -192,7 +192,6 @@ public class FaceDetectionController {
 	 */
 	private void direAlSimulatoreDiMandareAllUtenteLemail()
 	{
-		System.err.println("SO QUA PORCA TROIA");
 		Utils.treeTimesAccessError = true;
 	}
 

@@ -155,6 +155,7 @@ public abstract class AbstractScreen implements Screen {
 		};
 
 		dialog.button("SEND", "true");
+		dialog.key(Keys.ESCAPE, "false");
 		Label emailLabel = new Label(text, skin);
 		dialog.getContentTable().row();
 		dialog.getContentTable().add(emailLabel).left();
