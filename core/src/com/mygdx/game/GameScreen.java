@@ -865,7 +865,10 @@ public class GameScreen implements Screen {
 					ScreenManager.getInstance().showScreen(new LoginScreenCreator());
 				} else {
 					// command.goToMainMenuScreen();
-					ScreenManager.getInstance().showScreen(new MainMenuScreenCreator());
+					if( checkRoom().equals("") )
+						ScreenManager.getInstance().showScreen(new MainMenuScreenCreator());
+					else
+						command.goToMainMenuScreen();
 				}
 
 			}
