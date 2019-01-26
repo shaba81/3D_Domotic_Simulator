@@ -36,6 +36,9 @@ public interface Configuration {
 	/*
 	 * DB query
 	 */
+
+	public String selectAllUser = "select * from ingswschema.users;";
+
 	public String selectUserByPathImage = "select u.email, u.telephone_number, u.nick_name, u.path_image, u.is_administrator from ingswschema.users u where u.path_image=?;";
 	public String selectUserEmail = "select u.email, u.telephone_number, u.nick_name, u.path_image, u.is_administrator from ingswschema.users u where u.email=?;";
 

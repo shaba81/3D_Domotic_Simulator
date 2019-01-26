@@ -1,6 +1,8 @@
 package com.mygdx.controller.database.persistence.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import com.mygdx.controller.database.model.User;
 
@@ -23,5 +25,6 @@ public interface UserDAO {
 	public void updateOneTimePass(String oneTimePass, String email) throws Exception;
 	public User getUserByPathImage(String path) throws Exception;
 	public User getUserByEmail(String email) throws Exception;
+	public HashMap<Integer, User> getAllUser() throws Exception;
 
 }

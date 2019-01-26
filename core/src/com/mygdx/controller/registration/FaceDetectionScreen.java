@@ -50,7 +50,6 @@ public class FaceDetectionScreen extends AbstractScreen {
 	private static FaceDetectionScreen faceDetectionScreen;
 	// se l'utente vorrà accedere, sarà true; se l'amministratore dovrà registrarlo,
 	// sarà false
-	private FaceDetectionController faceController;
 
 	public FaceDetectionScreen() {
 
@@ -74,17 +73,12 @@ public class FaceDetectionScreen extends AbstractScreen {
 		this.redo = false;
 	}
 
-	public static void setFaceDetectionScreen(FaceDetectionScreen faceDetectionScreen) {
-		FaceDetectionScreen.faceDetectionScreen = faceDetectionScreen;
-	}
-
 	@Override
 	public void show() {
 		super.show();
 		this.mainTable.right();
 		this.imageTable.center();
 
-		this.faceController = new FaceDetectionController();
 		Gdx.input.setInputProcessor(this.imgStage);
 
 		String text = "FaceRegistration";
@@ -176,45 +170,21 @@ public class FaceDetectionScreen extends AbstractScreen {
 			if (Utils.isAccess && !Utils.isFirstAccess && Utils.captured && !Utils.backToRegistrationScreen
 					&& !Utils.treeTimesAccessError) {
 
-				if (faceController.compare()) {
-					// viene richiamato il 'gameScreen'
-					System.out.println("puoi accedere");
+				if (Controller.getController().getFaceController().compare()) {
 					Utils.captured = false;
-//				Utils.resp = Utils.ACCESS_SUCCESS_LOG;
-
 					String pathOriginal = Utils.pathImageUser;
-					String idUser = Utils.getIdUserFromImage(pathOriginal);
-					User user = Controller.getController().getUserDAO().getUserByPathImage("resources/images/" +idUser +".jpg");
-					user.setIdUser(idUser);
-					Utils.userLogged = idUser;
-					Utils.saveOnLog(Utils.ACCESS_SUCCESS_LOG);
-					/*
-					 * Proxy o non proxy decision
-					 */
-					GameScreen.getGameScreen().setUser(user);
-					if( user.isAdministrator() )
-						GameScreen.getGameScreen().setCommand(new UserAdministratorCommand());
-					else
-						GameScreen.getGameScreen().setCommand(new UserCommand());
-
+					Controller.getController().getFaceController().setUserAndCommandAccess(pathOriginal,false);
 					ScreenManager.getInstance().showScreen(new GameScreenCreator());
 				} else {
-					System.out.println("non puoi accedere. Riprova");
 					Utils.captured = false;
 
-					// se l'utente non è stato identificato per 3 volte, gli viene mandata un'email
-					// per permettergli di poter recuperare l'accesso
 					if (Utils.treeTimesAccessError) {
-						// mandiamo l'email all'utente per fargli recuperare l'accesso alla casa
 						Utils.treeTimesAccessError = false;
 						System.out.println("TRE VOLTE");
-//					Utils.resp = Utils.ACCESS_FAILED_THREE_TIMES;
 						Utils.saveOnLog(Utils.ACCESS_FAILED_THREE_TIMES_LOG);
 						this.showRecoveryAccessDialog(Utils.ACCESS_FAILED_THREE_TIMES, skin, imgStage,
 								new TextField("", skin), true);
-						System.out.println("TRE VOLTE");
 					} else {
-//					Utils.resp = Utils.ACCESS_FAILED_LOG;
 						Utils.saveOnLog(Utils.ACCESS_FAILED_LOG);
 						Utils.showMessageDialog(Utils.ACCESS_FAILED_POPUP, skin, imgStage);
 					}
@@ -228,17 +198,12 @@ public class FaceDetectionScreen extends AbstractScreen {
 				if (Utils.captured) {
 					// se l'utente deve registrarsi
 					if (!Utils.isAccess) {
-						if (faceController.registerUser()) {
+						if (Controller.getController().getFaceController().registerUser()) {
 							// viene richiamato il 'facecaptureScreen' per far registrare l'utente
 							System.out.println("puoi registrarti");
 							Utils.backToRegistrationScreen = false;
 							String pathImage = this.register();
-							String idUser = Utils.getIdUserFromImage(pathImage);
-							User user = new User(Utils.credentials.get(0), Utils.credentials.get(2), Utils.credentials.get(1), pathImage, false);
-							user.setIdUser(idUser);
-							Utils.credentials.clear();
-							GameScreen.getGameScreen().setUser(user);
-							GameScreen.getGameScreen().setCommand(new UserCommand());
+							Controller.getController().getFaceController().setUserAndCommandRegistration(pathImage);
 							ScreenManager.getInstance().showScreen(new GameScreenCreator());
 						} else {
 							System.out.println("non puoi registrarti");
@@ -257,7 +222,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 
 			if (this.redo) {
 				Utils.captured = false;
-				this.faceController.init();
+				Controller.getController().getFaceController().init();
 				this.redo = false;
 				Utils.backToRegistrationScreen = false;
 			}
@@ -327,7 +292,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 			}
 
 			user.setPathImage("resources/images/" + user.getIdUser() + ".jpg");
-			this.faceController.moveImages(user.getPathImage());
+			Controller.getController().getFaceController().moveImages(user.getPathImage());
 
 			if (Controller.getController().getUserDAO().registration(user)) {
 				System.out.println("5");

@@ -910,9 +910,9 @@ public class GameScreen implements Screen {
 					ScreenManager.getInstance().showScreen(new LoginScreenCreator());
 				} else {
 					// command.goToMainMenuScreen();
-					if (checkRoom().equals(""))
+					if (Utils.userLogged.equals("-1") & checkRoom().equals(""))
 						ScreenManager.getInstance().showScreen(new MainMenuScreenCreator());
-					else
+					else if( checkRoom().equals("bathroom") || checkRoom().equals("mainRoom")  )
 						command.goToMainMenuScreen();
 				}
 

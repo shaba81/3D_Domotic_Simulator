@@ -73,7 +73,7 @@ public abstract class AbstractScreen implements Screen {
 		// Allineo le cose nella table
 //		this.mainTable.center();
 	}
-	
+
 	public void add(Label x) {
 		this.mainTable.add(x);
 		this.mainTable.row();
@@ -121,26 +121,11 @@ public abstract class AbstractScreen implements Screen {
 						} else {
 							System.out.println("Password da validare: " + textInput.getText());
 							String password = textInput.getText();
-							if (Controller.getController().getUserDAO().validateUserOneTimePAss(password, emailOneTime)) {
-								/*
-								 * TO DO User and command for GAME SCREEN, fare la query con la mail
-								 */
-								User user = Controller.getController().getUserDAO().getUserByEmail(emailOneTime);
-								String idUser = Utils.getIdUserFromImage(user.getPathImage());
-								user.setIdUser(idUser);
-								Utils.userLogged = idUser;
-								Utils.saveOnLog(Utils.ACCESS_SUCCESS_LOG);
-
-								/*
-								 * Proxy o non proxy decision
-								 */
-								GameScreen.getGameScreen().setUser(user);
-
-								if( user.isAdministrator() )
-									GameScreen.getGameScreen().setCommand(new UserAdministratorCommand());
-								else
-									GameScreen.getGameScreen().setCommand(new UserCommand());
-
+							if (Controller.getController().getUserDAO().validateUserOneTimePAss(password,
+									emailOneTime)) {
+								System.out.println("metchaaa");
+								Controller.getController().getFaceController().setUserAndCommandAccess(emailOneTime,
+										true);
 								ScreenManager.getInstance().showScreen(new GameScreenCreator());
 							} else {
 								showRecoveryAccessDialog(Utils.ACCESS_ONE_TIME_PASS_NOT_MATCH, skin, stage,
@@ -149,7 +134,7 @@ public abstract class AbstractScreen implements Screen {
 						}
 					}
 				} catch (Exception e) {
-					System.err.println(e.getStackTrace());
+					e.getStackTrace();
 				}
 			}
 		};

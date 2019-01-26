@@ -63,8 +63,6 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 				backToAdministration = true;
 			}
 		});
-
-		
         
 		if(!Utils.backToRegistrationScreen)
 		{
@@ -78,7 +76,7 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 			this.txtTelephoneNumber = new TextField(Utils.credentials.get(1), skin);
 			this.txtNickName = new TextField(Utils.credentials.get(2), skin);
 		}
-		
+
 		this.emailLabel = new Label("Email: ", skin);
 		this.txtEmail.setMessageText("Ex: ciao@caro.it");
 

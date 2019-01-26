@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.mygdx.controller.Controller;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.simulator.factory_methos_screens.AdministrationScreenCreator;
+import com.mygdx.simulator.factory_methos_screens.CredentialsChangeScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.GameScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.LoginScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.MainMenuScreenCreator;
@@ -67,6 +68,7 @@ public class Utils {
 	/*
 	 * PopUp string
 	 */
+	public static final String ADMIN_REG_CRED_CHANGE_POPUP = "Are you sure do you want to change the credentials of ";
 	public static final String ACCESS_BACK_TO_MAIN_SCREEN_POP = "Are you sure do you want to exit without access?";
 	public static final String SCREEN_BACK_GAME_POPUP = "Are you sure you want to return to simulation without registration?";
 	public static final String SCREEN_BACK_GAME_SIMU_POPUP = "Are you sure you want to return to simulation?";
@@ -128,6 +130,7 @@ public class Utils {
 	/*
 	 * For popUp 
 	 */
+	public static final String CRED_CHANGE_SCREEN_POP = "CredentialChangeScreen";
 	public static final String MAIN_SCREEN_POP = "MainScreen";
 	public static final String GAME_SCREEN_POP = "GameScreen";
 	public static final String LOGIN_SCREEN_POP = "LoginScreen";
@@ -228,15 +231,17 @@ public class Utils {
 		Dialog dialog = new Dialog("", skin, "dialog") {
 			public void result(Object obj) {
 				if (obj.equals("true")) {
-					if (screenCall.equals(Utils.MAIN_SCREEN_POP))
+					if (screenCall.equals(MAIN_SCREEN_POP))
 						ScreenManager.getInstance().showScreen(new MainMenuScreenCreator());
-					else if (screenCall.equals(Utils.GAME_SCREEN_POP))
+					else if(screenCall.equals(CRED_CHANGE_SCREEN_POP))
+						ScreenManager.getInstance().showScreen(new CredentialsChangeScreenCreator());
+					else if (screenCall.equals(GAME_SCREEN_POP))
 						ScreenManager.getInstance().showScreen(new GameScreenCreator());
-					else if (screenCall.equals(Utils.LOGIN_SCREEN_POP))
+					else if (screenCall.equals(LOGIN_SCREEN_POP))
 						ScreenManager.getInstance().showScreen(new LoginScreenCreator());
-					else if (screenCall.equals(Utils.ADMIN_SCREEN_POP))
+					else if (screenCall.equals(ADMIN_SCREEN_POP))
 						ScreenManager.getInstance().showScreen(new AdministrationScreenCreator());
-					else if (screenCall.equals(Utils.EXIT_POP))
+					else if (screenCall.equals(EXIT_POP))
 						Gdx.app.exit();
 				}
 			}

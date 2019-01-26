@@ -18,7 +18,12 @@ import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.objdetect.Objdetect;
 import org.opencv.videoio.VideoCapture;
 
+import com.mygdx.controller.Controller;
+import com.mygdx.controller.database.model.User;
 import com.mygdx.controller.face.compare.ImageComparison;
+import com.mygdx.controller.proxy.UserAdministratorCommand;
+import com.mygdx.controller.proxy.UserCommand;
+import com.mygdx.game.GameScreen;
 
 import utilis.Utils;
 
@@ -33,13 +38,57 @@ public class FaceDetectionController {
 	// face cascade classifier
 	private CascadeClassifier faceCascade;
 	private int absoluteFaceSize;
-	
+
 	private ImageComparison image_comparison;
 
 	public FaceDetectionController() {
-		// TODO Auto-generated constructor stub
 		this.image_comparison = new ImageComparison();
+	}
 
+	/**
+	 * 
+	 * @param emailOneTime
+	 * @throws Exception
+	 */
+	public void setUserAndCommandAccess(String parameter, boolean threeTimes) throws Exception {
+		String idUser = "";
+		User user;
+
+		if (threeTimes) {
+			user = Controller.getController().getUserDAO().getUserByEmail(parameter);
+			idUser = Utils.getIdUserFromImage(user.getPathImage());
+		} else {
+			idUser = Utils.getIdUserFromImage(parameter);
+			user = Controller.getController().getUserDAO().getUserByPathImage("resources/images/" + idUser + ".jpg");
+		}
+		user.setIdUser(idUser);
+
+		Utils.userLogged = idUser;
+		Utils.saveOnLog(Utils.ACCESS_SUCCESS_LOG);
+
+		/*
+		 * Proxy o non proxy decision
+		 */
+		GameScreen.getGameScreen().setUser(user);
+
+		if (user.isAdministrator())
+			GameScreen.getGameScreen().setCommand(new UserAdministratorCommand());
+		else
+			GameScreen.getGameScreen().setCommand(new UserCommand());
+	}
+
+	/**
+	 * 
+	 * @param pathImage
+	 */
+	public void setUserAndCommandRegistration(String pathImage) {
+		String idUser = Utils.getIdUserFromImage(pathImage);
+		User user = new User(Utils.credentials.get(0), Utils.credentials.get(2), Utils.credentials.get(1), pathImage,
+				false);
+		user.setIdUser(idUser);
+		Utils.credentials.clear();
+		GameScreen.getGameScreen().setUser(user);
+		GameScreen.getGameScreen().setCommand(new UserCommand());
 	}
 
 	/**
@@ -82,7 +131,7 @@ public class FaceDetectionController {
 
 							}
 						} catch (IOException e) {
-						
+
 						}
 					}
 				}
@@ -173,37 +222,35 @@ public class FaceDetectionController {
 	}
 
 	public boolean compare() {
-		
-		if(this.image_comparison.compare())
+
+		if (this.image_comparison.compare())
 			return true;
-		
+
 		Utils.countErrorTimes++;
-		
-		if(Utils.countErrorTimes == 3)
-		{
+
+		if (Utils.countErrorTimes == 3) {
 			this.direAlSimulatoreDiMandareAllUtenteLemail();
 			Utils.countErrorTimes = 0;
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Sets true the 'TreeTimesAccessError' boolean to notify the Simulator to send to user an email to recover his housim access.
+	 * Sets true the 'TreeTimesAccessError' boolean to notify the Simulator to send
+	 * to user an email to recover his housim access.
 	 */
-	private void direAlSimulatoreDiMandareAllUtenteLemail()
-	{
+	private void direAlSimulatoreDiMandareAllUtenteLemail() {
 		Utils.treeTimesAccessError = true;
 	}
 
 	public boolean registerUser() {
-		
-		if(this.image_comparison.register())
+
+		if (this.image_comparison.register())
 			return true;
 		return false;
 	}
-	
-	public void moveImages(String toimage_path)
-	{
+
+	public void moveImages(String toimage_path) {
 		this.image_comparison.moveNewUserToImageFolder(toimage_path);
 	}
 
@@ -249,7 +296,5 @@ public class FaceDetectionController {
 //	public void setCaptured(boolean captured) {
 //		this.captured = captured;
 //	}
-	
-	
 
 }

@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
@@ -24,7 +26,8 @@ public class UserJDBC implements UserDAO {
 	static {
 		try {
 			System.out.println("B");
-			String url = String.format("jdbc:%s://%s:%s/%s", Configuration.jdbc, Configuration.host, Configuration.port, Configuration.database);
+			String url = String.format("jdbc:%s://%s:%s/%s", Configuration.jdbc, Configuration.host, Configuration.port,
+					Configuration.database);
 
 			String username = Configuration.username;
 			String password = Configuration.password;
@@ -47,10 +50,10 @@ public class UserJDBC implements UserDAO {
 	}
 
 	public static UserJDBC getUserJDBC() {
-		if( userJDBC == null)
+		if (userJDBC == null)
 			userJDBC = new UserJDBC();
 		return userJDBC;
-	}	
+	}
 
 	@Override
 	public boolean registration(User user) throws Exception {
@@ -281,7 +284,7 @@ public class UserJDBC implements UserDAO {
 				if (resultSet.getString("pswmatch").equals("t")) {
 					statement = null;
 					statement = connection.prepareStatement(Configuration.deleteOneTimaPAss);
-					statement.setString(1, email);					
+					statement.setString(1, email);
 					statement.executeUpdate();
 					connection.commit();
 					return true;
@@ -291,7 +294,7 @@ public class UserJDBC implements UserDAO {
 			connection.commit();
 			return false;
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 			connection.rollback();
 			throw e;
 		} finally {
@@ -469,7 +472,6 @@ public class UserJDBC implements UserDAO {
 
 	}
 
-
 	@Override
 	public ArrayList<Log> selectCommandLog() throws Exception {
 
@@ -515,24 +517,24 @@ public class UserJDBC implements UserDAO {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
-		
+
 		try {
 
 			connection = basicDataSource.getConnection();
 
 			statement = connection.prepareStatement(Configuration.currentlyUserIsAdministrator);
-			
+
 			statement.setString(1, idUser);
-			
+
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
-				
+
 				User user = new User();
 				user.setAdministrator(resultSet.getBoolean("is_administrator"));
-				
+
 				return user.isAdministrator();
 			}
-			
+
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw e;
@@ -548,7 +550,6 @@ public class UserJDBC implements UserDAO {
 
 	}
 
-	
 	@Override
 	public boolean emailIsRegister(String email) throws Exception {
 		Connection connection = null;
@@ -581,7 +582,6 @@ public class UserJDBC implements UserDAO {
 		}
 
 	}
-
 
 	@Override
 	public void updateOneTimePass(String oneTimePass, String email) throws Exception {
@@ -660,10 +660,8 @@ public class UserJDBC implements UserDAO {
 				connection.close();
 		}
 
-
 	}
 
-	
 	@Override
 	public User getUserByEmail(String email) throws Exception {
 		Connection connection = null;
@@ -703,5 +701,49 @@ public class UserJDBC implements UserDAO {
 		}
 	}
 
-	
+	@Override
+	public HashMap<Integer, User> getAllUser() throws Exception {
+		Connection connection = null;
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		HashMap<Integer, User> users = new HashMap<>();
+		int index = 0;
+
+		try {
+
+			connection = basicDataSource.getConnection();
+
+			statement = connection.prepareStatement(Configuration.selectAllUser);
+
+			resultSet = statement.executeQuery();
+
+			while (resultSet.next()) {
+				if (!resultSet.getString("id_user").equals("-1")) {
+
+					User user = new User();
+					user.setEmail(resultSet.getString("email"));
+					user.setNickName(resultSet.getString("nick_name"));
+					user.setTelefonNumber(resultSet.getString("telephone_number"));
+					user.setPathImage(resultSet.getString("path_image"));
+					user.setIdUser(resultSet.getString("id_user"));
+
+					users.put(index++, user);
+				}
+			}
+
+			return users;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw e;
+		} finally {
+			if (resultSet != null)
+				resultSet.close();
+			if (statement != null)
+				statement.close();
+			if (connection != null)
+				connection.close();
+		}
+
+	}
+
 }

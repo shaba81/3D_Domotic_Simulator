@@ -6,19 +6,27 @@ import org.apache.commons.dbcp2.BasicDataSource;
 
 import com.mygdx.controller.database.persistence.dao.UserDAO;
 import com.mygdx.controller.database.persistence.jdbc.UserJDBC;
+import com.mygdx.controller.face.FaceDetectionController;
 
 import utilis.Configuration;
 
 public class Controller {
 
 	private static Controller controller;
+	private FaceDetectionController faceController;
 
-	private Controller() {}
+	private Controller() {
+		faceController = new FaceDetectionController();
+	}
 	
 	public static Controller getController() {
 		if( controller == null )
 			controller = new Controller();
 		return controller;
+	}
+
+	public FaceDetectionController getFaceController() {
+		return faceController;
 	}
 
 	/**
