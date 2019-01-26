@@ -1,7 +1,6 @@
 package com.mygdx.controller.registration;
 
 import java.util.HashMap;
-import java.util.ResourceBundle.Control;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;

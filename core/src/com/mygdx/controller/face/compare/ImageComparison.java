@@ -30,14 +30,10 @@ public class ImageComparison {
 	private HashMap<Long, File> users_faces_files;
 	// Key: UserEmail; Value: user image
 	private HashMap<Long, Image> users_faces_images;
-	private int cont;
-//	private int cont;
 
 	public ImageComparison() {
-		// TODO Auto-generated constructor stub
 		this.users_faces_files = new HashMap<Long, File>();
 		this.users_faces_images = new HashMap<Long, Image>();
-		this.cont = 10;
 		this.soloPERORA();
 	}
 
@@ -196,7 +192,6 @@ public class ImageComparison {
 			// this.moveNewUserToImageFolder();
 
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 		}
 		return false;
@@ -222,14 +217,11 @@ public class ImageComparison {
 
 			
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 		}
 		return false;
 	}
 
-	///////////////////////// NON
-	///////////////////////// USATE//////////////////////////////////////////////////////////////
 	/**
 	 * E' una funzione che viene richiamata ogni qual volta un utente vuole accedere
 	 * alla casa.
@@ -237,6 +229,7 @@ public class ImageComparison {
 	 * @param user_email
 	 * @param file_user_image_path
 	 */
+	@SuppressWarnings("unused")
 	private void addUserImage(long user_id, String file_user_image_path) {
 		try {
 			String base = "resources/images/";
@@ -245,7 +238,6 @@ public class ImageComparison {
 			this.users_faces_files.put(user_id, file);
 			this.users_faces_images.put(user_id, user_image);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -255,14 +247,13 @@ public class ImageComparison {
 	 * 
 	 * @param file
 	 */
+	@SuppressWarnings("unused")
 	private void moveNewUserToImageFolder(String fromfolder_path, String fromimage_path, String tofolder_path, String toimage_path) {
 		// aggiungo il file nella cartella 'images'
           System.out.println("fromfolder_path: "+fromfolder_path+" fromimage_path: "+fromimage_path+" tofolder_path: "+tofolder_path+" toimage_path: "+toimage_path);
 		try {
 			Files.move(Paths.get(fromfolder_path+"/"+fromimage_path), Paths.get(tofolder_path+"/"+toimage_path));
-			// this.cont++;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

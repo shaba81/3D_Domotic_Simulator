@@ -1,7 +1,5 @@
 package com.mygdx.controller.database.model;
 
-import java.math.BigInteger;
-
 /**
  * Classe Bean della tabella users.
  * La password la salviamo solo su db.

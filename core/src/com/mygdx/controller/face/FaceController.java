@@ -11,7 +11,6 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.objdetect.CascadeClassifier;
 
 /**
  * 
@@ -23,7 +22,6 @@ public class FaceController {
 
 
 	public void crop(MatOfRect faces, Mat image, String cropImagePath) {
-		int x = 0, y = 0, height = 0, width = 0;
 
 		System.out.println(String.format("Detected %s faces", faces.toArray().length));
 		Rect rect_Crop = null;

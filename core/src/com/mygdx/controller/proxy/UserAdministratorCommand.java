@@ -2,7 +2,6 @@ package com.mygdx.controller.proxy;
 
 import com.mygdx.game.GameScreen;
 import com.mygdx.game.ScreenManager;
-import com.mygdx.simulator.factory_methos_screens.LoginScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.MainMenuScreenCreator;
 
 import utilis.Utils;

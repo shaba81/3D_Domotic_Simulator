@@ -33,6 +33,7 @@ public class FaceDetectionController {
 	// the OpenCV object that performs the video capture
 	private VideoCapture capture;
 	// a flag to change the button behavior
+	@SuppressWarnings("unused")
 	private boolean cameraActive;
 
 	// face cascade classifier

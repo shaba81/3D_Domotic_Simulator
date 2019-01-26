@@ -2,13 +2,9 @@ package com.mygdx.controller;
 
 import java.util.Random;
 
-import org.apache.commons.dbcp2.BasicDataSource;
-
 import com.mygdx.controller.database.persistence.dao.UserDAO;
 import com.mygdx.controller.database.persistence.jdbc.UserJDBC;
 import com.mygdx.controller.face.FaceDetectionController;
-
-import utilis.Configuration;
 
 public class Controller {
 

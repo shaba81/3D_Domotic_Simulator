@@ -9,12 +9,10 @@ import javax.mail.Session;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.swing.JOptionPane;
 
 import com.sun.mail.smtp.SMTPTransport;
 
 import utilis.Configuration;
-import utilis.Utils;
 
 /**
  * Classe che invia la mail utilizzando una libreria javax.mail

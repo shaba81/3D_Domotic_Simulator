@@ -14,13 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.controller.Controller;
 import com.mygdx.controller.database.model.User;
 import com.mygdx.controller.face.FaceDetectionController;
-import com.mygdx.controller.proxy.UserAdministratorCommand;
-import com.mygdx.controller.proxy.UserCommand;
-import com.mygdx.game.GameScreen;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.interfaces.AbstractScreen;
 import com.mygdx.simulator.factory_methos_screens.GameScreenCreator;
-import com.mygdx.simulator.factory_methos_screens.MainMenuScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.RegistrationCredentialsScreenCreator;
 
 import utilis.Utils;
@@ -47,7 +43,6 @@ public class FaceDetectionScreen extends AbstractScreen {
 
 	private String user_telphone;
 
-	private static FaceDetectionScreen faceDetectionScreen;
 	// se l'utente vorrà accedere, sarà true; se l'amministratore dovrà registrarlo,
 	// sarà false
 

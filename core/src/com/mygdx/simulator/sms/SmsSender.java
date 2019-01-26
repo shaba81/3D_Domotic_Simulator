@@ -11,7 +11,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import utilis.Configuration;
-import utilis.Utils;
 
 /**
  * Classe che invia l'SMS e prende le configurazioni dal file .json

@@ -2,7 +2,6 @@ package com.mygdx.controller.database.persistence.dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import com.mygdx.controller.database.model.User;
 
