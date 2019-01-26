@@ -67,6 +67,7 @@ public class Utils {
 	/*
 	 * PopUp string
 	 */
+	public static final String ACCESS_BACK_TO_MAIN_SCREEN_POP = "Are you sure do you want to exit without access?";
 	public static final String SCREEN_BACK_GAME_POPUP = "Are you sure you want to return to simulation without registration?";
 	public static final String SCREEN_BACK_GAME_SIMU_POPUP = "Are you sure you want to return to simulation?";
 	public static final String MAIN_MENU_BACK_POPUP = "Are you sure do you want to exit from simulation?";

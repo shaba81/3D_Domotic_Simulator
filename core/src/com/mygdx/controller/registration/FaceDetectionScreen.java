@@ -20,6 +20,7 @@ import com.mygdx.game.GameScreen;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.interfaces.AbstractScreen;
 import com.mygdx.simulator.factory_methos_screens.GameScreenCreator;
+import com.mygdx.simulator.factory_methos_screens.MainMenuScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.RegistrationCredentialsScreenCreator;
 
 import utilis.Utils;
@@ -37,6 +38,9 @@ public class FaceDetectionScreen extends AbstractScreen {
 
 	private TextButton backButton;
 	private boolean back;
+
+	private TextButton backAccessButton;
+	private boolean backAccess;
 
 	private TextButton redoButton;
 	private boolean redo;
@@ -114,6 +118,18 @@ public class FaceDetectionScreen extends AbstractScreen {
 				}
 			});
 		}
+		else {
+			text = "Back to Main menu";
+			this.backAccessButton = new TextButton(text, this.skin);
+
+			this.backAccessButton.addListener(new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					backAccess = true;
+					System.out.println("MMM");
+				}
+			});
+		}
 
 		text = "Redo photo";
 		this.redoButton = new TextButton(text, this.skin);
@@ -132,6 +148,8 @@ public class FaceDetectionScreen extends AbstractScreen {
 		this.mainTable.add(this.registrationOrAccessButton);
 		this.mainTable.row();
 		this.mainTable.add(this.backButton);
+		this.mainTable.row();
+		this.mainTable.add(this.backAccessButton);
 		this.mainTable.row();
 		this.mainTable.add(this.redoButton);
 		this.mainTable.row();
@@ -242,6 +260,15 @@ public class FaceDetectionScreen extends AbstractScreen {
 				this.faceController.init();
 				this.redo = false;
 				Utils.backToRegistrationScreen = false;
+			}
+
+			if (this.backAccess) {
+				this.backAccess = false;
+				if (Utils.captured)
+					Utils.backToRegistrationScreen = true;
+			//	ScreenManager.getInstance().showScreen(new MainMenuScreenCreator());
+				System.out.println("AAA");
+				Utils.showPopUp(Utils.ACCESS_BACK_TO_MAIN_SCREEN_POP, skin, imgStage, Utils.MAIN_SCREEN_POP);
 			}
 
 			if (this.back) {

@@ -49,7 +49,7 @@ public class LoginScreen extends AbstractScreen {
 
 		super.show();
 		this.mainTable.center();
-		String text = "Back to Administration";
+		String text = "Back to MainMenu";
 		this.backButton = new TextButton("", skin);
 
 		if( Utils.isFirstAccess )

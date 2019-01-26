@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -17,7 +16,7 @@ import utilis.Utils;
 public class MainMenuScreen extends AbstractScreen {
 
 	private Texture title;
-	private TextButton playButton, administrationButton,exitButton;
+	private TextButton accessBotton, administrationButton, exitButton;
 
 	private boolean access;
 	private boolean administration;
@@ -35,21 +34,25 @@ public class MainMenuScreen extends AbstractScreen {
 
 		super.show();
 		mainTable.bottom();
-        
+
 		title = new Texture(Gdx.files.internal("title.png"));
 		// Creo bottoni
-		playButton = new TextButton("Access", skin);
+		if (Utils.userLogged == "-1")
+			accessBotton = new TextButton("Access", skin);
+
 		administrationButton = new TextButton("Administration", skin);
-		backButton = new TextButton("Back to simulation",skin);
+		backButton = new TextButton("Back to simulation", skin);
 		exitButton = new TextButton("Exit", skin);
 
 		// In ascolto di eventi
-		playButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				access = true;
-			}
-		});
+		if (Utils.userLogged == "-1") {
+			accessBotton.addListener(new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					access = true;
+				}
+			});
+		}
 		administrationButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -70,7 +73,7 @@ public class MainMenuScreen extends AbstractScreen {
 			}
 		});
 		// Aggiungo bottoni alla table
-		this.add(playButton);
+		this.add(accessBotton);
 		this.add(administrationButton);
 		this.add(backButton);
 		this.add(exitButton);
@@ -104,15 +107,15 @@ public class MainMenuScreen extends AbstractScreen {
 			ScreenManager.getInstance().showScreen(new LoginScreenCreator());
 		}
 
-		if( back ) {
+		if (back) {
 			back = false;
 			Utils.showPopUp(Utils.SCREEN_BACK_GAME_SIMU_POPUP, skin, stage, Utils.GAME_SCREEN_POP);
 		}
 
-		if( exit ) {
+		if (exit) {
 			Utils.isAccess = false;
 			exit = false;
-			//Utils.resp = Utils.EXIT_THE_SIMULATION_LOG;
+			// Utils.resp = Utils.EXIT_THE_SIMULATION_LOG;
 			Utils.saveOnLog(Utils.EXIT_THE_SIMULATION_LOG);
 			Utils.showPopUp(Utils.MAIN_MENU_BACK_POPUP, skin, stage, Utils.EXIT_POP);
 		}
