@@ -60,4 +60,10 @@ public class UserAdministratorCommand implements AbstractCommand {
 		ScreenManager.getInstance().showScreen(new MainMenuScreenCreator());
 	}
 
+	@Override
+	public void help() {
+		GameScreen.getGameScreen().inputManager.help = true;
+		
+	}
+
 }

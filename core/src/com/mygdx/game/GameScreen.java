@@ -549,14 +549,13 @@ public class GameScreen implements Screen {
 				String commandTypeClose1 = "Spegni";
 				String commandTypeClose2 = "Chiudi";
 
+				String helpCommand = "aiuto";
+
 				String objectToActivate = vocalCommand.substring(vocalCommand.lastIndexOf(" ") + 1);
 				objectToActivate = objectToActivate.toLowerCase();
 
 				if (vocalCommand.toLowerCase().contains(commandTypeOpen1.toLowerCase())
 						|| vocalCommand.toLowerCase().contains(commandTypeOpen2.toLowerCase())) {
-					
-
-					
 
 					if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
 						command.lightOn();
@@ -595,9 +594,43 @@ public class GameScreen implements Screen {
 				} else {
 					// new TextToSpeech("Comando non riconosciuto. Ritenta.");
 				}
+
+				if (vocalCommand.toLowerCase().equals(helpCommand.toLowerCase())) {
+					System.out.println("entro in aiuto");
+					command.help();
+					return;
+				}
+
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
+		}
+	}
+
+	public boolean hc = false;
+
+	public void helpCommand() {
+		try {
+			if (inputManager.help) {
+				System.out.println("aiuto");
+				if (hc == false) {
+					if (checkRoom().equals("mainRoom")) {
+						System.out.println("aiuto prima stanza");
+						showAvailableCommandsRoomA();
+
+					} else if (checkRoom().equals("bathroom")) {
+						showAvailableCommandsRoomB();
+
+					}
+
+					hc = true;
+					inputManager.help = false;
+				}
+
+			}
+
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
 		}
 	}
 
@@ -892,7 +925,6 @@ public class GameScreen implements Screen {
 
 			if (inputManager.isSpeaking)
 				drawMic();
-			
 
 			startTV();
 			turnLights();
@@ -900,6 +932,8 @@ public class GameScreen implements Screen {
 			activateFan();
 
 			showMessages();
+			
+			helpCommand();
 
 			if (inputManager.nAccessButton) {
 				inputManager.nAccessButton = false;
@@ -912,7 +946,7 @@ public class GameScreen implements Screen {
 					// command.goToMainMenuScreen();
 					if (Utils.userLogged.equals("-1") & checkRoom().equals(""))
 						ScreenManager.getInstance().showScreen(new MainMenuScreenCreator());
-					else if( checkRoom().equals("bathroom") || checkRoom().equals("mainRoom")  )
+					else if (checkRoom().equals("bathroom") || checkRoom().equals("mainRoom"))
 						command.goToMainMenuScreen();
 				}
 

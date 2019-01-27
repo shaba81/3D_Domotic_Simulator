@@ -10,7 +10,7 @@ public abstract interface AbstractCommand {
 	public void tvOff();
 	public void fanOff();
 	public void speakerOff();
-	
+	public void help();
 	public void goToMainMenuScreen();
 	
 }

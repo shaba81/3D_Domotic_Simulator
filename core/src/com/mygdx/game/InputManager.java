@@ -27,6 +27,7 @@ public class InputManager implements InputProcessor {
 	public boolean nAccessButton;
 	float rotateSpeed = 0.05f;
 	private PerspectiveCamera camera;
+	public boolean help = false;
 
 	private SpeechRecognition speechRecognition;
 	final Microphone mic = new Microphone(FLACFileWriter.FLAC);
@@ -64,7 +65,9 @@ public class InputManager implements InputProcessor {
 			if (keycode == Input.Keys.L) {
 				isLightOn = !isLightOn;
 			}
-
+			if (keycode == Input.Keys.H) {
+				help = true;
+			}
 			if (keycode == Input.Keys.R) {
 				// messagesTable.clear();
 				isSpeaking = true;
@@ -99,6 +102,11 @@ public class InputManager implements InputProcessor {
 		}
 		if (keycode == Input.Keys.D) {
 			right = false;
+		}
+		if (keycode == Input.Keys.H) {
+			help = false;
+			GameScreen.getGameScreen().hc = false;
+			
 		}
 		if (keycode == Input.Keys.R) {
 			isSpeaking = false;
