@@ -37,7 +37,7 @@ public interface Configuration {
 	 * DB query
 	 */
 
-	public String updateUserCredentials = "update ingswchema.users set email=?, telephone_number=?, nick_name=?, path_image=? where id_user=?;";
+	public String updateUserCredentials = "update ingswschema.users set email=?, telephone_number=?, nick_name=?, path_image=? where id_user=?;";
 
 	public String selectAllUser = "select * from ingswschema.users;";
 

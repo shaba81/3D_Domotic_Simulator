@@ -244,10 +244,14 @@ public class AdministrationScreen extends AbstractScreen {
 		System.out.println(pathLabelName[index]);
 		Utils.credentials.clear();
 		Utils.credentials.add(0,users.get(index).getEmail());
+		
 		Utils.credentials.add(1,users.get(index).getTelefonNumber());
 		Utils.credentials.add(2,users.get(index).getNickName());
 		Utils.credentials.add(3,pathLabelName[index]);
 		Utils.credentials.add(4,users.get(index).getIdUser());
+		Utils.changeUserCredentials = true;
+		Utils.lenghtUserNameForShowPopUp = labelName[index].length()+1; //il +1 è per '?'
+		System.out.println("doAction 0: "+users.get(index).getEmail()+" 1: "+users.get(index).getTelefonNumber()+" 2: "+users.get(index).getNickName()+" 3: "+pathLabelName[index]+" 4: "+users.get(index).getIdUser());
 		Utils.showPopUp(Utils.ADMIN_REG_CRED_CHANGE_POPUP + labelName[index] + "?", skin, stage, Utils.REGISTRATION_SCREEN_POP);
 	}
 

@@ -5,10 +5,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -66,6 +69,14 @@ public abstract class AbstractScreen implements Screen {
 		this.mainTable.setFillParent(true);
 		// Allineo le cose nella table
 //		this.mainTable.center();
+	}
+	
+	protected void updateFrame(Table imageTable, Texture frameTexture, TextureRegion imgRegion, Image img) {
+		imageTable.clear();
+		frameTexture = new Texture(Gdx.files.internal("resources/frame.jpg"));
+		imgRegion.setRegion(frameTexture);
+		img = new Image(imgRegion);
+		imageTable.add(img).center();
 	}
 
 	public void add(Label x) {

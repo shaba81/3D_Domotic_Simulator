@@ -3,9 +3,15 @@ package utilis;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
 
 import org.opencv.core.Mat;
 
@@ -38,6 +44,7 @@ public class Utils {
 	public static boolean backToRegistrationScreen = false;
 	public static boolean treeTimesAccessError = false;
 	public static boolean songPlay = false;
+	public static boolean changeUserCredentials = false;
 
 	public static int countErrorTimes = 0;
 
@@ -95,6 +102,8 @@ public class Utils {
 	public static final String ACCESS_ONE_TIME_PASS = "Please check the email entered previously to which a code\nhas been sent from the validity of one hour with which you can access.\nPlease enter the code, the field doens't have to be empty..";
 	public static final String ACCESS_RECOVERY_EMAIL_NOT_FOUND = "Email doesn't eixists in our system.\nPlease retry to enter the email with which you registered.\\nThe field doens't have to be empty.";
 	public static final String ACCESS_ONE_TIME_PASS_NOT_MATCH = "Password entered not matches. Please check the email entered previously to which a code\nhas been sent from the validity of one hour with which you can access.\nPlease enter the code, the field doens't have to be empty..";
+	public static final String CHANGE_USER_CREDENTIALS_SUCCESSFULLY_MESSAGE = "Credentials have been changed successfull!";
+	public static final String CANT_COME_BACK_WITHOUT_FACE_CAPTURE = "Sorry, first you have to capture your face!";
 	
 	/*
 	 * command for log
@@ -121,6 +130,7 @@ public class Utils {
 	public static final String RADIO_OFF_LOG = "He asked to switch off the stereo.";
 	public static final String FAN_ON_LOG = "He asked to switch on the fan.";
 	public static final String FAN_OFF_LOG = "He asked to switch off the fan.";
+	public static final String CHANGE_USER_CREDENTIALS_SUCCESSFULLY = "User credentials have been changed successfully.";
 
 	
 	/*
@@ -176,6 +186,32 @@ public class Utils {
 	}
 	
 	
+	public static void removeAfileInAFolder(File myfile) {
+		try {
+//			File folder = new File(folderName+"/");
+//			File[] listOfFiles = folder.listFiles();
+//			int fileIndex = -1;
+//			
+//			for(int i = 0; i < listOfFiles.length; i++)
+//			{
+//				if (listOfFiles[i] == myfile) {
+//					fileIndex = i;
+//					break;
+//				}
+//			}
+//			
+			Files.deleteIfExists(myfile.toPath());
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		
+
+	}
+	
+	
 	
 	/**
 	 * 
@@ -205,6 +241,22 @@ public class Utils {
 	}
 	
 	/**
+	 * Sposta il file dalla cartella 'tmep_image' alla 'images'
+	 * 
+	 * @param file
+	 */
+	@SuppressWarnings("unused")
+	public static void moveNewUserToImageFolder(String fromfolder_path, String fromimage_path, String tofolder_path, String toimage_path) {
+		// aggiungo il file nella cartella 'images'
+          System.out.println("fromfolder_path: "+fromfolder_path+" fromimage_path: "+fromimage_path+" tofolder_path: "+tofolder_path+" toimage_path: "+toimage_path);
+		try {
+			Files.move(Paths.get(fromfolder_path+"/"+fromimage_path), Paths.get(tofolder_path+"/"+toimage_path));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 * Metodo che prende come parametri Il Tipo di classe che ha all'interno i dati
 	 * che saranno nel file .json {@link Configuration}, e il path dove si trova il
 	 * file
@@ -222,10 +274,15 @@ public class Utils {
 		Gson gson = new Gson();
 		return gson.fromJson(bufferedReader, type);
 	}
+	
+	public static int lenghtUserNameForShowPopUp = 0;
 
 	public static void showPopUp(String text, Skin skin, Stage stage, final String screenCall) {
+		String text2 = text.substring(0, text.length()-lenghtUserNameForShowPopUp);
+		
 		Dialog dialog = new Dialog("", skin, "dialog") {
 			public void result(Object obj) {
+				System.out.println("text: "+text+" text2: "+text2);
 				if (obj.equals("true")) {
 					if (screenCall.equals(MAIN_SCREEN_POP))
 						ScreenManager.getInstance().showScreen(new MainMenuScreenCreator());
@@ -239,6 +296,11 @@ public class Utils {
 						ScreenManager.getInstance().showScreen(new AdministrationScreenCreator());
 					else if (screenCall.equals(EXIT_POP))
 						Gdx.app.exit();
+				}
+				else if(obj.equals("false") && text2.equals(ADMIN_REG_CRED_CHANGE_POPUP) && changeUserCredentials)
+				{
+						changeUserCredentials = false;
+						System.out.println("NO");
 				}
 			}
 		};

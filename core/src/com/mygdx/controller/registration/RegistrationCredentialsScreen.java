@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.controller.Controller;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.interfaces.AbstractScreen;
+import com.mygdx.simulator.factory_methos_screens.ChangeFaceScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.FaceDetectionScreenCreator;
 
 import utilis.Utils;
@@ -64,13 +65,13 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 			}
 		});
         
-		if(!Utils.backToRegistrationScreen)
+		if(!Utils.backToRegistrationScreen && !Utils.changeUserCredentials)
 		{
 		   this.txtEmail = new TextField("", skin);
 		   this.txtTelephoneNumber = new TextField("", skin);
 		   this.txtNickName = new TextField("", skin);
 		}
-		else
+		else if(Utils.backToRegistrationScreen || Utils.changeUserCredentials || (Utils.backToRegistrationScreen && Utils.changeUserCredentials))
 		{
 			this.txtEmail = new TextField(Utils.credentials.get(0), skin);
 			this.txtTelephoneNumber = new TextField(Utils.credentials.get(1), skin);
@@ -114,10 +115,20 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 
 			if (faceCapture) {
 				faceCapture = false;
-				Utils.credentials.add(0, this.txtEmail.getText());
-				Utils.credentials.add(1, this.txtTelephoneNumber.getText());
-				Utils.credentials.add(2, this.txtNickName.getText());
-
+				
+				if(!Utils.changeUserCredentials)
+				{
+				    Utils.credentials.add(0, this.txtEmail.getText());
+				    Utils.credentials.add(1, this.txtTelephoneNumber.getText());
+				    Utils.credentials.add(2, this.txtNickName.getText());
+				}
+				else
+				{
+					Utils.credentials.set(0, this.txtEmail.getText());
+					Utils.credentials.set(1, this.txtTelephoneNumber.getText());
+					Utils.credentials.set(2, this.txtNickName.getText());
+					System.out.println("registration 0: "+Utils.credentials.get(0)+" 1: "+Utils.credentials.get(1)+" 2: "+Utils.credentials.get(2)+" 3: "+Utils.credentials.get(3)+" 4: "+Utils.credentials.get(4));
+				}
 				/*
 				 * This function return: 1: if email already exist. 2: if telephone number
 				 * already exist. 3: if nickname already exist.
@@ -127,26 +138,50 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 
 				String dialogText = this.errorOccurr(result);
 
-				if (dialogText != "")
-					Utils.showMessageDialog(dialogText, skin, stage);
-				else
-				{
-//					Utils.resp = Utils.REGISTRATION_CREDENTIALS_SUCCESSFULLY_INSERT;
-					Utils.saveOnLog(Utils.REGISTRATION_CREDENTIALS_SUCCESSFULLY_INSERT);
-					ScreenManager.getInstance().showScreen(new FaceDetectionScreenCreator());
+				if (!Utils.changeUserCredentials) {
+					if (dialogText != "")
+						Utils.showMessageDialog(dialogText, skin, stage);
+					else {
+						Utils.saveOnLog(Utils.REGISTRATION_CREDENTIALS_SUCCESSFULLY_INSERT);
+						ScreenManager.getInstance().showScreen(new FaceDetectionScreenCreator());
+					}
+				} 
+				else {
+					if (dialogText != Utils.REGISTRATION_CREDENTIALS_SCREEN_EMAIL_EXIST_POPUP
+							&& dialogText != Utils.REGISTRATION_CREDENTIALS_SCREEN_TELEPHONE_EXIST_POPUP
+							&& dialogText != Utils.REGISTRATION_CREDENTIALS_SCREEN_NICKNAME_EXIST_POPUP)
+						Utils.showMessageDialog(dialogText, skin, stage);
+					else {
+						// Utils.resp = Utils.REGISTRATION_CREDENTIALS_SUCCESSFULLY_INSERT;
+						Utils.saveOnLog(Utils.REGISTRATION_CREDENTIALS_SUCCESSFULLY_INSERT);
+						ScreenManager.getInstance().showScreen(new ChangeFaceScreenCreator());
+					}
 				}
+					
 			}
 
 			if (backToAdministration) {
 				backToAdministration = false;
-				if( !Utils.isFirstAccess )
-					Utils.showPopUp(Utils.REGISTRATION_CREDENTIALS_SCREEN_BACK_POPUP, skin, stage, Utils.ADMIN_SCREEN_POP);
-				else {
-					Utils.showPopUp(Utils.SCREEN_BACK_GAME_POPUP, skin, stage, Utils.GAME_SCREEN_POP);
+				
+				if (!Utils.changeUserCredentials) {
+
+					if (!Utils.isFirstAccess)
+						Utils.showPopUp(Utils.REGISTRATION_CREDENTIALS_SCREEN_BACK_POPUP, skin, stage,
+								Utils.ADMIN_SCREEN_POP);
+					else {
+						Utils.showPopUp(Utils.SCREEN_BACK_GAME_POPUP, skin, stage, Utils.GAME_SCREEN_POP);
+					}
+				}
+				else
+				{
+					Utils.changeUserCredentials = false;
+					Utils.showPopUp(Utils.REGISTRATION_CREDENTIALS_SCREEN_BACK_POPUP, skin, stage,
+							Utils.ADMIN_SCREEN_POP);
 				}
 			}
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+//			System.err.println(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 

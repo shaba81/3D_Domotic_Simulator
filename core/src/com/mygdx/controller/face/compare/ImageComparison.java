@@ -247,16 +247,16 @@ public class ImageComparison {
 	 * 
 	 * @param file
 	 */
-	@SuppressWarnings("unused")
-	private void moveNewUserToImageFolder(String fromfolder_path, String fromimage_path, String tofolder_path, String toimage_path) {
-		// aggiungo il file nella cartella 'images'
-          System.out.println("fromfolder_path: "+fromfolder_path+" fromimage_path: "+fromimage_path+" tofolder_path: "+tofolder_path+" toimage_path: "+toimage_path);
-		try {
-			Files.move(Paths.get(fromfolder_path+"/"+fromimage_path), Paths.get(tofolder_path+"/"+toimage_path));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+//	@SuppressWarnings("unused")
+//	private void moveNewUserToImageFolder(String fromfolder_path, String fromimage_path, String tofolder_path, String toimage_path) {
+//		// aggiungo il file nella cartella 'images'
+//          System.out.println("fromfolder_path: "+fromfolder_path+" fromimage_path: "+fromimage_path+" tofolder_path: "+tofolder_path+" toimage_path: "+toimage_path);
+//		try {
+//			Files.move(Paths.get(fromfolder_path+"/"+fromimage_path), Paths.get(tofolder_path+"/"+toimage_path));
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
 	
 	public void moveNewUserToImageFolder(String toimage_path) {
 		// aggiungo il file nella cartella 'images'
