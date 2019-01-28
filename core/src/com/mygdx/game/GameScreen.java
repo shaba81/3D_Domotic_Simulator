@@ -556,46 +556,73 @@ public class GameScreen implements Screen {
 
 				if (vocalCommand.toLowerCase().contains(commandTypeOpen1.toLowerCase())
 						|| vocalCommand.toLowerCase().contains(commandTypeOpen2.toLowerCase())) {
+					// controllo che i seguenti comandi si possano effettuare solo nella mainroom
+					if (checkRoom().equals("mainRoom")) {
 
-					if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
-						command.lightOn();
-						return;
-					} else if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
-						command.tvOn();
-						return;
-					} else if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
-						command.speakerOn();
-						return;
-
-					} else if (objectToActivate.equals("ventilatore") || objectToActivate.contains("aria")) {
-						command.fanOn();
-						return;
-					} else {
-						// new TextToSpeech("Comando non riconosciuto. Ritenta.");
+						if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
+							command.lightOn();
+							return;
+						} else if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
+							command.tvOn();
+							return;
+						} else if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
+							command.speakerOn();
+							return;
+						}
+						// altrimenti dico che non si può fare
+						wlc = false;
+						wrongLocationCommand();
+						Utils.resp = "";
+						inputManager.doCommand = false;
+						System.out.println("non ti trovi nella stanza giusta");
 						return;
 					}
-				}
+					// controllo che i seguenti comandi si possano effettuare solo nella seconda
+					// stanza
+					if (checkRoom().equals("bathroom")) {
+						if (objectToActivate.equals("ventilatore") || objectToActivate.contains("aria")) {
+							command.fanOn();
+							return;
+						}
+					}
 
-				else if (vocalCommand.toLowerCase().contains(commandTypeClose1.toLowerCase())
+					// altrimenti dico che non si può fare
+					wlc = false;
+					wrongLocationCommand();
+					Utils.resp = "";
+					inputManager.doCommand = false;
+					System.out.println("non ti trovi nella stanza giusta");
+					return;
+
+					// stessa cosa si fa per i comandi di chiusura
+				} else if (vocalCommand.toLowerCase().contains(commandTypeClose1.toLowerCase())
 						|| vocalCommand.toLowerCase().contains(commandTypeClose2.toLowerCase())) {
-					if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
-						command.lightOff();
-						return;
-					} else if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
-						command.tvOff();
-						return;
-					} else if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
-						command.speakerOff();
-
-						return;
-					} else {
-						// new TextToSpeech("Comando non riconosciuto. Ritenta.");
-						return;
+					if (checkRoom().equals("mainRoom")) {
+						if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
+							command.lightOff();
+							return;
+						} else if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
+							command.tvOff();
+							return;
+						} else if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
+							command.speakerOff();
+							return;
+						} else {
+							// new TextToSpeech("Comando non riconosciuto. Ritenta.");
+							return;
+						}
 					}
+					wlc = false;
+					wrongLocationCommand();
+					Utils.resp = "";
+					inputManager.doCommand = false;
+					System.out.println("non ti trovi nella stanza giusta");
+					return;
 				}
-
+				
+				
 				// System.out.println("stampo comando vocale" + vocalCommand);
-
+				//comando di aiuto
 				else if (vocalCommand.toLowerCase().equals(helpCommand.toLowerCase())) {
 					System.out.println("entro in aiuto");
 					Utils.resp = "";
@@ -611,6 +638,16 @@ public class GameScreen implements Screen {
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
+		}
+	}
+
+	boolean wlc = false;
+
+	public void wrongLocationCommand() {
+		if (!wlc) {
+			new TextToSpeech(
+					"Nella stanza corrente non puoi impartire questo comando, per scoprire i comandi, digita H o dire aiuto");
+			wlc = true;
 		}
 	}
 
