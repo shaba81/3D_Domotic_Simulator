@@ -11,7 +11,7 @@ public class UserAdministratorCommand implements AbstractCommand {
 	@Override
 	public void lightOn() {
 		GameScreen.getGameScreen().inputManager.isLightOn = true;
-		Utils.commandLog("luce", "lampada",Utils.LIGHT_ON_LOG);
+		Utils.commandLog("luce", "lampada", Utils.LIGHT_ON_LOG);
 	}
 
 	@Override
@@ -23,13 +23,13 @@ public class UserAdministratorCommand implements AbstractCommand {
 	@Override
 	public void fanOn() {
 		GameScreen.getGameScreen().inputManager.activateFan = true;
-		Utils.commandLog("ventilatore", "aria",Utils.FAN_ON_LOG);
+		Utils.commandLog("ventilatore", "aria", Utils.FAN_ON_LOG);
 	}
 
 	@Override
 	public void speakerOn() {
 		GameScreen.getGameScreen().inputManager.activateSpeaker = true;
-		Utils.commandLog("stereo", "radio",Utils.RADIO_ON_LOG);
+		Utils.commandLog("stereo", "radio", Utils.RADIO_ON_LOG);
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class UserAdministratorCommand implements AbstractCommand {
 	@Override
 	public void tvOff() {
 		GameScreen.getGameScreen().inputManager.isTvOn = false;
-		Utils.commandLog("tv", "televisione",Utils.TV_OFF_LOG);
+		Utils.commandLog("tv", "televisione", Utils.TV_OFF_LOG);
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class UserAdministratorCommand implements AbstractCommand {
 	@Override
 	public void speakerOff() {
 		GameScreen.getGameScreen().inputManager.activateSpeaker = false;
-		Utils.commandLog("stereo", "radio",Utils.RADIO_OFF_LOG);
+		Utils.commandLog("stereo", "radio", Utils.RADIO_OFF_LOG);
 	}
 
 	@Override
@@ -64,6 +64,9 @@ public class UserAdministratorCommand implements AbstractCommand {
 	public void help() {
 		GameScreen.getGameScreen().inputManager.help = true;
 		
+		GameScreen.getGameScreen().hc = false;
+		Utils.resp = "";
+
 	}
 
 }

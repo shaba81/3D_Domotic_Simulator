@@ -586,21 +586,28 @@ public class GameScreen implements Screen {
 						return;
 					} else if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
 						command.speakerOff();
+
 						return;
 					} else {
 						// new TextToSpeech("Comando non riconosciuto. Ritenta.");
 						return;
 					}
-				} else {
-					// new TextToSpeech("Comando non riconosciuto. Ritenta.");
 				}
 
-				if (vocalCommand.toLowerCase().equals(helpCommand.toLowerCase())) {
+				// System.out.println("stampo comando vocale" + vocalCommand);
+
+				else if (vocalCommand.toLowerCase().equals(helpCommand.toLowerCase())) {
 					System.out.println("entro in aiuto");
+					Utils.resp = "";
+
 					command.help();
+
+					// helpCommand();
+
 					return;
 				}
-
+				Utils.resp = "";
+				inputManager.doCommand = false;
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
@@ -612,19 +619,19 @@ public class GameScreen implements Screen {
 	public void helpCommand() {
 		try {
 			if (inputManager.help) {
-				System.out.println("aiuto");
+				// System.out.println("aiuto");
 				if (hc == false) {
 					if (checkRoom().equals("mainRoom")) {
-						System.out.println("aiuto prima stanza");
+						// System.out.println("aiuto prima stanza");
 						showAvailableCommandsRoomA();
 
 					} else if (checkRoom().equals("bathroom")) {
 						showAvailableCommandsRoomB();
 
 					}
-
 					hc = true;
 					inputManager.help = false;
+					// System.out.println(hc + " " + inputManager.help);
 				}
 
 			}
@@ -747,6 +754,7 @@ public class GameScreen implements Screen {
 	boolean entrata = true;
 
 	public void showAvailableCommandsRoomA() {
+
 		String nome = user.getNickName();
 		if (entrata) {
 			new TextToSpeech(
@@ -932,7 +940,7 @@ public class GameScreen implements Screen {
 			activateFan();
 
 			showMessages();
-			
+
 			helpCommand();
 
 			if (inputManager.nAccessButton) {
