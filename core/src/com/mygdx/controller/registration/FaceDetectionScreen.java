@@ -1,5 +1,6 @@
 package com.mygdx.controller.registration;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import com.badlogic.gdx.Gdx;
@@ -257,7 +258,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 		}
 	}
 
-	private String register() throws Exception {
+	private String register() throws SQLException, IOException  {
 		/*
 		 * Decommentare le funzioni per il salvataggio. Ora se si preme il bottone +
 		 * come se simulasse la registrazione. quindi la booleana la mette a false. Ma
@@ -283,9 +284,10 @@ public class FaceDetectionScreen extends AbstractScreen {
 	 * @param userDAO
 	 * @param isAdministrator
 	 * @throws SQLException 
+	 * @throws IOException 
 	 */
 	@SuppressWarnings("finally")
-	private String registrationUser() throws Exception {
+	private String registrationUser() throws SQLException, IOException  {
 		User user = new User();
 			/*
 			 * TODO: fare distinzione di popup, quando fallisce va benisismo. Quando ha

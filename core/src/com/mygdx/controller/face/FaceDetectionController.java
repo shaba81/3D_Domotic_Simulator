@@ -3,6 +3,7 @@ package com.mygdx.controller.face;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.EmptyStackException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -51,9 +52,10 @@ public class FaceDetectionController {
 	/**
 	 * 
 	 * @param emailOneTime
+	 * @throws SQLException 
 	 * @throws Exception
 	 */
-	public void setUserAndCommandAccess(String parameter, boolean threeTimes) throws Exception {
+	public void setUserAndCommandAccess(String parameter, boolean threeTimes) throws SQLException  {
 		String idUser = "";
 		User user;
 

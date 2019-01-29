@@ -1,6 +1,12 @@
 package com.mygdx.controller.registration;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
+
+import javax.mail.MessagingException;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -172,7 +178,7 @@ public class LoginScreen extends AbstractScreen {
 
 	}
 
-	private void updateAndSendCredentials() throws Exception {
+	private void updateAndSendCredentials() throws SQLException, MessagingException, IOException  {
 		String newPass = Controller.getController().generatePassword();
 		String[] emailTelephoneNumeberAdmin = Controller.getController().getUserDAO().updateCredentilsAdministrator(Utils.ID_ADMIN_USER, Utils.ID_SUPPLY, newPass);
 		String bodyMessage = Utils.MESSAGE_RECOVERY_PASS_ADMIN_EMAIL + "\n\n\n New password: " + newPass;
