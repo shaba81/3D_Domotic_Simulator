@@ -32,18 +32,19 @@ public class ExceptionsManager {
 
 	public void manageException(Exception exception, Skin skin, Stage stage) {
 		String message = "";
+		exception.printStackTrace();
 		if( exception instanceof SQLException ) {
-			message = "";
+			message = "SQL EXCEPTION-(MESSAGGIO MOMENTANEO)";
 		} else if( exception instanceof FileNotFoundException ) {
-			message = "";
+			message = "FILE NOT FOUND-(MESSAGGIO MOMENTANEO)";
 		} else if( exception instanceof IOException) {
-			message = "";
+			message = "IOEXCEPTION-(MESSAGGIO MOMENTANEO)";
 		} else if( exception instanceof MessagingException ) {
 			message = Utils.MESSAGINGE_MESSAGE;
 		} else if( exception instanceof AddressException ) {
 			message = Utils.ADDRESSE_INVALID_EMAIL_MESSAGE;
 		} else {
-			message = "";
+			message = "ALTRA ECCEZIONE";
 		}
 
 		this.showMessage(message, skin, stage);
@@ -51,6 +52,6 @@ public class ExceptionsManager {
 
 	private void showMessage(String message, Skin skin, Stage stage) {
 		//Utils.showMessageDialog(message, skin, stage);
-		System.out.println("1: " + message);
+		System.err.println("1: " + message);
 	}
 }
