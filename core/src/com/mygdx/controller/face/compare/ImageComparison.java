@@ -129,7 +129,7 @@ public class ImageComparison {
 		System.out.println("Difference Percentage-->  " + percentage);
 		// System.out.println("keyimA: "+key+", path imgA:
 		// "+this.users_faces_files.get(key).getPath()+", path imgB: "+pathB+", ");
-		if (percentage < 9.1) {
+		if (percentage < 9.4) {
 			System.out.println("I due volti SONO gli stessi.");
 			Utils.pathImageUser = this.users_faces_files.get(key).getAbsolutePath();
 			return true;

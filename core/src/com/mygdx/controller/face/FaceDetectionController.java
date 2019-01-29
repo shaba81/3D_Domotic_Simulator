@@ -121,18 +121,18 @@ public class FaceDetectionController {
 						try {
 							// effectively grab and process a single frame
 							Mat frame = grabFrame();
-
 							// QUI BISOGNA SALVARE L'IMMAGINE SU FILE, CHE SARA POI PRESA DA GDX PER FARLA A
 							// VIDEO
 							if (!utilis.Utils.capturing) {
 								BufferedImage buffImg = Utils.matToBufferedImage(frame);
 								File outputfile = new File("resources/frame.jpg");
 
+								Utils.isSave = false;
 								ImageIO.write(buffImg, "jpg", outputfile);
 								utilis.Utils.capturing = true;
 								Utils.isSave = true;
+							} 
 
-							}
 						} catch (IOException e) {
 
 						}
