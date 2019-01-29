@@ -3,6 +3,7 @@ package com.mygdx.controller.face;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.EmptyStackException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -121,6 +122,7 @@ public class FaceDetectionController {
 					while (!Utils.captured) {
 						// effectively grab and process a single frame
 						try {
+							
 							Mat frame = grabFrame();
 							// QUI BISOGNA SALVARE L'IMMAGINE SU FILE, CHE SARA POI PRESA DA GDX PER FARLA A
 							// VIDEO
@@ -135,8 +137,8 @@ public class FaceDetectionController {
 								utilis.Utils.capturing = true;
 								Utils.isSave = true;
 							}
-						} catch (IOException e) {
-							//ExceptionsManager.getExceptionsManager().manageException(e);
+						} catch (Exception e) {
+							System.out.println("Vedi che hai sbagliato a scrivere");
 						}
 					}
 				}
@@ -220,7 +222,7 @@ public class FaceDetectionController {
 
 	}
 
-	public boolean compare() {
+	public boolean compare() throws IOException {
 
 		if (this.image_comparison.compare())
 			return true;
@@ -242,14 +244,14 @@ public class FaceDetectionController {
 		Utils.treeTimesAccessError = true;
 	}
 
-	public boolean registerUser() {
+	public boolean registerUser() throws IOException {
 
 		if (this.image_comparison.register())
 			return true;
 		return false;
 	}
 
-	public void moveImages(String toimage_path) {
+	public void moveImages(String toimage_path) throws IOException {
 		this.image_comparison.moveNewUserToImageFolder(toimage_path);
 	}
 
@@ -270,7 +272,7 @@ public class FaceDetectionController {
 				this.timer.shutdown();
 				this.timer.awaitTermination(33, TimeUnit.MILLISECONDS);
 			} catch (InterruptedException e) {
-				//ExceptionsManager.getExceptionsManager().manageException(e);
+				System.out.println("VEdi che hai sbagliato.");
 			}
 		}
 

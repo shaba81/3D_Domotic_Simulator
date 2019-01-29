@@ -1,5 +1,7 @@
 package com.mygdx.controller.proxy;
 
+import java.sql.SQLException;
+
 import com.mygdx.textToSpeech.TextToSpeech;
 
 import utilis.Utils;
@@ -13,36 +15,36 @@ public class UserCommand implements AbstractCommand {
 	}
 
 	@Override
-	public void lightOn() {
+	public void lightOn() throws SQLException {
 		uac.lightOn();
 	}
 
 	@Override
-	public void tvOn() {
+	public void tvOn() throws SQLException {
 		Utils.saveOnLog(Utils.TV_ON_LOG);
 		new TextToSpeech("Mi dispiace il comando non è permesso a questo tipo di utente.");
 	}
 
 	@Override
-	public void fanOn() {
+	public void fanOn() throws SQLException {
 		uac.fanOn();
 
 	}
 
 	@Override
-	public void speakerOn() {
+	public void speakerOn() throws SQLException {
 		uac.speakerOn();
 		
 	}
 
 	@Override
-	public void lightOff() {
+	public void lightOff() throws SQLException {
 		uac.lightOff();
 		
 	}
 
 	@Override
-	public void tvOff() {
+	public void tvOff() throws SQLException {
 		uac.tvOff();
 	}
 
@@ -53,7 +55,7 @@ public class UserCommand implements AbstractCommand {
 	}
 
 	@Override
-	public void speakerOff() {
+	public void speakerOff() throws SQLException {
 		uac.speakerOff();
 	}
 
@@ -65,7 +67,6 @@ public class UserCommand implements AbstractCommand {
 	@Override
 	public void help() {
 		uac.help();
-		
 	}
 
 }

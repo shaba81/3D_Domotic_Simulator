@@ -10,7 +10,7 @@ import utilis.Log;
 
 public interface UserDAO {
 
-	public String getIdUser()throws Exception;
+	public String getIdUser()throws SQLException;
 	public boolean registration(User user) throws SQLException;
 	public void deleteUtente(String email) throws SQLException;
 	public int userExist(String email, String telephoneNumber, String nickName ) throws SQLException;

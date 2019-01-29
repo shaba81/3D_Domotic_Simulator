@@ -1,5 +1,7 @@
 package com.mygdx.controller.registration;
 
+import org.opencv.ml.EM;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -13,6 +15,7 @@ import com.mygdx.interfaces.AbstractScreen;
 import com.mygdx.simulator.factory_methos_screens.ChangeFaceScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.FaceDetectionScreenCreator;
 
+import utilis.ExceptionsManager;
 import utilis.Utils;
 
 public class RegistrationCredentialsScreen extends AbstractScreen {
@@ -210,8 +213,7 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 //			}
 			
 		} catch (Exception e) {
-//			System.err.println(e.getMessage());
-			e.printStackTrace();
+			ExceptionsManager.getExceptionsManager().manageException(e, skin, stage);
 		}
 	}
 

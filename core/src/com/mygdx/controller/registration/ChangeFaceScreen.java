@@ -19,29 +19,29 @@ import com.mygdx.interfaces.AbstractScreen;
 import com.mygdx.simulator.factory_methos_screens.AdministrationScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.RegistrationCredentialsScreenCreator;
 
+import utilis.ExceptionsManager;
 import utilis.Utils;
 
-public class ChangeFaceScreen extends AbstractScreen{
-	
+public class ChangeFaceScreen extends AbstractScreen {
+
 	private TextureRegion imgRegion;
 	private Texture frameTexture;
 	private Image img;
 	private Table imageTable;
 	private Stage imgStage;
-	
+
 	private TextButton backButton;
 	private boolean back;
-	
+
 	private TextButton changeCredentialsButton;
 	private boolean changeCredentials;
-	
+
 	private TextButton backAdminScreen;
 	private boolean backAdmin;
-	
+
 	private TextButton redoButton;
 	private boolean redo;
-	
-	
+
 	public ChangeFaceScreen() {
 		// TODO Auto-generated constructor stub
 		this.imgStage = new Stage();
@@ -58,19 +58,18 @@ public class ChangeFaceScreen extends AbstractScreen{
 		this.imgRegion = new TextureRegion(frameTexture);
 		this.img = new Image(imgRegion);
 		this.imageTable.add(this.img).center();
-		
+
 		this.redo = this.changeCredentials = this.back = false;
 	}
 
 	@Override
-	public void show()
-	{
+	public void show() {
 		super.show();
 		this.mainTable.right();
 		this.imageTable.center();
 
 		Gdx.input.setInputProcessor(this.imgStage);
-		
+
 		String text = "Change credentials";
 		this.changeCredentialsButton = new TextButton(text, this.skin);
 
@@ -81,7 +80,7 @@ public class ChangeFaceScreen extends AbstractScreen{
 				System.out.println("CHANGE CREDENTIALS");
 			}
 		});
-		
+
 		text = "Redo";
 		this.redoButton = new TextButton(text, this.skin);
 
@@ -92,7 +91,7 @@ public class ChangeFaceScreen extends AbstractScreen{
 				System.out.println("REDO");
 			}
 		});
-		
+
 		text = "Back";
 		this.backButton = new TextButton(text, this.skin);
 
@@ -103,7 +102,7 @@ public class ChangeFaceScreen extends AbstractScreen{
 				System.out.println("BACK");
 			}
 		});
-		
+
 		text = "Back to Administration Screen";
 		this.backAdminScreen = new TextButton(text, this.skin);
 
@@ -114,10 +113,9 @@ public class ChangeFaceScreen extends AbstractScreen{
 				System.out.println("MMM");
 			}
 		});
-		
+
 		Controller.getController().getFaceController().init();
 
-		
 		this.mainTable.add(this.changeCredentialsButton);
 		this.mainTable.row();
 		this.mainTable.add(this.redoButton);
@@ -130,24 +128,23 @@ public class ChangeFaceScreen extends AbstractScreen{
 		this.imgStage.addActor(this.imageTable);
 		// imageTable.addActor(this.mainTable);
 		this.imgStage.addActor(this.mainTable);
-		
+
 	}
-	
-	
+
 	@Override
 	public void render(float delta) {
 		// TODO Auto-generated method stub
 		try {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			Gdx.gl.glClearColor(0, 0, 0, 1);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		this.imgStage.act();
-		this.imgStage.draw();
-		if (utilis.Utils.capturing) {
-			this.updateFrame(this.imageTable, this.frameTexture, this.imgRegion, this.img);
-			utilis.Utils.capturing = false;
-		}
-	
+			this.imgStage.act();
+			this.imgStage.draw();
+			if (utilis.Utils.capturing) {
+				this.updateFrame(this.imageTable, this.frameTexture, this.imgRegion, this.img);
+				utilis.Utils.capturing = false;
+			}
+
 //		if(Utils.captured && Utils.changeUserCredentials)
 //		{
 //		    Controller.getController().getUserDAO().updateUserCredentials(Utils.credentials.get(0), Utils.credentials.get(1), Utils.credentials.get(2), "resources/images/" + Utils.credentials.get(4) + ".jpg", Controller.getController().getUserDAO().getIdUser());
@@ -155,26 +152,27 @@ public class ChangeFaceScreen extends AbstractScreen{
 //		    Utils.showMessageDialog(Utils.CHANGE_USER_CREDENTIALS_SUCCESSFULLY_MESSAGE, this.skin, this.imgStage);
 //		}
 //		
-		 if (Utils.captured && Utils.backToRegistrationScreen) {
+			if (Utils.captured && Utils.backToRegistrationScreen) {
 				Utils.backToRegistrationScreen = false;
 				Utils.showMessageDialog(Utils.ALREADY_CAPTURE_FACE_POPUP, skin, imgStage);
 			}
-		 
+
 			if (this.changeCredentials) {
-                  Utils.changeUserCredentials = false;
-                  
+				Utils.changeUserCredentials = false;
+
 				if (Utils.captured) {
 					File file = new File("resources/images/" + Utils.credentials.get(4) + ".jpg");
 					Utils.removeAfileInAFolder(file);
 
-					Utils.moveNewUserToImageFolder("resources/temp_image", "temp.jpg", "resources/images", Utils.credentials.get(4) + ".jpg");
+					Utils.moveNewUserToImageFolder("resources/temp_image", "temp.jpg", "resources/images",
+							Utils.credentials.get(4) + ".jpg");
 					System.out.println("PRIMA 0: " + Utils.credentials.get(0) + " 1: " + Utils.credentials.get(1)
 							+ " 2: " + Utils.credentials.get(2) + " 3: " + " resources/images/"
 							+ Utils.credentials.get(4) + ".jpg" + " 4: " + Utils.credentials.get(4));
 					Controller.getController().getUserDAO().updateUserCredentials(Utils.credentials.get(0),
 							Utils.credentials.get(1), Utils.credentials.get(2),
 							"resources/images/" + Utils.credentials.get(4) + ".jpg", Utils.credentials.get(4));
-					
+
 					System.out.println("DOPO 0: " + Utils.credentials.get(0) + " 1: " + Utils.credentials.get(1)
 							+ " 2: " + Utils.credentials.get(2) + " 3: " + " resources/images/"
 							+ Utils.credentials.get(4) + ".jpg" + " 4: " + Utils.credentials.get(4));
@@ -184,22 +182,22 @@ public class ChangeFaceScreen extends AbstractScreen{
 				} else
 					Utils.showMessageDialog(Utils.CANT_COME_BACK_WITHOUT_FACE_CAPTURE, skin, imgStage);
 			}
-		
-		if (this.redo) {
-			Utils.captured = false;
-			Controller.getController().getFaceController().init();
-			this.redo = false;
-			Utils.backToRegistrationScreen = false;
-		}
-		
-		if (this.backAdmin) {
-			this.backAdmin = false;
-			
-			Utils.showPopUp(Utils.BACK_TO_ADMIN_SCREEN, skin, imgStage, Utils.ADMIN_SCREEN_POP);
-			Controller.getController().getFaceController().setClosed();
-			
-		}
-		
+
+			if (this.redo) {
+				Utils.captured = false;
+				Controller.getController().getFaceController().init();
+				this.redo = false;
+				Utils.backToRegistrationScreen = false;
+			}
+
+			if (this.backAdmin) {
+				this.backAdmin = false;
+
+				Utils.showPopUp(Utils.BACK_TO_ADMIN_SCREEN, skin, imgStage, Utils.ADMIN_SCREEN_POP);
+				Controller.getController().getFaceController().setClosed();
+
+			}
+
 			if (this.back) {
 				this.back = false;
 
@@ -211,11 +209,10 @@ public class ChangeFaceScreen extends AbstractScreen{
 				}
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ExceptionsManager.getExceptionsManager().manageException(e, skin, imgStage);
 		}
 	}
-	
+
 	public void dispose() {
 		super.dispose();
 		imgRegion.getTexture().dispose();
@@ -225,25 +222,25 @@ public class ChangeFaceScreen extends AbstractScreen{
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

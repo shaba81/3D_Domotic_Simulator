@@ -19,6 +19,7 @@ import com.mygdx.interfaces.AbstractScreen;
 import com.mygdx.simulator.factory_methos_screens.LogScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.RegistrationCredentialsScreenCreator;
 
+import utilis.ExceptionsManager;
 import utilis.Utils;
 
 public class AdministrationScreen extends AbstractScreen {
@@ -235,8 +236,7 @@ public class AdministrationScreen extends AbstractScreen {
 			stage.addActor(this.rightTable);
 			stage.addActor(centerTable);
 		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
+			ExceptionsManager.getExceptionsManager().manageException(e, skin, stage);
 		}
 	}
 
@@ -257,6 +257,7 @@ public class AdministrationScreen extends AbstractScreen {
 
 	@Override
 	public void render(float delta) {
+		try {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -286,7 +287,9 @@ public class AdministrationScreen extends AbstractScreen {
 			this.back = false;
 			Utils.showPopUp(Utils.ADMINISTRATION_SCREEN_BACK_POPUP, skin, stage, Utils.MAIN_SCREEN_POP);
 		}
-
+		} catch (Exception e) {
+			ExceptionsManager.getExceptionsManager().manageException(e, skin, stage);
+		}
 	}
 
 	@Override

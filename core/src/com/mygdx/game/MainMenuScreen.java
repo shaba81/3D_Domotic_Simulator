@@ -11,6 +11,7 @@ import com.mygdx.simulator.factory_methos_screens.FaceDetectionScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.LoginScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.MainMenuScreenCreator;
 
+import utilis.ExceptionsManager;
 import utilis.Utils;
 
 public class MainMenuScreen extends AbstractScreen {
@@ -84,42 +85,45 @@ public class MainMenuScreen extends AbstractScreen {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		try {
+			Gdx.gl.glClearColor(0, 0, 0, 1);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		batch.begin();
-		batch.draw(title, Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 2, 700, 150);
-		batch.end();
+			batch.begin();
+			batch.draw(title, Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 2, 700, 150);
+			batch.end();
 
-		stage.act();
-		stage.draw();
+			stage.act();
+			stage.draw();
 
-		if (access) {
-			access = false;
-			Utils.isAccess = true;
-			ScreenManager.getInstance().showScreen(new FaceDetectionScreenCreator());
+			if (access) {
+				access = false;
+				Utils.isAccess = true;
+				ScreenManager.getInstance().showScreen(new FaceDetectionScreenCreator());
 //			ScreenManager.getInstance().showScreen(ScreenEnum.GAME_SCREEN);
-		}
+			}
 
-		if (administration) {
-			Utils.isAccess = false;
-			administration = false;
-			ScreenManager.getInstance().showScreen(new LoginScreenCreator());
-		}
+			if (administration) {
+				Utils.isAccess = false;
+				administration = false;
+				ScreenManager.getInstance().showScreen(new LoginScreenCreator());
+			}
 
-		if (back) {
-			back = false;
-			Utils.showPopUp(Utils.SCREEN_BACK_GAME_SIMU_POPUP, skin, stage, Utils.GAME_SCREEN_POP);
-		}
+			if (back) {
+				back = false;
+				Utils.showPopUp(Utils.SCREEN_BACK_GAME_SIMU_POPUP, skin, stage, Utils.GAME_SCREEN_POP);
+			}
 
-		if (exit) {
-			Utils.isAccess = false;
-			exit = false;
-			// Utils.resp = Utils.EXIT_THE_SIMULATION_LOG;
-			Utils.saveOnLog(Utils.EXIT_THE_SIMULATION_LOG);
-			Utils.showPopUp(Utils.MAIN_MENU_BACK_POPUP, skin, stage, Utils.EXIT_POP);
+			if (exit) {
+				Utils.isAccess = false;
+				exit = false;
+				// Utils.resp = Utils.EXIT_THE_SIMULATION_LOG;
+				Utils.saveOnLog(Utils.EXIT_THE_SIMULATION_LOG);
+				Utils.showPopUp(Utils.MAIN_MENU_BACK_POPUP, skin, stage, Utils.EXIT_POP);
+			}
+		} catch (Exception e) {
+			ExceptionsManager.getExceptionsManager().manageException(e, skin, stage);
 		}
-
 	}
 
 	@Override

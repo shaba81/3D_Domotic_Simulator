@@ -35,32 +35,35 @@ public class ImageComparison {
 	private HashMap<Long, Image> users_faces_images;
 
 	public ImageComparison() {
-		this.users_faces_files = new HashMap<Long, File>();
-		this.users_faces_images = new HashMap<Long, Image>();
-		this.soloPERORA();
+		try {
+			this.users_faces_files = new HashMap<Long, File>();
+			this.users_faces_images = new HashMap<Long, Image>();
+			this.soloPERORA();
+		} catch (Exception e) {
+			System.out.println("MMM vedi che hai sagliato il path.");
+		}
 	}
 
 	/**
 	 * Questa funzione servirà fino a quando non avremo completato il login. Viene
 	 * richiamata solo nel costruttore e prende tutte le immagini della cartella
 	 * 'images' e le salva nelle rispettive 2 hashmap.
+	 * 
+	 * @throws IOException
 	 */
-	private void soloPERORA() {
-		try {
-			File folder = new File("resources/images");
-			File[] listOfFiles = folder.listFiles();
-			long cont = 1;
+	private void soloPERORA() throws IOException {
+		File folder = new File("resources/images");
+		File[] listOfFiles = folder.listFiles();
+		long cont = 1;
 
-			for (File file : listOfFiles) {
-				if (file.isFile()) {
-					this.users_faces_files.put(cont, file);
-					this.users_faces_images.put(cont, ImageIO.read(file));
-				}
-				cont++;
+		for (File file : listOfFiles) {
+			if (file.isFile()) {
+				this.users_faces_files.put(cont, file);
+				this.users_faces_images.put(cont, ImageIO.read(file));
 			}
-		} catch (IOException e) {
-			ExceptionsManager.getExceptionsManager().manageException(e);
+			cont++;
 		}
+
 	}
 
 	/**
@@ -145,10 +148,8 @@ public class ImageComparison {
 	/**
 	 * Cancella un file da una cartella
 	 * 
-	 * @param folder_path
-	 *            -> path della cartella
-	 * @param image_path
-	 *            -> path del file da eliminare
+	 * @param folder_path -> path della cartella
+	 * @param image_path  -> path del file da eliminare
 	 */
 	private void deleteAnElementInAfolder(String folder_path, String image_path) {
 		File file_to_delete = new File(folder_path + "/" + image_path);
@@ -170,35 +171,28 @@ public class ImageComparison {
 	 * Contiene tutto l'algoritmo della compare tra l'immagine appena fatta dalla
 	 * detection e tutte le immagini degli utenti già registrati: se l'immagine è
 	 * già registrata, l'utente può accedere, altrimenti no.
+	 * 
+	 * @throws IOException
 	 */
-	public boolean compare() {
-		try {
-			if (Utils.isSave) {
-				String base = "resources/temp_image/";
-				File fileA = new File(base + "temp.jpg");
+	public boolean compare() throws IOException {
+		String base = "resources/temp_image/";
+		File fileA = new File(base + "temp.jpg");
 
-				Image im = ImageIO.read(fileA);
+		Image im = ImageIO.read(fileA);
 
-				if (!this.isAnewUser(im, fileA.getPath())) {
-					System.out.println("ACCESSO PERMESSO");
-					return true;
-				} else
-					System.out.println("ACCESSO NEGATO");
+		if (!this.isAnewUser(im, fileA.getPath())) {
+			System.out.println("ACCESSO PERMESSO");
+			return true;
+		} else
+			System.out.println("ACCESSO NEGATO");
 
-				// ELIMINO IL FILE DALLA CARTELLA
-				this.deleteAnElementInAfolder("resources/temp_image", "temp.jpg");
-				// this.moveNewUserToImageFolder();
-				Utils.isSave = false;
-			}
-		} catch (IOException e) {
-			ExceptionsManager.getExceptionsManager().manageException(e);
-		}
+		// ELIMINO IL FILE DALLA CARTELLA
+		this.deleteAnElementInAfolder("resources/temp_image", "temp.jpg");
+		// this.moveNewUserToImageFolder();
 		return false;
 	}
 
-	public boolean register() {
-		try {
-			if (Utils.isSave) {
+	public boolean register() throws IOException {
 				String base = "resources/temp_image";
 				String base_image = "temp.jpg";
 				File fileA = new File(base + "/" + base_image);
@@ -213,11 +207,6 @@ public class ImageComparison {
 				} else
 					System.out.println("REGISTRAZIONE NON RIUSCITA");
 
-				Utils.isSave = false;
-			}
-		} catch (IOException e) {
-			ExceptionsManager.getExceptionsManager().manageException(e);
-		}
 		return false;
 	}
 
@@ -227,48 +216,29 @@ public class ImageComparison {
 	 * 
 	 * @param user_email
 	 * @param file_user_image_path
+	 * @throws IOException 
 	 */
 	@SuppressWarnings("unused")
-	private void addUserImage(long user_id, String file_user_image_path) {
-		try {
+	private void addUserImage(long user_id, String file_user_image_path) throws IOException {
 			String base = "resources/images/";
 			File file = new File(base + file_user_image_path);
 			Image user_image = ImageIO.read(file);
 			this.users_faces_files.put(user_id, file);
 			this.users_faces_images.put(user_id, user_image);
-		} catch (IOException e) {
-			ExceptionsManager.getExceptionsManager().manageException(e);
-		}
+		
 	}
 
 	/**
 	 * Sposta il file dalla cartella 'tmep_image' alla 'images'
 	 * 
 	 * @param file
+	 * @throws IOException 
 	 */
-	// @SuppressWarnings("unused")
-	// private void moveNewUserToImageFolder(String fromfolder_path, String
-	// fromimage_path, String tofolder_path, String toimage_path) {
-	// // aggiungo il file nella cartella 'images'
-	// System.out.println("fromfolder_path: "+fromfolder_path+" fromimage_path:
-	// "+fromimage_path+" tofolder_path: "+tofolder_path+" toimage_path:
-	// "+toimage_path);
-	// try {
-	// Files.move(Paths.get(fromfolder_path+"/"+fromimage_path),
-	// Paths.get(tofolder_path+"/"+toimage_path));
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// }
-
-	public void moveNewUserToImageFolder(String toimage_path) {
+	public void moveNewUserToImageFolder(String toimage_path) throws IOException {
 		// aggiungo il file nella cartella 'images'
-		try {
 			Files.move(Paths.get("resources/temp_image" + "/" + "temp.jpg"), Paths.get(toimage_path));
 			// this.cont++;
-		} catch (IOException e) {
-			ExceptionsManager.getExceptionsManager().manageException(e);
-		}
+		
 	}
 
 }

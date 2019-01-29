@@ -17,23 +17,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class ExceptionsManager {
 
-	private Stage stage;
-	private Skin skin;
-	private SpriteBatch batch;
-	protected OrthographicCamera camera;
-	private Viewport viewport;
-	private TextureAtlas atlas;
-
 	private static ExceptionsManager exceptionsManager;
 
 	private ExceptionsManager() {
-		this.atlas = new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas"));
-		this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"), atlas);
-
-		this.camera = new OrthographicCamera();
-		this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
-		this.batch = new SpriteBatch();
-		this.stage = new Stage(this.viewport, this.batch);
 	}
 
 	public static ExceptionsManager getExceptionsManager() {
@@ -43,36 +29,25 @@ public class ExceptionsManager {
 		return exceptionsManager;
 	}
 
-	public void manageException(Exception exception) {
-		if( exception instanceof SQLException ) {
-			Utils.showMessageDialog(exception.getMessage(), this.skin, this.stage);
-			System.out.println("1: " + exception.getMessage());
-		} else if( exception instanceof IOException) {
-			Utils.showMessageDialog(exception.getMessage(), this.skin, this.stage);
-			System.out.println("2: " + exception.getMessage());
-		} else if( exception instanceof FileNotFoundException ) {
-			Utils.showMessageDialog(exception.getMessage(), this.skin, this.stage);
-			System.out.println("3: " + exception.getMessage());
-		} else if( exception instanceof MessagingException ) {
-			Utils.showMessageDialog(exception.getMessage(), this.skin, this.stage);
-			System.out.println("4: " + exception.getMessage());
-		}
-	}
-
 	public void manageException(Exception exception, Skin skin, Stage stage) {
+		String message = "";
 		if( exception instanceof SQLException ) {
-			Utils.showMessageDialog("", skin, stage);
-			System.out.println("1: " + exception.getMessage());
+			message = "";
 		} else if( exception instanceof IOException) {
-			Utils.showMessageDialog("", skin, stage);
-			System.out.println("2: " + exception.getMessage());
+			message = "";
 		} else if( exception instanceof FileNotFoundException ) {
-			Utils.showMessageDialog("", skin, stage);
-			System.out.println("3: " + exception.getMessage());
+			message = "";
 		} else if( exception instanceof MessagingException ) {
-			Utils.showMessageDialog("", skin, stage);
-			System.out.println("4: " + exception.getMessage());
+			message = "";
+		} else {
+			message = "";
 		}
+
+		this.showMessage(message, skin, stage);
 	}
 
+	private void showMessage(String message, Skin skin, Stage stage) {
+		//Utils.showMessageDialog(message, skin, stage);
+		System.out.println("1: " + message);
+	}
 }

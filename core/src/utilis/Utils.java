@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -165,8 +166,9 @@ public class Utils {
 	 * @param word1 -> Possible user word command 1
 	 * @param word2 -> Possible user word command 2
 	 * @param lightOnLog 
+	 * @throws SQLException 
 	 */
-	public static void commandLog(String word1, String word2, String command)
+	public static void commandLog(String word1, String word2, String command) throws SQLException
 	{
 		if (Utils.resp.contains(word1) || Utils.resp.contains(word2))
 			saveOnLog( command);
@@ -174,46 +176,19 @@ public class Utils {
 	
 	/**
 	 * It's the method which saves on log the actual state of user(Ex: user home access, etc...)
+	 * @throws SQLException 
 	 */
-	public static void saveOnLog(String command)
+	public static void saveOnLog(String command) throws SQLException
 	{
-		try {
 			Controller.getController().getUserDAO().insertCommand(userLogged,command);
 		     resp = "";
 		     System.out.println("LOG");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 	
-	public static void removeAfileInAFolder(File myfile) {
-		try {
-//			File folder = new File(folderName+"/");
-//			File[] listOfFiles = folder.listFiles();
-//			int fileIndex = -1;
-//			
-//			for(int i = 0; i < listOfFiles.length; i++)
-//			{
-//				if (listOfFiles[i] == myfile) {
-//					fileIndex = i;
-//					break;
-//				}
-//			}
-//			
+	public static void removeAfileInAFolder(File myfile) throws IOException {
 			Files.deleteIfExists(myfile.toPath());
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		
-
 	}
-	
-	
 	
 	/**
 	 * 
@@ -246,16 +221,14 @@ public class Utils {
 	 * Sposta il file dalla cartella 'tmep_image' alla 'images'
 	 * 
 	 * @param file
+	 * @throws IOException 
 	 */
 	@SuppressWarnings("unused")
-	public static void moveNewUserToImageFolder(String fromfolder_path, String fromimage_path, String tofolder_path, String toimage_path) {
+	public static void moveNewUserToImageFolder(String fromfolder_path, String fromimage_path, String tofolder_path, String toimage_path) throws IOException {
 		// aggiungo il file nella cartella 'images'
           System.out.println("fromfolder_path: "+fromfolder_path+" fromimage_path: "+fromimage_path+" tofolder_path: "+tofolder_path+" toimage_path: "+toimage_path);
-		try {
 			Files.move(Paths.get(fromfolder_path+"/"+fromimage_path), Paths.get(tofolder_path+"/"+toimage_path));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	
 	}
 	
 	/**

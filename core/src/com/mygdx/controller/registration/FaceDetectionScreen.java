@@ -1,5 +1,7 @@
 package com.mygdx.controller.registration;
 
+import java.sql.SQLException;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,6 +21,7 @@ import com.mygdx.interfaces.AbstractScreen;
 import com.mygdx.simulator.factory_methos_screens.GameScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.RegistrationCredentialsScreenCreator;
 
+import utilis.ExceptionsManager;
 import utilis.Utils;
 
 public class FaceDetectionScreen extends AbstractScreen {
@@ -52,10 +55,10 @@ public class FaceDetectionScreen extends AbstractScreen {
 		imageTable.center();
 		// imgStage.addActor(imageTable);
 		imageTable.debug();
-		if(Utils.backToRegistrationScreen)
-		     this.frameTexture = new Texture(Gdx.files.internal("resources/frame.jpg"));
+		if (Utils.backToRegistrationScreen)
+			this.frameTexture = new Texture(Gdx.files.internal("resources/frame.jpg"));
 		else
-			 this.frameTexture = new Texture(Gdx.files.internal("resources/frame1.jpg"));
+			this.frameTexture = new Texture(Gdx.files.internal("resources/frame1.jpg"));
 		imgRegion = new TextureRegion(frameTexture);
 		img = new Image(imgRegion);
 		imageTable.add(img).center();
@@ -148,117 +151,113 @@ public class FaceDetectionScreen extends AbstractScreen {
 	@Override
 	public void render(float delta) {
 		try {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			Gdx.gl.glClearColor(0, 0, 0, 1);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		this.imgStage.act();
-		this.imgStage.draw();
-		if (utilis.Utils.capturing) {
-			this.updateFrame();
-			utilis.Utils.capturing = false;
-		}
-
-		if (Utils.isAccess && !Utils.isFirstAccess && Utils.captured && !Utils.backToRegistrationScreen
-				&& !Utils.treeTimesAccessError) {
-
-			if (Controller.getController().getFaceController().compare()) {
-				// viene richiamato il 'gameScreen'
-				System.out.println("puoi accedere");
-				Utils.captured = false;
-//				Utils.resp = Utils.ACCESS_SUCCESS_LOG;
-				String pathOriginal = Utils.pathImageUser;
-				Controller.getController().getFaceController().setUserAndCommandAccess(pathOriginal,false);
-
-				Utils.saveOnLog(Utils.ACCESS_SUCCESS_LOG);
-				ScreenManager.getInstance().showScreen(new GameScreenCreator());
-			} else {
-				System.out.println("non puoi accedere. Riprova");
-				Utils.captured = false;
-                
-				// se l'utente non è stato identificato per 3 volte, gli viene mandata un'email
-				// per permettergli di poter recuperare l'accesso
-				if (Utils.treeTimesAccessError) {
-					// mandiamo l'email all'utente per fargli recuperare l'accesso alla casa
-					Utils.treeTimesAccessError = false;
-					System.out.println("TRE VOLTE");
-//					Utils.resp = Utils.ACCESS_FAILED_THREE_TIMES;
-					Utils.saveOnLog(Utils.ACCESS_FAILED_THREE_TIMES);
-					this.showRecoveryAccessDialog(Utils.ACCESS_FAILED_THREE_TIMES, skin, imgStage,
-							new TextField("", skin), true);
-					System.out.println("TRE VOLTE");
-				} else {
-//					Utils.resp = Utils.ACCESS_FAILED_LOG;
-					Utils.saveOnLog(Utils.ACCESS_FAILED_LOG);
-					Utils.showMessageDialog(Utils.ACCESS_FAILED_POPUP, skin, imgStage);
-				}
+			this.imgStage.act();
+			this.imgStage.draw();
+			if (utilis.Utils.capturing) {
+				this.updateFrame();
+				utilis.Utils.capturing = false;
 			}
-		}
-		else if (Utils.captured && Utils.backToRegistrationScreen && !Utils.treeTimesAccessError)
-		{
-			Utils.backToRegistrationScreen = false;
-			Utils.showMessageDialog(Utils.ALREADY_CAPTURE_FACE_POPUP, skin, imgStage);
-		}
-		if (this.registrationOrAccess) {
-			System.out.println("captured: " + Utils.captured);
-			if (Utils.captured) {
-				// se l'utente deve registrarsi
-				if (!Utils.isAccess) {
-					if (Controller.getController().getFaceController().registerUser()) {
-						// viene richiamato il 'facecaptureScreen' per far registrare l'utente
-						System.out.println("puoi registrarti");
-						Utils.backToRegistrationScreen = false;
-						String pathImage = this.register();
-						Controller.getController().getFaceController().setUserAndCommandRegistration(pathImage);
-						Utils.credentials.clear();
-						ScreenManager.getInstance().showScreen(new GameScreenCreator());
+
+			if (Utils.isAccess && !Utils.isFirstAccess && Utils.captured && !Utils.backToRegistrationScreen
+					&& !Utils.treeTimesAccessError) {
+
+				if (Controller.getController().getFaceController().compare()) {
+					// viene richiamato il 'gameScreen'
+					System.out.println("puoi accedere");
+					Utils.captured = false;
+//				Utils.resp = Utils.ACCESS_SUCCESS_LOG;
+					String pathOriginal = Utils.pathImageUser;
+					Controller.getController().getFaceController().setUserAndCommandAccess(pathOriginal, false);
+
+					Utils.saveOnLog(Utils.ACCESS_SUCCESS_LOG);
+					ScreenManager.getInstance().showScreen(new GameScreenCreator());
+				} else {
+					System.out.println("non puoi accedere. Riprova");
+					Utils.captured = false;
+
+					// se l'utente non è stato identificato per 3 volte, gli viene mandata un'email
+					// per permettergli di poter recuperare l'accesso
+					if (Utils.treeTimesAccessError) {
+						// mandiamo l'email all'utente per fargli recuperare l'accesso alla casa
+						Utils.treeTimesAccessError = false;
+						System.out.println("TRE VOLTE");
+//					Utils.resp = Utils.ACCESS_FAILED_THREE_TIMES;
+						Utils.saveOnLog(Utils.ACCESS_FAILED_THREE_TIMES);
+						this.showRecoveryAccessDialog(Utils.ACCESS_FAILED_THREE_TIMES, skin, imgStage,
+								new TextField("", skin), true);
+						System.out.println("TRE VOLTE");
 					} else {
-						System.out.println("non puoi registrarti");
-//						Utils.resp = Utils.FAILURE_USER_REGISTRATION_LOG;
-						Utils.saveOnLog(Utils.FAILURE_USER_REGISTRATION_LOG);
-						Utils.showMessageDialog(Utils.REGISTRATION_FAILED_POPUP, skin, imgStage);
+//					Utils.resp = Utils.ACCESS_FAILED_LOG;
+						Utils.saveOnLog(Utils.ACCESS_FAILED_LOG);
+						Utils.showMessageDialog(Utils.ACCESS_FAILED_POPUP, skin, imgStage);
 					}
 				}
-			} else
-				System.out.println("miao");
-
-			this.registrationOrAccess = false;
-		}
-
-		if (this.redo) {
-			Utils.captured = false;
-			Controller.getController().getFaceController().init();
-			this.redo = false;
-			Utils.backToRegistrationScreen = false;
-		}
-
-		if (this.backAccess) {
-			this.backAccess = false;
-			if (Utils.captured)
-				Utils.backToRegistrationScreen = true;
-			Utils.showPopUp(Utils.ACCESS_BACK_TO_MAIN_SCREEN_POP, skin, imgStage, Utils.MAIN_SCREEN_POP);
-			Controller.getController().getFaceController().setClosed();
-			
-		}
-
-		if (this.back) {
-			this.back = false;
-			if (Utils.captured) {
-				Utils.backToRegistrationScreen = true;
-				ScreenManager.getInstance().showScreen(new RegistrationCredentialsScreenCreator());
-			} 
-			else {
-				Utils.showMessageDialog(Utils.CANT_COME_BACK_WITHOUT_FACE_CAPTURE, skin, imgStage);
+			} else if (Utils.captured && Utils.backToRegistrationScreen && !Utils.treeTimesAccessError) {
+				Utils.backToRegistrationScreen = false;
+				Utils.showMessageDialog(Utils.ALREADY_CAPTURE_FACE_POPUP, skin, imgStage);
 			}
-		}
+			if (this.registrationOrAccess) {
+				System.out.println("captured: " + Utils.captured);
+				if (Utils.captured) {
+					// se l'utente deve registrarsi
+					if (!Utils.isAccess) {
+						if (Controller.getController().getFaceController().registerUser()) {
+							// viene richiamato il 'facecaptureScreen' per far registrare l'utente
+							System.out.println("puoi registrarti");
+							Utils.backToRegistrationScreen = false;
+							String pathImage = this.register();
+							Controller.getController().getFaceController().setUserAndCommandRegistration(pathImage);
+							Utils.credentials.clear();
+							ScreenManager.getInstance().showScreen(new GameScreenCreator());
+						} else {
+							System.out.println("non puoi registrarti");
+//						Utils.resp = Utils.FAILURE_USER_REGISTRATION_LOG;
+							Utils.saveOnLog(Utils.FAILURE_USER_REGISTRATION_LOG);
+							Utils.showMessageDialog(Utils.REGISTRATION_FAILED_POPUP, skin, imgStage);
+						}
+					}
+				} else
+					System.out.println("miao");
 
-		// this.buttons();
+				this.registrationOrAccess = false;
+			}
+
+			if (this.redo) {
+				Utils.captured = false;
+				Controller.getController().getFaceController().init();
+				this.redo = false;
+				Utils.backToRegistrationScreen = false;
+			}
+
+			if (this.backAccess) {
+				this.backAccess = false;
+				if (Utils.captured)
+					Utils.backToRegistrationScreen = true;
+				Utils.showPopUp(Utils.ACCESS_BACK_TO_MAIN_SCREEN_POP, skin, imgStage, Utils.MAIN_SCREEN_POP);
+				Controller.getController().getFaceController().setClosed();
+
+			}
+
+			if (this.back) {
+				this.back = false;
+				if (Utils.captured) {
+					Utils.backToRegistrationScreen = true;
+					ScreenManager.getInstance().showScreen(new RegistrationCredentialsScreenCreator());
+				} else {
+					Utils.showMessageDialog(Utils.CANT_COME_BACK_WITHOUT_FACE_CAPTURE, skin, imgStage);
+				}
+			}
+
+			// this.buttons();
 		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
+			ExceptionsManager.getExceptionsManager().manageException(e, skin, imgStage);
 		}
 	}
 
-	private String register() {
+	private String register() throws Exception {
 		/*
 		 * Decommentare le funzioni per il salvataggio. Ora se si preme il bottone +
 		 * come se simulasse la registrazione. quindi la booleana la mette a false. Ma
@@ -266,7 +265,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 		 * quando effettivamente il salvataggio è avvenuto con successo e questo
 		 * controllo lo facciamo dentro la funzione.
 		 */
-		String logMessage  = Utils.SUCCESS_ADMIN_REGISTRATION_LOG;
+		String logMessage = Utils.SUCCESS_ADMIN_REGISTRATION_LOG;
 		if (Utils.isFirstAccess) {
 			System.out.println("FIRST ACCESS");
 		} else {
@@ -283,16 +282,16 @@ public class FaceDetectionScreen extends AbstractScreen {
 	 * 
 	 * @param userDAO
 	 * @param isAdministrator
+	 * @throws SQLException 
 	 */
 	@SuppressWarnings("finally")
-	private String registrationUser() {
+	private String registrationUser() throws Exception {
 		User user = new User();
-		try {
 			/*
 			 * TODO: fare distinzione di popup, quando fallisce va benisismo. Quando ha
 			 * successo farlo accedere
 			 */
-			
+
 			if (!Utils.isFirstAccess) {
 				user.setEmail(Utils.credentials.get(0));
 				user.setAdministrator(false);
@@ -310,12 +309,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 			if (Controller.getController().getUserDAO().registration(user)) {
 				Utils.isAccess = true;
 			}
-			
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		} finally {
 			return user.getPathImage();
-		}
 	}
 
 	public void updateFrame() {
