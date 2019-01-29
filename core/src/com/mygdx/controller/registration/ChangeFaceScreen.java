@@ -35,6 +35,9 @@ public class ChangeFaceScreen extends AbstractScreen{
 	private TextButton changeCredentialsButton;
 	private boolean changeCredentials;
 	
+	private TextButton backAdminScreen;
+	private boolean backAdmin;
+	
 	private TextButton redoButton;
 	private boolean redo;
 	
@@ -101,8 +104,18 @@ public class ChangeFaceScreen extends AbstractScreen{
 			}
 		});
 		
-		FaceDetectionController faceController = new FaceDetectionController();
-		faceController.init();
+		text = "Back to Administration Screen";
+		this.backAdminScreen = new TextButton(text, this.skin);
+
+		this.backAdminScreen.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				backAdmin = true;
+				System.out.println("MMM");
+			}
+		});
+		
+		Controller.getController().getFaceController().init();
 
 		
 		this.mainTable.add(this.changeCredentialsButton);
@@ -110,6 +123,8 @@ public class ChangeFaceScreen extends AbstractScreen{
 		this.mainTable.add(this.redoButton);
 		this.mainTable.row();
 		this.mainTable.add(this.backButton);
+		this.mainTable.row();
+		this.mainTable.add(this.backAdminScreen);
 		this.mainTable.row();
 
 		this.imgStage.addActor(this.imageTable);
@@ -144,26 +159,45 @@ public class ChangeFaceScreen extends AbstractScreen{
 				Utils.backToRegistrationScreen = false;
 				Utils.showMessageDialog(Utils.ALREADY_CAPTURE_FACE_POPUP, skin, imgStage);
 			}
-		
-		if(Utils.captured && this.changeCredentials)
-		{
-			File file = new File("resources/images/"+Utils.credentials.get(4)+".jpg");
-			Utils.removeAfileInAFolder(file);
-			
-			Utils.moveNewUserToImageFolder("resources/temp_image", "temp.jpg", "resources/images", Utils.credentials.get(4)+".jpg");
-			System.out.println("PRIMA 0: "+Utils.credentials.get(0)+" 1: "+Utils.credentials.get(1)+" 2: "+Utils.credentials.get(2)+" 3: "+" resources/images/" + Utils.credentials.get(4) + ".jpg"+" 4: "+Utils.credentials.get(4));
-			 Controller.getController().getUserDAO().updateUserCredentials(Utils.credentials.get(0), Utils.credentials.get(1), Utils.credentials.get(2), "resources/images/" + Utils.credentials.get(4) + ".jpg", Utils.credentials.get(4));
-			    Utils.changeUserCredentials = false;
-			    System.out.println("DOPO 0: "+Utils.credentials.get(0)+" 1: "+Utils.credentials.get(1)+" 2: "+Utils.credentials.get(2)+" 3: "+" resources/images/" + Utils.credentials.get(4) + ".jpg"+" 4: "+Utils.credentials.get(4));
-			    Utils.showPopUp(Utils.CHANGE_USER_CREDENTIALS_SUCCESSFULLY_MESSAGE, skin, imgStage, Utils.ADMIN_SCREEN_POP);
-	    	    ScreenManager.getInstance().showScreen(new AdministrationScreenCreator());
-		}
+		 
+			if (this.changeCredentials) {
+                  Utils.changeUserCredentials = false;
+                  
+				if (Utils.captured) {
+					File file = new File("resources/images/" + Utils.credentials.get(4) + ".jpg");
+					Utils.removeAfileInAFolder(file);
+
+					Utils.moveNewUserToImageFolder("resources/temp_image", "temp.jpg", "resources/images", Utils.credentials.get(4) + ".jpg");
+					System.out.println("PRIMA 0: " + Utils.credentials.get(0) + " 1: " + Utils.credentials.get(1)
+							+ " 2: " + Utils.credentials.get(2) + " 3: " + " resources/images/"
+							+ Utils.credentials.get(4) + ".jpg" + " 4: " + Utils.credentials.get(4));
+					Controller.getController().getUserDAO().updateUserCredentials(Utils.credentials.get(0),
+							Utils.credentials.get(1), Utils.credentials.get(2),
+							"resources/images/" + Utils.credentials.get(4) + ".jpg", Utils.credentials.get(4));
+					
+					System.out.println("DOPO 0: " + Utils.credentials.get(0) + " 1: " + Utils.credentials.get(1)
+							+ " 2: " + Utils.credentials.get(2) + " 3: " + " resources/images/"
+							+ Utils.credentials.get(4) + ".jpg" + " 4: " + Utils.credentials.get(4));
+					Utils.showPopUp(Utils.CHANGE_USER_CREDENTIALS_SUCCESSFULLY_MESSAGE, skin, imgStage,
+							Utils.ADMIN_SCREEN_POP);
+					ScreenManager.getInstance().showScreen(new AdministrationScreenCreator());
+				} else
+					Utils.showMessageDialog(Utils.CANT_COME_BACK_WITHOUT_FACE_CAPTURE, skin, imgStage);
+			}
 		
 		if (this.redo) {
 			Utils.captured = false;
 			Controller.getController().getFaceController().init();
 			this.redo = false;
 			Utils.backToRegistrationScreen = false;
+		}
+		
+		if (this.backAdmin) {
+			this.backAdmin = false;
+			
+			Utils.showPopUp(Utils.BACK_TO_ADMIN_SCREEN, skin, imgStage, Utils.ADMIN_SCREEN_POP);
+			Controller.getController().getFaceController().setClosed();
+			
 		}
 		
 			if (this.back) {

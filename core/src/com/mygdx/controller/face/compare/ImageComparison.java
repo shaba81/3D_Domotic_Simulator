@@ -72,7 +72,7 @@ public class ImageComparison {
 		for (Long key : this.users_faces_images.keySet()) {
 			// se le due immagini sono le stesse, ritorno false, perché significa che non è
 			// un nuovo utente
-			if (this.compareTwoImages(this.users_faces_images.get(key), imageToCompare,key, imageFilePath))
+			if (this.compareTwoImages(this.users_faces_images.get(key), imageToCompare, key, imageFilePath))
 				return false;
 		}
 		return true;
@@ -87,16 +87,15 @@ public class ImageComparison {
 	 */
 	private boolean compareTwoImages(Image imgA, Image imgB, Long key, String pathB) {
 
-		System.out.println("prima wa: "+imgA.getWidth(null)+" wb: "+imgB.getWidth(null));
-		
-		Image im = this.resize((BufferedImage)imgA, 300, 300);
+		Image im = this.resize((BufferedImage) imgA, 300, 300);
 		imgA = im;
-		Image im2 = this.resize((BufferedImage)imgB, 300, 300);
+		Image im2 = this.resize((BufferedImage) imgB, 300, 300);
 		imgB = im2;
-		System.out.println("dopo wa: "+imgA.getWidth(null)+" wb: "+imgB.getWidth(null));
+		// System.out.println("dopo wa: "+imgA.getWidth(null)+" wb:
+		// "+imgB.getWidth(null));
 		int width1 = imgA.getWidth(null);
 		int height1 = imgA.getHeight(null);
-		
+
 		long difference = 0;
 		for (int y = 0; y < height1; y++) {
 			for (int x = 0; x < width1; x++) {
@@ -127,8 +126,9 @@ public class ImageComparison {
 
 		// There are 255 values of pixels in total
 		double percentage = (avg_different_pixels / 255) * 100;
-		System.out.println("Difference Percentage-->  "+percentage);
-//		System.out.println("keyimA: "+key+", path imgA: "+this.users_faces_files.get(key).getPath()+", path imgB: "+pathB+", ");
+		System.out.println("Difference Percentage-->  " + percentage);
+		// System.out.println("keyimA: "+key+", path imgA:
+		// "+this.users_faces_files.get(key).getPath()+", path imgB: "+pathB+", ");
 		if (percentage < 9.1) {
 			System.out.println("I due volti SONO gli stessi.");
 			Utils.pathImageUser = this.users_faces_files.get(key).getAbsolutePath();
@@ -154,15 +154,15 @@ public class ImageComparison {
 		if (file_to_delete.exists())
 			file_to_delete.delete();
 	}
-	
+
 	private BufferedImage resize(BufferedImage img, int height, int width) {
-        Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = resized.createGraphics();
-        g2d.drawImage(tmp, 0, 0, null);
-        g2d.dispose();
-        return resized;
-    }
+		Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+		BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d = resized.createGraphics();
+		g2d.drawImage(tmp, 0, 0, null);
+		g2d.dispose();
+		return resized;
+	}
 
 	/**
 	 * Contiene tutto l'algoritmo della compare tra l'immagine appena fatta dalla
@@ -171,51 +171,46 @@ public class ImageComparison {
 	 */
 	public boolean compare() {
 		try {
-			String base = "resources/temp_image/";
-			File fileA = new File(base + "temp.jpg");
+			if (Utils.capturing) {
+				String base = "resources/temp_image/";
+				File fileA = new File(base + "temp.jpg");
 
-			Image im = ImageIO.read(fileA);
-			System.out.println("prima w: "+im.getWidth(null)+" h: "+im.getHeight(null));
+				Image im = ImageIO.read(fileA);
 
-			System.out.println("dopo w: "+im.getWidth(null)+" h: "+im.getHeight(null));
+				if (!this.isAnewUser(im, fileA.getPath())) {
+					System.out.println("ACCESSO PERMESSO");
+					return true;
+				} else
+					System.out.println("ACCESSO NEGATO");
 
-			if (!this.isAnewUser(im,fileA.getPath()))
-			{
-				System.out.println("ACCESSO PERMESSO");
-				return true;
+				// ELIMINO IL FILE DALLA CARTELLA
+				this.deleteAnElementInAfolder("resources/temp_image", "temp.jpg");
+				// this.moveNewUserToImageFolder();
 			}
-			else
-				System.out.println("ACCESSO NEGATO");
-
-			// ELIMINO IL FILE DALLA CARTELLA
-			this.deleteAnElementInAfolder("resources/temp_image", "temp.jpg");
-			// this.moveNewUserToImageFolder();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return false;
 	}
-	
+
 	public boolean register() {
 		try {
-			String base = "resources/temp_image";
-			String base_image = "temp.jpg";
-			File fileA = new File(base +"/"+base_image);
+			if (Utils.capturing) {
+				String base = "resources/temp_image";
+				String base_image = "temp.jpg";
+				File fileA = new File(base + "/" + base_image);
 
-			Image im = ImageIO.read(fileA);
+				Image im = ImageIO.read(fileA);
 
-			if (this.isAnewUser(im,fileA.getPath()))
-			{
-				System.out.println("REGISTRAZIONE AVVENUTA CON SUCCESSO!");
-//				this.moveNewUserToImageFolder(base,base_image,"resources/images","a"+this.cont+".jpg");
-//				this.deleteAnElementInAfolder("resources/images", "a"+this.cont+".jpg");
-				return true;
+				if (this.isAnewUser(im, fileA.getPath())) {
+					System.out.println("REGISTRAZIONE AVVENUTA CON SUCCESSO!");
+					// this.moveNewUserToImageFolder(base,base_image,"resources/images","a"+this.cont+".jpg");
+					// this.deleteAnElementInAfolder("resources/images", "a"+this.cont+".jpg");
+					return true;
+				} else
+					System.out.println("REGISTRAZIONE NON RIUSCITA");
+
 			}
-			else
-				System.out.println("REGISTRAZIONE NON RIUSCITA");
-
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -247,21 +242,25 @@ public class ImageComparison {
 	 * 
 	 * @param file
 	 */
-//	@SuppressWarnings("unused")
-//	private void moveNewUserToImageFolder(String fromfolder_path, String fromimage_path, String tofolder_path, String toimage_path) {
-//		// aggiungo il file nella cartella 'images'
-//          System.out.println("fromfolder_path: "+fromfolder_path+" fromimage_path: "+fromimage_path+" tofolder_path: "+tofolder_path+" toimage_path: "+toimage_path);
-//		try {
-//			Files.move(Paths.get(fromfolder_path+"/"+fromimage_path), Paths.get(tofolder_path+"/"+toimage_path));
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
-	
+	// @SuppressWarnings("unused")
+	// private void moveNewUserToImageFolder(String fromfolder_path, String
+	// fromimage_path, String tofolder_path, String toimage_path) {
+	// // aggiungo il file nella cartella 'images'
+	// System.out.println("fromfolder_path: "+fromfolder_path+" fromimage_path:
+	// "+fromimage_path+" tofolder_path: "+tofolder_path+" toimage_path:
+	// "+toimage_path);
+	// try {
+	// Files.move(Paths.get(fromfolder_path+"/"+fromimage_path),
+	// Paths.get(tofolder_path+"/"+toimage_path));
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// }
+	// }
+
 	public void moveNewUserToImageFolder(String toimage_path) {
 		// aggiungo il file nella cartella 'images'
 		try {
-			Files.move(Paths.get("resources/temp_image"+"/"+"temp.jpg"), Paths.get(toimage_path));
+			Files.move(Paths.get("resources/temp_image" + "/" + "temp.jpg"), Paths.get(toimage_path));
 			// this.cont++;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

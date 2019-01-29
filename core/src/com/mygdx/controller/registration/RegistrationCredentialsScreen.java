@@ -30,6 +30,9 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 
 	private TextButton backToAdministrationButton;
 	private boolean backToAdministration;
+	
+//	private TextButton changeCredentialsButton;
+//	private boolean changeCredentials;
 
 	public RegistrationCredentialsScreen() {
 
@@ -77,6 +80,20 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 			this.txtTelephoneNumber = new TextField(Utils.credentials.get(1), skin);
 			this.txtNickName = new TextField(Utils.credentials.get(2), skin);
 		}
+		
+//		if(Utils.changeUserCredentials)
+//		{
+//		text = "Change credentials";
+//		this.changeCredentialsButton = new TextButton(text, this.skin);
+//		
+//		this.changeCredentialsButton.addListener(new ClickListener() {
+//			@Override
+//			public void clicked(InputEvent event, float x, float y) {
+//				changeCredentials = true;
+//				System.out.println("CHANGE CREDENTIALS");
+//			}
+//		});
+//		}
 
 		this.emailLabel = new Label("Email: ", skin);
 		this.txtEmail.setMessageText("Ex: ciao@caro.it");
@@ -93,8 +110,10 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 		this.add(this.txtTelephoneNumber);
 		this.add(this.nickNameLabel);
 		this.add(this.txtNickName);
+//		this.add(this.changeCredentialsButton);
 		this.add(this.faceCaptureButton);
 		this.add(this.backToAdministrationButton);
+		
 
 		// Aggiungo table allo stage
 		stage.addActor(mainTable);
@@ -138,25 +157,28 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 
 				String dialogText = this.errorOccurr(result);
 
-				if (!Utils.changeUserCredentials) {
+//				if (!Utils.changeUserCredentials) {
 					if (dialogText != "")
 						Utils.showMessageDialog(dialogText, skin, stage);
 					else {
 						Utils.saveOnLog(Utils.REGISTRATION_CREDENTIALS_SUCCESSFULLY_INSERT);
-						ScreenManager.getInstance().showScreen(new FaceDetectionScreenCreator());
+						if(!Utils.changeUserCredentials)
+						    ScreenManager.getInstance().showScreen(new FaceDetectionScreenCreator());
+						else
+							ScreenManager.getInstance().showScreen(new ChangeFaceScreenCreator());
 					}
-				} 
-				else {
-					if (dialogText != Utils.REGISTRATION_CREDENTIALS_SCREEN_EMAIL_EXIST_POPUP
-							&& dialogText != Utils.REGISTRATION_CREDENTIALS_SCREEN_TELEPHONE_EXIST_POPUP
-							&& dialogText != Utils.REGISTRATION_CREDENTIALS_SCREEN_NICKNAME_EXIST_POPUP)
-						Utils.showMessageDialog(dialogText, skin, stage);
-					else {
-						// Utils.resp = Utils.REGISTRATION_CREDENTIALS_SUCCESSFULLY_INSERT;
-						Utils.saveOnLog(Utils.REGISTRATION_CREDENTIALS_SUCCESSFULLY_INSERT);
-						ScreenManager.getInstance().showScreen(new ChangeFaceScreenCreator());
-					}
-				}
+//				} 
+//				else {
+//					if (dialogText != Utils.REGISTRATION_CREDENTIALS_SCREEN_EMAIL_EXIST_POPUP
+//							&& dialogText != Utils.REGISTRATION_CREDENTIALS_SCREEN_TELEPHONE_EXIST_POPUP
+//							&& dialogText != Utils.REGISTRATION_CREDENTIALS_SCREEN_NICKNAME_EXIST_POPUP)
+//						Utils.showMessageDialog(dialogText, skin, stage);
+//					else {
+//						// Utils.resp = Utils.REGISTRATION_CREDENTIALS_SUCCESSFULLY_INSERT;
+//						Utils.saveOnLog(Utils.REGISTRATION_CREDENTIALS_SUCCESSFULLY_INSERT);
+//						ScreenManager.getInstance().showScreen(new ChangeFaceScreenCreator());
+//					}
+//				}
 					
 			}
 
@@ -179,6 +201,14 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 							Utils.ADMIN_SCREEN_POP);
 				}
 			}
+			
+//			if (this.changeCredentials) {
+//				System.out.println("0: "+Utils.credentials.get(0)+" 1: "+Utils.credentials.get(1)+" 2: "+Utils.credentials.get(2));
+//                Utils.changeUserCredentials = false;
+//                this.changeCredentials = false;
+//                //richia,are il popUp: solo se premiamo si, 'changeUserCredentials va settata a false, altrimenti no.
+//			}
+			
 		} catch (Exception e) {
 //			System.err.println(e.getMessage());
 			e.printStackTrace();
@@ -187,13 +217,15 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 
 	private String errorOccurr(int result) {
 		String resultText = "";
-		if (result == 1)
-			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_EMAIL_EXIST_POPUP;
-		else if (result == 2)
-			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_TELEPHONE_EXIST_POPUP;
-		else if (  !Utils.credentials.get(2).equals("")  && result == 3)
-			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_NICKNAME_EXIST_POPUP;
-		else if (Utils.credentials.get(0).equals("") || Utils.credentials.get(1).equals("")
+		if (!Utils.changeUserCredentials) {
+			if (result == 1)
+				resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_EMAIL_EXIST_POPUP;
+			else if (result == 2)
+				resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_TELEPHONE_EXIST_POPUP;
+			else if (!Utils.credentials.get(2).equals("") && result == 3)
+				resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_NICKNAME_EXIST_POPUP;
+		}
+		if (Utils.credentials.get(0).equals("") || Utils.credentials.get(1).equals("")
 				|| Utils.credentials.get(2).equals(""))
 			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSING_CRED_POPUP;
 		else if (!Utils.credentials.get(0).contains("@"))
@@ -207,6 +239,8 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 		else if (Utils.credentials.get(1).charAt(0) != '+')
 			resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_MISSIN_PLUS_NUMBER_POPUP;
 
+		System.out.println("resultTxt: "+resultText);
+		
 		return resultText;
 	}
 

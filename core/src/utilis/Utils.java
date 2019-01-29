@@ -80,7 +80,7 @@ public class Utils {
 	public static final String LOGIN_SCREEN_BACK_POPUP = "Are you sure you want to quit from the Login Screen?";
 	public static final String ADMINISTRATION_SCREEN_BACK_POPUP = "Are you sure you want to quit from the Administration Screen?";
 	public static final String FACE_CAPTURE_SCREEN_BACK_POPUP = "Are you sure you want to quit from Face Capture screen?";
-	public static final String REGISTRATION_CREDENTIALS_SCREEN_BACK_POPUP = "Are you sure you want to quit from Registration screen?";
+	public static final String REGISTRATION_CREDENTIALS_SCREEN_BACK_POPUP = "Are you sure do you want to quit from Registration screen?";
 	public static final String REGISTRATION_CREDENTIALS_SCREEN_MISSING_CRED_POPUP = "Missing one or more of the three credentials.";
 	public static final String REGISTRATION_CREDENTIALS_SCREEN_EMAIL_EXIST_POPUP = "Email already exists, , please click on ENTER or OK to continue.";
 	public static final String REGISTRATION_CREDENTIALS_SCREEN_TELEPHONE_EXIST_POPUP = "Telephone number already exists, please click on ENTER or OK to continue.";
@@ -104,6 +104,7 @@ public class Utils {
 	public static final String ACCESS_ONE_TIME_PASS_NOT_MATCH = "Password entered not matches. Please check the email entered previously to which a code\nhas been sent from the validity of one hour with which you can access.\nPlease enter the code, the field doens't have to be empty..";
 	public static final String CHANGE_USER_CREDENTIALS_SUCCESSFULLY_MESSAGE = "Credentials have been changed successfull!";
 	public static final String CANT_COME_BACK_WITHOUT_FACE_CAPTURE = "Sorry, first you have to capture your face!";
+	public static final String BACK_TO_ADMIN_SCREEN = "Are you sure do you want to back to Administration Screen?";
 	
 	/*
 	 * command for log
@@ -284,8 +285,11 @@ public class Utils {
 			public void result(Object obj) {
 				System.out.println("text: "+text+" text2: "+text2);
 				if (obj.equals("true")) {
-					if (screenCall.equals(MAIN_SCREEN_POP))
+					if (screenCall.equals(MAIN_SCREEN_POP)) {
+						Utils.countErrorTimes = 0;
+						Utils.treeTimesAccessError = false;
 						ScreenManager.getInstance().showScreen(new MainMenuScreenCreator());
+					}
 					else if(screenCall.equals(REGISTRATION_SCREEN_POP))
 						ScreenManager.getInstance().showScreen(new RegistrationCredentialsScreenCreator());
 					else if (screenCall.equals(GAME_SCREEN_POP))
@@ -293,15 +297,31 @@ public class Utils {
 					else if (screenCall.equals(LOGIN_SCREEN_POP))
 						ScreenManager.getInstance().showScreen(new LoginScreenCreator());
 					else if (screenCall.equals(ADMIN_SCREEN_POP))
+					{
+						if(text.equals(BACK_TO_ADMIN_SCREEN))
+						{
+							if (Utils.captured)
+								Utils.backToRegistrationScreen = true;
+
+							Utils.changeUserCredentials = false;
+						}
 						ScreenManager.getInstance().showScreen(new AdministrationScreenCreator());
+					}
 					else if (screenCall.equals(EXIT_POP))
 						Gdx.app.exit();
 				}
-				else if(obj.equals("false") && text2.equals(ADMIN_REG_CRED_CHANGE_POPUP) && changeUserCredentials)
-				{
+				else {
+					if (text2.equals(ADMIN_REG_CRED_CHANGE_POPUP) && changeUserCredentials) {
 						changeUserCredentials = false;
 						System.out.println("NO");
+					}
+					else if(text.equals(BACK_TO_ADMIN_SCREEN))
+					{
+						Controller.getController().getFaceController().setClosed();
+						Controller.getController().getFaceController().init();
+					}
 				}
+				
 			}
 		};
 		dialog.text(text);

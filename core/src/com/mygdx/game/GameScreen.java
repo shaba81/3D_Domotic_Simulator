@@ -184,7 +184,7 @@ public class GameScreen implements Screen {
 
 	private Music music;
 
-	private GameScreen() {
+	public GameScreen() {
 
 	}
 

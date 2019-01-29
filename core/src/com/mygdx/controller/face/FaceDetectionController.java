@@ -60,6 +60,7 @@ public class FaceDetectionController {
 			idUser = Utils.getIdUserFromImage(user.getPathImage());
 		} else {
 			idUser = Utils.getIdUserFromImage(parameter);
+			System.out.println("Id user: " + idUser);
 			user = Controller.getController().getUserDAO().getUserByPathImage("resources/images/" + idUser + ".jpg");
 		}
 		user.setIdUser(idUser);
@@ -286,7 +287,7 @@ public class FaceDetectionController {
 	/**
 	 * On application close, stop the acquisition from the camera
 	 */
-	protected void setClosed() {
+	public void setClosed() {
 		this.stopAcquisition();
 	}
 
