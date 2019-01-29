@@ -45,6 +45,7 @@ public class Utils {
 	public static boolean treeTimesAccessError = false;
 	public static boolean songPlay = false;
 	public static boolean changeUserCredentials = false;
+	public static boolean isSave = false;
 
 	public static int countErrorTimes = 0;
 

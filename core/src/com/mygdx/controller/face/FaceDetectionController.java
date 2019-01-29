@@ -130,6 +130,7 @@ public class FaceDetectionController {
 
 								ImageIO.write(buffImg, "jpg", outputfile);
 								utilis.Utils.capturing = true;
+								Utils.isSave = true;
 
 							}
 						} catch (IOException e) {

@@ -171,7 +171,7 @@ public class ImageComparison {
 	 */
 	public boolean compare() {
 		try {
-			if (Utils.capturing) {
+			if (Utils.isSave) {
 				String base = "resources/temp_image/";
 				File fileA = new File(base + "temp.jpg");
 
@@ -186,6 +186,7 @@ public class ImageComparison {
 				// ELIMINO IL FILE DALLA CARTELLA
 				this.deleteAnElementInAfolder("resources/temp_image", "temp.jpg");
 				// this.moveNewUserToImageFolder();
+				Utils.isSave = false;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -195,7 +196,7 @@ public class ImageComparison {
 
 	public boolean register() {
 		try {
-			if (Utils.capturing) {
+			if (Utils.isSave) {
 				String base = "resources/temp_image";
 				String base_image = "temp.jpg";
 				File fileA = new File(base + "/" + base_image);
@@ -210,6 +211,7 @@ public class ImageComparison {
 				} else
 					System.out.println("REGISTRAZIONE NON RIUSCITA");
 
+				Utils.isSave = false;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
