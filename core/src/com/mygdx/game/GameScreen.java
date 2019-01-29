@@ -156,6 +156,7 @@ public class GameScreen implements Screen {
 	private Image micImage;
 
 	private Label speakerMessage;
+	private Label helpMessage;
 	private Label tvMessage;
 	private Label lightMessage;
 	private Label bathRoomMessage;
@@ -183,6 +184,7 @@ public class GameScreen implements Screen {
 	private AbstractCommand command;
 
 	private Music music;
+	public boolean stampa = false;
 
 	public GameScreen() {
 
@@ -340,6 +342,9 @@ public class GameScreen implements Screen {
 		waitMessage = new Label("Wait . . .", skin);
 		waitMessage.setScale(3);
 		waitMessage.setColor(Color.RED);
+		helpMessage = new Label("HELP COMMAND", skin);
+		helpMessage.setFontScale(2);
+		helpMessage.setColor(Color.MAGENTA);
 
 		// Finally we want some light, or we wont see our color. The environment gets
 		// passed in during
@@ -534,6 +539,9 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	int contWrongCommand = 0;
+	
+
 	public void executeCommand() {
 		if (checkRoom().equals("mainRoom") || checkRoom().equals("bathroom")) {
 			// vocalCommand = readFromFile();
@@ -553,12 +561,16 @@ public class GameScreen implements Screen {
 
 				String objectToActivate = vocalCommand.substring(vocalCommand.lastIndexOf(" ") + 1);
 				objectToActivate = objectToActivate.toLowerCase();
+				
 
 				if (vocalCommand.toLowerCase().contains(commandTypeOpen1.toLowerCase())
 						|| vocalCommand.toLowerCase().contains(commandTypeOpen2.toLowerCase())) {
+					stampa = false;
 
 					if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
+						contWrongCommand = 0;
 						if (checkRoom().equals("mainRoom")) {
+
 							command.lightOn();
 							return;
 						} else {
@@ -570,7 +582,9 @@ public class GameScreen implements Screen {
 						}
 						return;
 					} else if (objectToActivate.equals("tv") || objectToActivate.equals("televisione")) {
+						contWrongCommand = 0;
 						if (checkRoom().equals("mainRoom")) {
+
 							command.tvOn();
 						} else {
 							wrongCommandLocation();
@@ -581,7 +595,9 @@ public class GameScreen implements Screen {
 						}
 						return;
 					} else if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
+						contWrongCommand = 0;
 						if (checkRoom().equals("mainRoom")) {
+
 							command.speakerOn();
 						} else {
 							wrongCommandLocation();
@@ -593,7 +609,9 @@ public class GameScreen implements Screen {
 						return;
 					}
 					if (objectToActivate.equals("ventilatore") || objectToActivate.contains("aria")) {
+						contWrongCommand = 0;
 						if (checkRoom().equals("bathroom")) {
+
 							command.fanOn();
 						} else {
 							wrongCommandLocation();
@@ -603,13 +621,17 @@ public class GameScreen implements Screen {
 						}
 						return;
 					} else {
-						// new TextToSpeech("Comando non riconosciuto. Ritenta.");
+						contWrongCommand += 1;// new TextToSpeech("Comando non riconosciuto. Ritenta.");
 						return;
 					}
+					
+					
 				}
 
 				else if (vocalCommand.toLowerCase().contains(commandTypeClose1.toLowerCase())
 						|| vocalCommand.toLowerCase().contains(commandTypeClose2.toLowerCase())) {
+					stampa = false;
+					contWrongCommand = 0;
 					if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
 						if (checkRoom().equals("mainRoom")) {
 							command.lightOff();
@@ -645,6 +667,7 @@ public class GameScreen implements Screen {
 
 						return;
 					} else {
+						contWrongCommand += 1;
 						// new TextToSpeech("Comando non riconosciuto. Ritenta.");
 						return;
 					}
@@ -653,6 +676,7 @@ public class GameScreen implements Screen {
 				// System.out.println("stampo comando vocale" + vocalCommand);
 
 				else if (vocalCommand.toLowerCase().equals(helpCommand.toLowerCase())) {
+					contWrongCommand = 0;
 					System.out.println("entro in aiuto");
 					Utils.resp = "";
 
@@ -661,7 +685,21 @@ public class GameScreen implements Screen {
 					// helpCommand();
 
 					return;
+				} else {
+					System.out.println("entro qui");
+					contWrongCommand += 1;
+					System.out.println(contWrongCommand);
+					if (contWrongCommand == 4) {
+						stampa = true;
+						contWrongCommand = 0;
+						Utils.resp = "";
+						command.help();
+						return;
+						
+					}
+
 				}
+			
 				Utils.resp = "";
 				inputManager.doCommand = false;
 			} catch (Exception e) {
@@ -736,10 +774,15 @@ public class GameScreen implements Screen {
 			messagesTable.add(speakerMessage);
 			messagesTable.row();
 		}
+		if (stampa) {
+			messagesTable.add(helpMessage);
+			messagesTable.row();
+		}
 
 		stage.addActor(messagesTable);
 		stage.addActor(vocalMessageTable);
 		stage.act();
+		
 		stage.draw();
 		messagesTable.clear();
 		vocalMessageTable.clear();
