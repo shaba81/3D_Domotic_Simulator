@@ -13,6 +13,7 @@ import javax.mail.internet.MimeMessage;
 import com.sun.mail.smtp.SMTPTransport;
 
 import utilis.Configuration;
+import utilis.ExceptionsManager;
 
 /**
  * Classe che invia la mail utilizzando una libreria javax.mail
@@ -33,41 +34,37 @@ public abstract class EmailSender {
 	 * @param messageArea {@link String} sctringa che identifica il messaggio da
 	 *                    mettere nel corpo della mail.
 	 */
-	public static boolean sendMessage(String send, String object, String messageArea) {
+	public static boolean sendMessage(String send, String object, String messageArea) throws FileNotFoundException,MessagingException {
 
-		try {
-			boolean result = true;
+		boolean result = true;
 
-			InternetAddress emailAddr = new InternetAddress(send);
-			emailAddr.validate();
-			if (result) {
-				MimeMessage message;
+		InternetAddress emailAddr;
+		emailAddr = new InternetAddress(send);
 
-				// Setta le proprietà della connessione
-				Session session = Session.getDefaultInstance(setPropertiesStream());
+		emailAddr.validate();
 
-				message = new MimeMessage(session);
-				message.setFrom(new InternetAddress());
+		if (result) {
+			MimeMessage message;
 
-				// chiamata al Set to
-				setTo(message, send);
+			// Setta le proprietà della connessione
+			Session session = Session.getDefaultInstance(setPropertiesStream());
 
-				// chiamata al set Oggeto
-				setObject(message, object);
+			message = new MimeMessage(session);
+			message.setFrom(new InternetAddress());
 
-				// chiamata al set Messaggio
-				setText(message, messageArea);
+			// chiamata al Set to
+			setTo(message, send);
 
-				// Send message
-				sendEmail(message, session);
+			// chiamata al set Oggeto
+			setObject(message, object);
 
-				return true;
-			}
+			// chiamata al set Messaggio
+			setText(message, messageArea);
 
-			return false;
+			// Send message
+			sendEmail(message, session);
 
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			return true;
 		}
 
 		return false;

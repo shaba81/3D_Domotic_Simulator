@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import utilis.Configuration;
+import utilis.ExceptionsManager;
 
 /**
  * Classe che invia l'SMS e prende le configurazioni dal file .json
@@ -21,10 +22,10 @@ import utilis.Configuration;
 public abstract class SmsSender {
 
 	/**
-	 * Metodo che invia l'SMS
+	 * Metodo che invia l'SMS @throws
+	 * @throws IOException 
 	 */
-	public static void sendSms(String messageBody, String recipient) {
-		try {
+	public static void sendSms(String messageBody, String recipient) throws IOException {
 
 			String baseUrlSms = Configuration.baseUrlSms;
 			String messageQuality = Configuration.messageQuality;
@@ -42,10 +43,6 @@ public abstract class SmsSender {
 				System.out.println("INVIATO");
 			else
 				System.err.println("NON INVIATO");
-
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
 	}
 
 	/**

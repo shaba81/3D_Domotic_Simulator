@@ -25,6 +25,7 @@ import com.mygdx.controller.proxy.UserAdministratorCommand;
 import com.mygdx.controller.proxy.UserCommand;
 import com.mygdx.game.GameScreen;
 
+import utilis.ExceptionsManager;
 import utilis.Utils;
 
 public class FaceDetectionController {
@@ -118,8 +119,8 @@ public class FaceDetectionController {
 				@Override
 				public void run() {
 					while (!Utils.captured) {
+						// effectively grab and process a single frame
 						try {
-							// effectively grab and process a single frame
 							Mat frame = grabFrame();
 							// QUI BISOGNA SALVARE L'IMMAGINE SU FILE, CHE SARA POI PRESA DA GDX PER FARLA A
 							// VIDEO
@@ -128,13 +129,14 @@ public class FaceDetectionController {
 								File outputfile = new File("resources/frame.jpg");
 
 								Utils.isSave = false;
+
 								ImageIO.write(buffImg, "jpg", outputfile);
+
 								utilis.Utils.capturing = true;
 								Utils.isSave = true;
-							} 
-
+							}
 						} catch (IOException e) {
-
+							//ExceptionsManager.getExceptionsManager().manageException(e);
 						}
 					}
 				}
@@ -160,7 +162,6 @@ public class FaceDetectionController {
 
 		// check if the capture is open
 		if (this.capture.isOpened()) {
-			try {
 				// read the current frame
 				this.capture.read(frame);
 
@@ -169,11 +170,6 @@ public class FaceDetectionController {
 					// face detection
 					this.detectAndDisplay(frame);
 				}
-
-			} catch (Exception e) {
-				// log the (full) error
-				System.err.println("Exception during the image elaboration: " + e);
-			}
 		}
 
 		return frame;
@@ -274,8 +270,7 @@ public class FaceDetectionController {
 				this.timer.shutdown();
 				this.timer.awaitTermination(33, TimeUnit.MILLISECONDS);
 			} catch (InterruptedException e) {
-				// log any exception
-				System.err.println("Exception in stopping the frame capture, trying to release the camera now... " + e);
+				//ExceptionsManager.getExceptionsManager().manageException(e);
 			}
 		}
 

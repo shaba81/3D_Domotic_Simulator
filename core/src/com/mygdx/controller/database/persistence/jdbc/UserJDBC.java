@@ -11,7 +11,6 @@ import org.apache.commons.dbcp2.BasicDataSource;
 
 import com.mygdx.controller.database.model.User;
 import com.mygdx.controller.database.persistence.dao.UserDAO;
-import com.mygdx.controller.database.persistence.exception.PersistenceException;
 
 import utilis.Configuration;
 import utilis.Log;
@@ -23,7 +22,7 @@ public class UserJDBC implements UserDAO {
 	private static BasicDataSource basicDataSource;
 
 	static {
-		try {
+	
 			System.out.println("B");
 			String url = String.format("jdbc:%s://%s:%s/%s", Configuration.jdbc, Configuration.host, Configuration.port,
 					Configuration.database);
@@ -39,9 +38,7 @@ public class UserJDBC implements UserDAO {
 			basicDataSource.setPassword(password);
 			basicDataSource.setMaxIdle(0);
 			System.out.println("C");
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
+		
 	}
 
 	private UserJDBC() {
@@ -55,7 +52,7 @@ public class UserJDBC implements UserDAO {
 	}
 
 	@Override
-	public boolean registration(User user) throws Exception {
+	public boolean registration(User user) throws SQLException {
 
 		Connection conn = null;
 		PreparedStatement statement = null;
@@ -91,32 +88,19 @@ public class UserJDBC implements UserDAO {
 
 			return false;
 
-		} catch (SQLException e) {
-
-			if (e.getSQLState().equals("23505")) {
-				throw new PersistenceException(10006L);
-			} else {
-				System.out.println(e.getMessage());
-				throw e;
-			}
-
 		} finally {
-			try {
 				if (statement != null)
 					statement.close();
 				if (conn != null)
 					conn.close();
-			} catch (SQLException e) {
-				System.out.println(e.getMessage());
-				throw e;
-			}
+
 		}
 
 	}
 
 	@SuppressWarnings("resource")
 	@Override
-	public int userExist(String email, String telephoneNumber, String nickName) throws Exception {
+	public int userExist(String email, String telephoneNumber, String nickName) throws SQLException {
 
 		Connection connection = null;
 		PreparedStatement statement = null;
@@ -168,9 +152,6 @@ public class UserJDBC implements UserDAO {
 
 			return -1;
 
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-			throw e;
 		} finally {
 			if (resultSet != null)
 				resultSet.close();
@@ -179,12 +160,11 @@ public class UserJDBC implements UserDAO {
 			if (connection != null)
 				connection.close();
 		}
-
 	}
 
 	@SuppressWarnings({ "null" })
 	@Override
-	public void deleteUtente(String email) throws Exception {
+	public void deleteUtente(String email) throws SQLException {
 		Connection conn = null;
 		PreparedStatement statement = null;
 
@@ -197,30 +177,17 @@ public class UserJDBC implements UserDAO {
 
 			statement.executeUpdate();
 
-		} catch (SQLException e) {
-
-			if (e.getSQLState().equals("23505")) {
-				throw new PersistenceException(10006L);
-			} else {
-				System.out.println(e.getMessage());
-				throw e;
-			}
-
-		} finally {
-			try {
+		}finally {
 				if (statement != null)
 					statement.close();
 				if (conn != null)
 					conn.close();
-			} catch (SQLException e) {
-				System.out.println(e.getMessage());
-				throw e;
-			}
+			
 		}
 	}
 
 	@Override
-	public boolean validateUserAdminCredentials(String password, String id) throws Exception {
+	public boolean validateUserAdminCredentials(String password, String id) throws SQLException {
 
 		Connection connection = null;
 		PreparedStatement statement = null;
@@ -243,9 +210,6 @@ public class UserJDBC implements UserDAO {
 			}
 
 			return false;
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-			throw e;
 		} finally {
 			if (resultSet != null)
 				resultSet.close();
@@ -258,7 +222,7 @@ public class UserJDBC implements UserDAO {
 
 	@SuppressWarnings("resource")
 	@Override
-	public boolean validateUserOneTimePAss(String password, String email) throws Exception {
+	public boolean validateUserOneTimePAss(String password, String email) throws SQLException {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
@@ -292,11 +256,10 @@ public class UserJDBC implements UserDAO {
 
 			connection.commit();
 			return false;
-		} catch (SQLException e) {
-			e.printStackTrace();
+		}  catch (SQLException e) {
 			connection.rollback();
 			throw e;
-		} finally {
+		}finally {
 			connection.setAutoCommit(true);
 			if (resultSet != null)
 				resultSet.close();
@@ -308,7 +271,7 @@ public class UserJDBC implements UserDAO {
 	}
 
 	@Override
-	public boolean isFirstRegistrationForThisForniture(Long idSupply, String idUser) throws Exception {
+	public boolean isFirstRegistrationForThisForniture(Long idSupply, String idUser) throws SQLException {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
@@ -332,9 +295,6 @@ public class UserJDBC implements UserDAO {
 
 			System.out.println("F");
 			return true;
-		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw e;
 		} finally {
 			if (resultSet != null)
 				resultSet.close();
@@ -347,7 +307,7 @@ public class UserJDBC implements UserDAO {
 
 	@SuppressWarnings("resource")
 	@Override
-	public String[] updateCredentilsAdministrator(String idUser, Long idSupply, String newPass) throws Exception {
+	public String[] updateCredentilsAdministrator(String idUser, Long idSupply, String newPass) throws SQLException {
 		Connection conn = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
@@ -382,30 +342,16 @@ public class UserJDBC implements UserDAO {
 			}
 
 			return emailCredentialsAdmin;
-		} catch (SQLException e) {
-
-			if (e.getSQLState().equals("23505")) {
-				throw new PersistenceException(10006L);
-			} else {
-				System.out.println(e.getMessage());
-				throw e;
-			}
-
 		} finally {
-			try {
 				if (statement != null)
 					statement.close();
 				if (conn != null)
 					conn.close();
-			} catch (SQLException e) {
-				System.out.println(e.getMessage());
-				throw e;
-			}
 		}
 	}
 
 	@Override
-	public String getIdUser() throws Exception {
+	public String getIdUser() throws SQLException {
 
 		Connection connection = null;
 		Long id = null;
@@ -422,8 +368,6 @@ public class UserJDBC implements UserDAO {
 			id = result.getLong("id");
 
 			return id.toString();
-		} catch (SQLException e) {
-			throw e;
 		} finally {
 			if (statement != null)
 				statement.close();
@@ -433,7 +377,7 @@ public class UserJDBC implements UserDAO {
 	}
 
 	@Override
-	public void insertCommand(String idUser, String command) throws Exception {
+	public void insertCommand(String idUser, String command) throws SQLException {
 
 		Connection conn = null;
 		PreparedStatement statement = null;
@@ -448,31 +392,17 @@ public class UserJDBC implements UserDAO {
 			statement.setString(2, command);
 
 			statement.executeUpdate();
-		} catch (SQLException e) {
-
-			if (e.getSQLState().equals("23505")) {
-				throw new PersistenceException(10006L);
-			} else {
-				System.out.println(e.getMessage());
-				throw e;
-			}
-
 		} finally {
-			try {
-				if (statement != null)
-					statement.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException e) {
-				System.out.println(e.getMessage());
-				throw e;
-			}
+			if (statement != null)
+				statement.close();
+			if (conn != null)
+				conn.close();
 		}
 
 	}
 
 	@Override
-	public ArrayList<Log> selectCommandLog() throws Exception {
+	public ArrayList<Log> selectCommandLog() throws SQLException {
 
 		Connection connection = null;
 		PreparedStatement statement = null;
@@ -497,9 +427,6 @@ public class UserJDBC implements UserDAO {
 			}
 
 			return logs;
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-			throw e;
 		} finally {
 			if (resultSet != null)
 				resultSet.close();
@@ -512,7 +439,7 @@ public class UserJDBC implements UserDAO {
 	}
 
 	@Override
-	public boolean currentlyUserIsAdministrator(String idUser) throws Exception {
+	public boolean currentlyUserIsAdministrator(String idUser) throws SQLException {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
@@ -534,9 +461,6 @@ public class UserJDBC implements UserDAO {
 				return user.isAdministrator();
 			}
 
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-			throw e;
 		} finally {
 			if (resultSet != null)
 				resultSet.close();
@@ -546,11 +470,10 @@ public class UserJDBC implements UserDAO {
 				connection.close();
 		}
 		return false;
-
 	}
 
 	@Override
-	public boolean emailIsRegister(String email) throws Exception {
+	public boolean emailIsRegister(String email) throws SQLException {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
@@ -568,9 +491,6 @@ public class UserJDBC implements UserDAO {
 				return true;
 
 			return false;
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-			throw e;
 		} finally {
 			if (resultSet != null)
 				resultSet.close();
@@ -583,7 +503,7 @@ public class UserJDBC implements UserDAO {
 	}
 
 	@Override
-	public void updateOneTimePass(String oneTimePass, String email) throws Exception {
+	public void updateOneTimePass(String oneTimePass, String email) throws SQLException {
 		Connection conn = null;
 		PreparedStatement statement = null;
 
@@ -597,31 +517,17 @@ public class UserJDBC implements UserDAO {
 			statement.setString(2, email);
 
 			statement.executeUpdate();
-		} catch (SQLException e) {
-
-			if (e.getSQLState().equals("23505")) {
-				throw new PersistenceException(10006L);
-			} else {
-				System.out.println(e.getMessage());
-				throw e;
-			}
-
 		} finally {
-			try {
-				if (statement != null)
-					statement.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException e) {
-				System.out.println(e.getMessage());
-				throw e;
-			}
+			if (statement != null)
+				statement.close();
+			if (conn != null)
+				conn.close();
 		}
 
 	}
 
 	@Override
-	public User getUserByPathImage(String path) throws Exception {
+	public User getUserByPathImage(String path) throws SQLException {
 
 		Connection connection = null;
 		PreparedStatement statement = null;
@@ -647,9 +553,6 @@ public class UserJDBC implements UserDAO {
 			}
 
 			return user;
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-			throw e;
 		} finally {
 			if (resultSet != null)
 				resultSet.close();
@@ -662,7 +565,7 @@ public class UserJDBC implements UserDAO {
 	}
 
 	@Override
-	public User getUserByEmail(String email) throws Exception {
+	public User getUserByEmail(String email) throws SQLException {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
@@ -687,9 +590,6 @@ public class UserJDBC implements UserDAO {
 			}
 
 			return user;
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-			throw e;
 		} finally {
 			if (resultSet != null)
 				resultSet.close();
@@ -701,7 +601,7 @@ public class UserJDBC implements UserDAO {
 	}
 
 	@Override
-	public HashMap<Integer, User> getAllUser() throws Exception {
+	public HashMap<Integer, User> getAllUser() throws SQLException {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
@@ -731,9 +631,6 @@ public class UserJDBC implements UserDAO {
 			}
 
 			return users;
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-			throw e;
 		} finally {
 			if (resultSet != null)
 				resultSet.close();
@@ -747,7 +644,7 @@ public class UserJDBC implements UserDAO {
 
 	@Override
 	public void updateUserCredentials(String email, String telephoneNumbre, String nickName, String pathImage,
-			String idUser) throws Exception {
+			String idUser) throws SQLException {
 		Connection conn = null;
 		PreparedStatement statement = null;
 
@@ -764,25 +661,12 @@ public class UserJDBC implements UserDAO {
 			statement.setString(5, idUser);
 
 			statement.executeUpdate();
-		} catch (SQLException e) {
-
-			if (e.getSQLState().equals("23505")) {
-				throw new PersistenceException(10006L);
-			} else {
-				System.out.println(e.getMessage());
-				throw e;
-			}
-
 		} finally {
-			try {
-				if (statement != null)
-					statement.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException e) {
-				System.out.println(e.getMessage());
-				throw e;
-			}
+			if (statement != null)
+				statement.close();
+			if (conn != null)
+				conn.close();
+
 		}
 	}
 

@@ -5,6 +5,9 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
+import com.mygdx.controller.Controller;
+
+import utilis.ExceptionsManager;
 import utilis.Utils;
 
 import java.io.File;
@@ -56,8 +59,7 @@ public class ImageComparison {
 				cont++;
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ExceptionsManager.getExceptionsManager().manageException(e);
 		}
 	}
 
@@ -188,8 +190,8 @@ public class ImageComparison {
 				// this.moveNewUserToImageFolder();
 				Utils.isSave = false;
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException e) {
+			ExceptionsManager.getExceptionsManager().manageException(e);
 		}
 		return false;
 	}
@@ -213,8 +215,8 @@ public class ImageComparison {
 
 				Utils.isSave = false;
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException e) {
+			ExceptionsManager.getExceptionsManager().manageException(e);
 		}
 		return false;
 	}
@@ -235,7 +237,7 @@ public class ImageComparison {
 			this.users_faces_files.put(user_id, file);
 			this.users_faces_images.put(user_id, user_image);
 		} catch (IOException e) {
-			e.printStackTrace();
+			ExceptionsManager.getExceptionsManager().manageException(e);
 		}
 	}
 
@@ -265,8 +267,7 @@ public class ImageComparison {
 			Files.move(Paths.get("resources/temp_image" + "/" + "temp.jpg"), Paths.get(toimage_path));
 			// this.cont++;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ExceptionsManager.getExceptionsManager().manageException(e);
 		}
 	}
 

@@ -16,6 +16,7 @@ import com.mygdx.simulator.factory_methos_screens.AdministrationScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.FaceDetectionScreenCreator;
 import com.mygdx.simulator.sms.SmsSender;
 
+import utilis.ExceptionsManager;
 import utilis.Utils;
 
 public class LoginScreen extends AbstractScreen {
@@ -166,7 +167,7 @@ public class LoginScreen extends AbstractScreen {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			ExceptionsManager.getExceptionsManager().manageException(e,skin,stage);
 		}
 
 	}

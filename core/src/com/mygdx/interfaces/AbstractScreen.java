@@ -24,6 +24,7 @@ import com.mygdx.game.ScreenManager;
 import com.mygdx.simulator.email.EmailSender;
 import com.mygdx.simulator.factory_methos_screens.GameScreenCreator;
 
+import utilis.ExceptionsManager;
 import utilis.Utils;
 
 public abstract class AbstractScreen implements Screen {
@@ -139,7 +140,7 @@ public abstract class AbstractScreen implements Screen {
 						}
 					}
 				} catch (Exception e) {
-					e.getStackTrace();
+					ExceptionsManager.getExceptionsManager().manageException(e,skin,stage);
 				}
 			}
 		};

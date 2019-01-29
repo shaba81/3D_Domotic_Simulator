@@ -89,9 +89,5 @@ public class FaceController {
 			System.out.println("Difference Percentage-->" + percentage);
 		}
 }
-
-	public static void main(String[] args) {
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-	}
-
+	
 }
