@@ -1,3 +1,4 @@
+
 package com.mygdx.simulator.sms;
 
 import java.io.BufferedReader;
