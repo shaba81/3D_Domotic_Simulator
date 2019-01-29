@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -33,12 +34,14 @@ public class ExceptionsManager {
 		String message = "";
 		if( exception instanceof SQLException ) {
 			message = "";
-		} else if( exception instanceof IOException) {
-			message = "";
 		} else if( exception instanceof FileNotFoundException ) {
 			message = "";
-		} else if( exception instanceof MessagingException ) {
+		} else if( exception instanceof IOException) {
 			message = "";
+		} else if( exception instanceof MessagingException ) {
+			message = Utils.MESSAGINGE_MESSAGE;
+		} else if( exception instanceof AddressException ) {
+			message = Utils.ADDRESSE_INVALID_EMAIL_MESSAGE;
 		} else {
 			message = "";
 		}

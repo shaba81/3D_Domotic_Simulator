@@ -147,6 +147,15 @@ public class Utils {
 	public static final String EXIT_POP = "Exit";
 
 
+	/*
+	 * Exceptions' messages
+	 */
+	public static final String ADDRESSE_INVALID_EMAIL_MESSAGE = "Invalid e-mail. \n Please click OK or ENTER to retry.";
+	public static final String MESSAGINGE_MESSAGE = "Unable to connect to the e-mail service.\n Please check your internet connection.";
+	public static final String IOE_CANT_READ_INPUT_FILE_MESSAGE = "Your file is corrupt or invalid.\n Please retry.";
+	
+	
+	
 	/**
 	 * Vocal recognition variables
 	 */
