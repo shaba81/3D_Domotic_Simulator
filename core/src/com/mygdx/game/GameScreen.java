@@ -47,6 +47,7 @@ import com.mygdx.controller.proxy.UserCommand;
 import com.mygdx.simulator.factory_methos_screens.LoginScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.MainMenuScreenCreator;
 import com.mygdx.textToSpeech.TextToSpeech;
+import com.sun.javafx.print.PrintHelper;
 
 import utilis.Music;
 import utilis.Utils;
@@ -184,7 +185,7 @@ public class GameScreen implements Screen {
 	private AbstractCommand command;
 
 	private Music music;
-	public boolean stampa = false;
+	public boolean printHelpCommand = false;
 
 	public GameScreen() {
 
@@ -540,7 +541,6 @@ public class GameScreen implements Screen {
 	}
 
 	int contWrongCommand = 0;
-	
 
 	public void executeCommand() {
 		if (checkRoom().equals("mainRoom") || checkRoom().equals("bathroom")) {
@@ -558,14 +558,14 @@ public class GameScreen implements Screen {
 				String commandTypeClose2 = "Chiudi";
 
 				String helpCommand = "aiuto";
+				String commandTypeRaise = "Alza";
 
 				String objectToActivate = vocalCommand.substring(vocalCommand.lastIndexOf(" ") + 1);
 				objectToActivate = objectToActivate.toLowerCase();
-				
 
 				if (vocalCommand.toLowerCase().contains(commandTypeOpen1.toLowerCase())
 						|| vocalCommand.toLowerCase().contains(commandTypeOpen2.toLowerCase())) {
-					stampa = false;
+					printHelpCommand = false;
 
 					if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
 						contWrongCommand = 0;
@@ -624,13 +624,12 @@ public class GameScreen implements Screen {
 						contWrongCommand += 1;// new TextToSpeech("Comando non riconosciuto. Ritenta.");
 						return;
 					}
-					
-					
+
 				}
 
 				else if (vocalCommand.toLowerCase().contains(commandTypeClose1.toLowerCase())
 						|| vocalCommand.toLowerCase().contains(commandTypeClose2.toLowerCase())) {
-					stampa = false;
+					printHelpCommand = false;
 					contWrongCommand = 0;
 					if (objectToActivate.equals("luce") || objectToActivate.equals("lampada")) {
 						if (checkRoom().equals("mainRoom")) {
@@ -667,7 +666,7 @@ public class GameScreen implements Screen {
 
 						return;
 					} else {
-						contWrongCommand += 1;
+						// contWrongCommand += 1;
 						// new TextToSpeech("Comando non riconosciuto. Ritenta.");
 						return;
 					}
@@ -685,21 +684,42 @@ public class GameScreen implements Screen {
 					// helpCommand();
 
 					return;
+
+				} else if (vocalCommand.toLowerCase().contains(commandTypeRaise.toLowerCase())) {
+					printHelpCommand = false;
+					contWrongCommand = 0;
+					if (objectToActivate.equals("volume")) {
+						if (checkRoom().equals("mainRoom") && inputManager.activateSpeaker) {
+							System.out.println("devo alzare il volume");
+							return;
+						} else {
+							wrongCommandLocation();
+							System.out.println("non sei autorizzato");
+							Utils.resp = "";
+							wcl = false;
+							inputManager.doCommand = false;
+							return;
+						}
+						
+					}
+
+					return;
+
 				} else {
 					System.out.println("entro qui");
 					contWrongCommand += 1;
 					System.out.println(contWrongCommand);
 					if (contWrongCommand == 4) {
-						stampa = true;
+						printHelpCommand = true;
 						contWrongCommand = 0;
 						Utils.resp = "";
 						command.help();
 						return;
-						
+
 					}
 
 				}
-			
+
 				Utils.resp = "";
 				inputManager.doCommand = false;
 			} catch (Exception e) {
@@ -774,7 +794,7 @@ public class GameScreen implements Screen {
 			messagesTable.add(speakerMessage);
 			messagesTable.row();
 		}
-		if (stampa) {
+		if (printHelpCommand) {
 			messagesTable.add(helpMessage);
 			messagesTable.row();
 		}
@@ -782,7 +802,7 @@ public class GameScreen implements Screen {
 		stage.addActor(messagesTable);
 		stage.addActor(vocalMessageTable);
 		stage.act();
-		
+
 		stage.draw();
 		messagesTable.clear();
 		vocalMessageTable.clear();
@@ -851,13 +871,7 @@ public class GameScreen implements Screen {
 		return false;
 	}
 
-	/*
-	 * MANCANO COLLISIONI CASA PER IL CONTROLLO DENTRO/FUORI CASA funzione che
-	 * elenca le funzionalità possibili dentro la stanza in cui si trova se l'utente
-	 * entra dalla porta principale gli viene riprodotto il msg di benvenuto (solo
-	 * una volta) se dalla stanza B va alla stanza A gli vengono riprodotti solo i
-	 * comandi.
-	 */
+
 	// variabile per quando entra in casa
 	boolean entrata = true;
 

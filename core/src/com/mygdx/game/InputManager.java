@@ -44,27 +44,41 @@ public class InputManager implements InputProcessor {
 	@Override
 	public boolean keyDown(int keycode) {
 
-			if (keycode == Input.Keys.W) {
-				forward = true;
-			}
-			if (keycode == Input.Keys.A) {
-				left = true;
-			}
-			if (keycode == Input.Keys.S) {
-				back = true;
-			}
-			if (keycode == Input.Keys.D) {
-				right = true;
-				
-			}
+		if (keycode == Input.Keys.W) {
+			forward = true;
+		}
+		if (keycode == Input.Keys.A) {
+			left = true;
+		}
+		if (keycode == Input.Keys.S) {
+			back = true;
+		}
+		if (keycode == Input.Keys.D) {
+			right = true;
+
+		}
 
 		if (GameScreen.checkRoom().equals("mainRoom") || GameScreen.checkRoom().equals("bathroom")) {
-			if (keycode == Input.Keys.T) {
-				isTvOn = !isTvOn;
+			if (GameScreen.checkRoom().equals("mainRoom")) {
+				if (keycode == Input.Keys.T) {
+					isTvOn = !isTvOn;
+				}
+				if (keycode == Input.Keys.L) {
+					isLightOn = !isLightOn;
+				}
+
+				if (keycode == Input.Keys.B) {
+					activateSpeaker = !activateSpeaker;
+				}
+
 			}
-			if (keycode == Input.Keys.L) {
-				isLightOn = !isLightOn;
+
+			if (GameScreen.checkRoom().equals("bathroom")) {
+				if (keycode == Input.Keys.V) {
+					activateFan = !activateFan;
+				}
 			}
+
 			if (keycode == Input.Keys.H) {
 				help = true;
 			}
@@ -76,13 +90,9 @@ public class InputManager implements InputProcessor {
 				speechRecognition.getResponse(duplex);
 
 			}
-			if (keycode == Input.Keys.B) {
-				activateSpeaker = !activateSpeaker;
-			}
-			if (keycode == Input.Keys.V) {
-				activateFan = !activateFan;
-			}
+
 		}
+
 		if (keycode == Input.Keys.N) {
 			nAccessButton = true;
 		}
@@ -106,7 +116,7 @@ public class InputManager implements InputProcessor {
 		if (keycode == Input.Keys.H) {
 			help = false;
 			GameScreen.getGameScreen().hc = false;
-			
+
 		}
 		if (keycode == Input.Keys.R) {
 			isSpeaking = false;
