@@ -39,14 +39,14 @@ import com.mygdx.simulator.factory_methos_screens.RegistrationCredentialsScreenC
 public class Utils {
 
 	public static boolean isFirstAccess = false;
+	public static boolean isCaptured = false;
 	public static boolean capturing = false;
 	public static boolean isAccess = true;
-	public static boolean captured = false;
+	public static boolean captured = true;
 	public static boolean backToRegistrationScreen = false;
 	public static boolean treeTimesAccessError = false;
 	public static boolean songPlay = false;
 	public static boolean changeUserCredentials = false;
-	public static boolean isSave = false;
 
 	public static int countErrorTimes = 0;
 
@@ -73,6 +73,7 @@ public class Utils {
 	/*
 	 * PopUp string
 	 */
+	public static final String REGISTRATION_NOT_PERMITTED = "Sorry but the maximum limit of registered users has been reached.";
 	public static final String ADMIN_REG_CRED_CHANGE_POPUP = "Are you sure do you want to change the credentials of ";
 	public static final String ACCESS_BACK_TO_MAIN_SCREEN_POP = "Are you sure do you want to exit without access?";
 	public static final String SCREEN_BACK_GAME_POPUP = "Are you sure you want to return to simulation without registration?";

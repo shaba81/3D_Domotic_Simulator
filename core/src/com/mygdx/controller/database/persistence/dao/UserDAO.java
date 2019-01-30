@@ -27,5 +27,6 @@ public interface UserDAO {
 	public User getUserByEmail(String email) throws SQLException;
 	public HashMap<Integer, User> getAllUser() throws SQLException;
 	public void updateUserCredentials(String email, String telephoneNumbre, String nickName, String pathImage, String idUser) throws SQLException;
+	public boolean registrationIsAvailable() throws SQLException;
 
 }

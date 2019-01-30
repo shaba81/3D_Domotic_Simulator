@@ -37,6 +37,7 @@ public interface Configuration {
 	 * DB query
 	 */
 
+	public String registrationIsAvailable = "select count(u.*) from ingswschema.users u, ingswschema.supply s where u.id_user!='-1' and s.id=u.id_supply group by s.max_user_registred having count(u.*) < s.max_user_registred;";
 	public String updateUserCredentials = "update ingswschema.users set email=?, telephone_number=?, nick_name=?, path_image=? where id_user=?;";
 
 	public String selectAllUser = "select * from ingswschema.users;";

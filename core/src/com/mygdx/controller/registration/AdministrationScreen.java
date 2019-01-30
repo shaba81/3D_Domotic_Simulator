@@ -112,7 +112,7 @@ public class AdministrationScreen extends AbstractScreen {
 				user1 = new ImageButton(img_user_unclicked.getDrawable(), img_user_clicked.getDrawable());
 				user1.addListener(new ClickListener() {
 					public void clicked(InputEvent event, float x, float y) {
-						doAction(users,0);
+						doAction(users, 0);
 					}
 
 				});
@@ -125,7 +125,7 @@ public class AdministrationScreen extends AbstractScreen {
 				user2 = new ImageButton(img_user_unclicked2.getDrawable(), img_user_clicked2.getDrawable());
 				user2.addListener(new ClickListener() {
 					public void clicked(InputEvent event, float x, float y) {
-						doAction(users,1);
+						doAction(users, 1);
 					}
 				});
 			}
@@ -137,7 +137,7 @@ public class AdministrationScreen extends AbstractScreen {
 				user3 = new ImageButton(img_user_unclicked3.getDrawable(), img_user_clicked3.getDrawable());
 				user3.addListener(new ClickListener() {
 					public void clicked(InputEvent event, float x, float y) {
-						doAction(users,2);
+						doAction(users, 2);
 					}
 
 				});
@@ -150,7 +150,7 @@ public class AdministrationScreen extends AbstractScreen {
 				user4 = new ImageButton(img_user_unclicked4.getDrawable(), img_user_clicked4.getDrawable());
 				user4.addListener(new ClickListener() {
 					public void clicked(InputEvent event, float x, float y) {
-						doAction(users,3);
+						doAction(users, 3);
 					}
 
 				});
@@ -163,7 +163,7 @@ public class AdministrationScreen extends AbstractScreen {
 				user5 = new ImageButton(img_user_unclicked5.getDrawable(), img_user_clicked5.getDrawable());
 				user5.addListener(new ClickListener() {
 					public void clicked(InputEvent event, float x, float y) {
-						doAction(users,4);
+						doAction(users, 4);
 					}
 
 				});
@@ -176,7 +176,7 @@ public class AdministrationScreen extends AbstractScreen {
 				user6 = new ImageButton(img_user_unclicked6.getDrawable(), img_user_clicked6.getDrawable());
 				user6.addListener(new ClickListener() {
 					public void clicked(InputEvent event, float x, float y) {
-						doAction(users,5);
+						doAction(users, 5);
 					}
 
 				});
@@ -243,50 +243,58 @@ public class AdministrationScreen extends AbstractScreen {
 	protected void doAction(HashMap<Integer, User> users, int index) {
 		System.out.println(pathLabelName[index]);
 		Utils.credentials.clear();
-		Utils.credentials.add(0,users.get(index).getEmail());
-		
-		Utils.credentials.add(1,users.get(index).getTelefonNumber());
-		Utils.credentials.add(2,users.get(index).getNickName());
-		Utils.credentials.add(3,pathLabelName[index]);
-		Utils.credentials.add(4,users.get(index).getIdUser());
+		Utils.credentials.add(0, users.get(index).getEmail());
+
+		Utils.credentials.add(1, users.get(index).getTelefonNumber());
+		Utils.credentials.add(2, users.get(index).getNickName());
+		Utils.credentials.add(3, pathLabelName[index]);
+		Utils.credentials.add(4, users.get(index).getIdUser());
 		Utils.changeUserCredentials = true;
-		Utils.lenghtUserNameForShowPopUp = labelName[index].length()+1; //il +1 è per '?'
-		System.out.println("doAction 0: "+users.get(index).getEmail()+" 1: "+users.get(index).getTelefonNumber()+" 2: "+users.get(index).getNickName()+" 3: "+pathLabelName[index]+" 4: "+users.get(index).getIdUser());
-		Utils.showPopUp(Utils.ADMIN_REG_CRED_CHANGE_POPUP + labelName[index] + "?", skin, stage, Utils.REGISTRATION_SCREEN_POP);
+		Utils.lenghtUserNameForShowPopUp = labelName[index].length() + 1; // il +1 è per '?'
+		System.out.println("doAction 0: " + users.get(index).getEmail() + " 1: " + users.get(index).getTelefonNumber()
+				+ " 2: " + users.get(index).getNickName() + " 3: " + pathLabelName[index] + " 4: "
+				+ users.get(index).getIdUser());
+		Utils.showPopUp(Utils.ADMIN_REG_CRED_CHANGE_POPUP + labelName[index] + "?", skin, stage,
+				Utils.REGISTRATION_SCREEN_POP);
 	}
 
 	@Override
 	public void render(float delta) {
 		try {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			Gdx.gl.glClearColor(0, 0, 0, 1);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		this.batch.begin();
+			this.batch.begin();
 
-		this.batch.end();
+			this.batch.end();
 
-		this.stage.act();
-		this.stage.draw();
+			this.stage.act();
+			this.stage.draw();
 
-		if (this.registration) {
-			this.registration = false;
+			if (this.registration) {
+				this.registration = false;
 //			Utils.resp = Utils.ADMIN_REGISTERS_A_NEW_USER;
-			Utils.saveOnLog(Utils.ADMIN_REGISTERS_A_NEW_USER);
-			ScreenManager.getInstance().showScreen(new RegistrationCredentialsScreenCreator());
-		}
+				if (Controller.getController().getUserDAO().registrationIsAvailable()) {
+					Utils.saveOnLog(Utils.ADMIN_REGISTERS_A_NEW_USER);
+					ScreenManager.getInstance().showScreen(new RegistrationCredentialsScreenCreator());
+				} else {
+					Utils.showMessageDialog(Utils.REGISTRATION_NOT_PERMITTED, skin, stage);
+				}
 
-		if (this.showHouseInteraction) {
-			this.showHouseInteraction = false;
-			/*
-			 * TODO SCREEN PER IL LOG
-			 */
-			ScreenManager.getInstance().showScreen(new LogScreenCreator());
-		}
+			}
 
-		if (this.back) {
-			this.back = false;
-			Utils.showPopUp(Utils.ADMINISTRATION_SCREEN_BACK_POPUP, skin, stage, Utils.MAIN_SCREEN_POP);
-		}
+			if (this.showHouseInteraction) {
+				this.showHouseInteraction = false;
+				/*
+				 * TODO SCREEN PER IL LOG
+				 */
+				ScreenManager.getInstance().showScreen(new LogScreenCreator());
+			}
+
+			if (this.back) {
+				this.back = false;
+				Utils.showPopUp(Utils.ADMINISTRATION_SCREEN_BACK_POPUP, skin, stage, Utils.MAIN_SCREEN_POP);
+			}
 		} catch (Exception e) {
 			ExceptionsManager.getExceptionsManager().manageException(e, skin, stage);
 		}

@@ -670,4 +670,32 @@ public class UserJDBC implements UserDAO {
 		}
 	}
 
+	@Override
+	public boolean registrationIsAvailable() throws SQLException {
+
+		Connection connection = null;
+		PreparedStatement statement = null;
+		ResultSet result = null;
+
+		try {
+
+			connection = basicDataSource.getConnection();
+			statement = connection.prepareStatement(Configuration.registrationIsAvailable);
+
+			result = statement.executeQuery();
+			
+			if( result.next() ) {
+				return true;
+			}
+
+			return false;
+		} finally {
+			if (statement != null)
+				statement.close();
+			if (result != null)
+				result.close();
+		}
+
+	}
+
 }
