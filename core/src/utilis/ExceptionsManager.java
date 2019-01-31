@@ -48,17 +48,20 @@ public class ExceptionsManager {
 				message = "Data already exists in Housim";
 			} else {
 				message = "Internal Database error";
+				exception.printStackTrace();
 			}
 		} else if (exception instanceof FileNotFoundException) {
 			message = "FILE NOT FOUND-(MESSAGGIO MOMENTANEO)";
 		} else if (exception instanceof IOException) {
 			message = "IOEXCEPTION-(MESSAGGIO MOMENTANEO)";
+			exception.printStackTrace();
 		} else if (exception instanceof MessagingException) {
 			message = Utils.MESSAGINGE_MESSAGE;
 		} else if (exception instanceof AddressException) {
 			message = Utils.ADDRESSE_INVALID_EMAIL_MESSAGE;
 		} else {
-			message = exception.getLocalizedMessage();
+			//message = exception.getLocalizedMessage();
+			exception.printStackTrace();
 		}
 
 		this.showMessage(message, skin, stage);

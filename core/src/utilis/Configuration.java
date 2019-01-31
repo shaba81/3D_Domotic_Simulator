@@ -37,6 +37,10 @@ public interface Configuration {
 	 * DB query
 	 */
 
+	public String userChangeCredentialsValidEmail = "select * from ingswschema.users where id_user!=? and email=?;";
+	public String userChangeCredentialsValidTelephone = "select * from ingswschema.users where id_user!=? and telephone_number=?;";
+	public String userChangeCredentialsValidNickname = "select * from ingswschema.users where id_user!=? and nick_name=?;";
+
 	public String registrationIsAvailable = "select count(u.*) from ingswschema.users u, ingswschema.supply s where u.id_user!='-1' and s.id=u.id_supply group by s.max_user_registred having count(u.*) < s.max_user_registred;";
 	public String updateUserCredentials = "update ingswschema.users set email=?, telephone_number=?, nick_name=?, path_image=? where id_user=?;";
 
@@ -68,7 +72,7 @@ public interface Configuration {
 	public String deleteUserById = "delete from ingswschema.users where id_user=?;";
 
 	public String insertCommandLog = "insert into ingswschema.interaction_user_home values(nextval('ingswschema.sequence_id'),?,18,NOW(),?);";
-	public String selectCommandLog = "select u.nick_name, iuh.time_request, iuh.command from ingswschema.interaction_user_home iuh, ingswschema.users u where iuh.id_user=u.id_user;";
+	public String selectCommandLog = "select u.nick_name, iuh.time_request, iuh.command from ingswschema.interaction_user_home iuh, ingswschema.users u where iuh.id_user=u.id_user order by  iuh.time_request;";
 	public String currentlyUserIsAdministrator = "select * from ingswschema.users where id_user=?;";
 
 }

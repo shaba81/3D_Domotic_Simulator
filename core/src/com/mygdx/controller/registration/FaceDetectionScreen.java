@@ -86,7 +86,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 				text = "Access";
 		}
 
-		if (!Utils.isAccess) {
+		if (!Utils.isAccess || Utils.isFirstAccess) {
 			this.registrationOrAccessButton = new TextButton(text, this.skin);
 
 			this.registrationOrAccessButton.addListener(new ClickListener() {
@@ -97,16 +97,18 @@ public class FaceDetectionScreen extends AbstractScreen {
 				}
 			});
 
-			text = "Back to registrationScreen";
-			this.backButton = new TextButton(text, this.skin);
+			if (!Utils.isFirstAccess) {
+				text = "Back to registrationScreen";
+				this.backButton = new TextButton(text, this.skin);
 
-			this.backButton.addListener(new ClickListener() {
-				@Override
-				public void clicked(InputEvent event, float x, float y) {
-					back = true;
-					System.out.println("back");
-				}
-			});
+				this.backButton.addListener(new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						back = true;
+						System.out.println("back");
+					}
+				});
+			}
 		} else {
 
 			text = "Back to Main menu";
@@ -132,7 +134,8 @@ public class FaceDetectionScreen extends AbstractScreen {
 			}
 		});
 
-		Controller.getController().getFaceController().init();
+		if (!Utils.captured)
+			Controller.getController().getFaceController().init();
 
 		this.mainTable.add(this.registrationOrAccessButton);
 		this.mainTable.row();
@@ -173,7 +176,6 @@ public class FaceDetectionScreen extends AbstractScreen {
 					String pathOriginal = Utils.pathImageUser;
 					Controller.getController().getFaceController().setUserAndCommandAccess(pathOriginal, false);
 
-					Utils.saveOnLog(Utils.ACCESS_SUCCESS_LOG);
 					ScreenManager.getInstance().showScreen(new GameScreenCreator());
 				} else {
 					System.out.println("non puoi accedere. Riprova");
@@ -201,17 +203,24 @@ public class FaceDetectionScreen extends AbstractScreen {
 				Utils.showMessageDialog(Utils.ALREADY_CAPTURE_FACE_POPUP, skin, imgStage);
 			}
 			if (this.registrationOrAccess) {
+				this.registrationOrAccess = false;
 				System.out.println("captured: " + Utils.captured);
 				if (Utils.captured) {
 					// se l'utente deve registrarsi
-					if (!Utils.isAccess) {
+					if (!Utils.isAccess || Utils.isFirstAccess) {
 						if (Controller.getController().getFaceController().registerUser()) {
 							// viene richiamato il 'facecaptureScreen' per far registrare l'utente
 							System.out.println("puoi registrarti");
 							Utils.backToRegistrationScreen = false;
 							String pathImage = this.register();
-							Controller.getController().getFaceController().setUserAndCommandRegistration(pathImage);
+							if( !Utils.isAccess )
+								Controller.getController().getFaceController().setUserAndCommandRegistration(pathImage);
+							else {
+								Utils.isFirstAccess = false;
+								Controller.getController().getFaceController().setUserAndCommandAccess(pathImage, false);
+							}
 							Utils.credentials.clear();
+
 							ScreenManager.getInstance().showScreen(new GameScreenCreator());
 						} else {
 							System.out.println("non puoi registrarti");
@@ -220,26 +229,26 @@ public class FaceDetectionScreen extends AbstractScreen {
 							Utils.showMessageDialog(Utils.REGISTRATION_FAILED_POPUP, skin, imgStage);
 						}
 					}
-				} else
-					System.out.println("miao");
+				} else {
+					Utils.showMessageDialog(Utils.CANT_REGISTER_WITHOUT_FACE_CAPTURE, skin, imgStage);
+				}
 
-				this.registrationOrAccess = false;
 			}
 
 			if (this.redo) {
-				Utils.captured = false;
-				Controller.getController().getFaceController().init();
 				this.redo = false;
+				Utils.captured = false;
 				Utils.backToRegistrationScreen = false;
+				Controller.getController().getFaceController().setClosed();
+				Controller.getController().getFaceController().init();
 			}
 
 			if (this.backAccess) {
 				this.backAccess = false;
 				if (Utils.captured)
 					Utils.backToRegistrationScreen = true;
-				Utils.showPopUp(Utils.ACCESS_BACK_TO_MAIN_SCREEN_POP, skin, imgStage, Utils.MAIN_SCREEN_POP);
 				Controller.getController().getFaceController().setClosed();
-
+				Utils.showPopUp(Utils.ACCESS_BACK_TO_MAIN_SCREEN_POP, skin, imgStage, Utils.MAIN_SCREEN_POP);
 			}
 
 			if (this.back) {
@@ -258,7 +267,7 @@ public class FaceDetectionScreen extends AbstractScreen {
 		}
 	}
 
-	private String register() throws SQLException, IOException  {
+	private String register() throws SQLException, IOException {
 		/*
 		 * Decommentare le funzioni per il salvataggio. Ora se si preme il bottone +
 		 * come se simulasse la registrazione. quindi la booleana la mette a false. Ma
@@ -283,35 +292,35 @@ public class FaceDetectionScreen extends AbstractScreen {
 	 * 
 	 * @param userDAO
 	 * @param isAdministrator
-	 * @throws SQLException 
-	 * @throws IOException 
+	 * @throws SQLException
+	 * @throws IOException
 	 */
 	@SuppressWarnings("finally")
-	private String registrationUser() throws SQLException, IOException  {
+	private String registrationUser() throws SQLException, IOException {
 		User user = new User();
-			/*
-			 * TODO: fare distinzione di popup, quando fallisce va benisismo. Quando ha
-			 * successo farlo accedere
-			 */
+		/*
+		 * TODO: fare distinzione di popup, quando fallisce va benisismo. Quando ha
+		 * successo farlo accedere
+		 */
 
-			if (!Utils.isFirstAccess) {
-				user.setEmail(Utils.credentials.get(0));
-				user.setAdministrator(false);
-				user.setNickName(Utils.credentials.get(2));
-				user.setTelefonNumber(Utils.credentials.get(1));
-				user.setIdUser(Controller.getController().getUserDAO().getIdUser());
+		if (!Utils.isFirstAccess) {
+			user.setEmail(Utils.credentials.get(0));
+			user.setAdministrator(false);
+			user.setNickName(Utils.credentials.get(2));
+			user.setTelefonNumber(Utils.credentials.get(1));
+			user.setIdUser(Controller.getController().getUserDAO().getIdUser());
 
-			} else {
-				user.setIdUser(Utils.ID_ADMIN_USER);
-			}
+		} else {
+			user.setIdUser(Utils.ID_ADMIN_USER);
+		}
 
-			user.setPathImage("resources/images/" + user.getIdUser() + ".jpg");
-			Controller.getController().getFaceController().moveImages(user.getPathImage());
+		user.setPathImage("resources/images/" + user.getIdUser() + ".jpg");
+		Controller.getController().getFaceController().moveImages(user.getPathImage());
 
-			if (Controller.getController().getUserDAO().registration(user)) {
-				Utils.isAccess = true;
-			}
-			return user.getPathImage();
+		if (Controller.getController().getUserDAO().registration(user)) {
+			Utils.isAccess = true;
+		}
+		return user.getPathImage();
 	}
 
 	public void updateFrame() {

@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.ResourceBundle.Control;
 
 import javax.imageio.ImageIO;
 
@@ -38,11 +39,11 @@ import com.mygdx.simulator.factory_methos_screens.RegistrationCredentialsScreenC
  */
 public class Utils {
 
+	public static boolean stopCamera = true;
 	public static boolean isFirstAccess = false;
-	public static boolean isCaptured = false;
 	public static boolean capturing = false;
 	public static boolean isAccess = true;
-	public static boolean captured = true;
+	public static boolean captured = false;
 	public static boolean backToRegistrationScreen = false;
 	public static boolean treeTimesAccessError = false;
 	public static boolean songPlay = false;
@@ -94,7 +95,7 @@ public class Utils {
 	public static final String REGISTRATION_CREDENTIALS_SCREEN_NUMBER_TOO_SHORT_POPUP = "Wrong telephone numebr format. The field must be composed of the '+' character at the beginning, \nthe next two numbers represent the area code and the next ten numbers the telephone number.";
 	public static final String REGISTRATION_CREDENTIALS_SCREEN_MISSIN_PLUS_NUMBER_POPUP = "Wrong telephone numebr format. Missing the '+' character at the beginning of the number.";
 	public static final String LOGIN_SCREEN_FIRST_ACCESS_POPUP = "Hi, this is the first request for access to the house. \nYou will be registered as an administrator of this simulation. Please insert your administration credentials to login.\nClick OK or press ENTER to continue recording.";
-	public static final String REGISTRATION_FAILED_POPUP = "Sorry registration was not successful, please check the data entered.";
+	public static final String REGISTRATION_FAILED_POPUP = "Sorry registration was not successful, the user already exists in Housim.";
 	public static final String REGISTRATION_SUCCESS_POPUP = "The registration of the user has happened successfully.";
 	public static final String LOGIN_SCREEN_TOO_MANY_FAILED_ATTEMPTS_POPUP = "Sorry, you've reached the maximum attempt limit for entering your credentials. \nYou will receive an email and a text message with the new credentials to log in. The old ones will no longer be valid. \nPlease check your email and mobile phone in order to enter your new credentials.";
 	public static final String LOGIN_SCREEN_NO_ID_INSERT_POPUP = "The ID's field is empty. Please enter your ID for log in.";
@@ -107,8 +108,9 @@ public class Utils {
 	public static final String ACCESS_ONE_TIME_PASS_NOT_MATCH = "Password entered not matches. Please check the email entered previously to which a code\nhas been sent from the validity of one hour with which you can access.\nPlease enter the code, the field doens't have to be empty..";
 	public static final String CHANGE_USER_CREDENTIALS_SUCCESSFULLY_MESSAGE = "Credentials have been changed successfull!";
 	public static final String CANT_COME_BACK_WITHOUT_FACE_CAPTURE = "Sorry, first you have to capture your face!";
+	public static final String CANT_REGISTER_WITHOUT_FACE_CAPTURE = "Sorry, first you have to capture your face to change credentials!";
 	public static final String BACK_TO_ADMIN_SCREEN = "Are you sure do you want to back to Administration Screen?";
-	
+
 	/*
 	 * command for log
 	 */
@@ -136,9 +138,8 @@ public class Utils {
 	public static final String FAN_OFF_LOG = "He asked to switch off the fan.";
 	public static final String CHANGE_USER_CREDENTIALS_SUCCESSFULLY = "User credentials have been changed successfully.";
 
-	
 	/*
-	 * For popUp 
+	 * For popUp
 	 */
 	public static final String REGISTRATION_SCREEN_POP = "RegistrationScreen";
 	public static final String MAIN_SCREEN_POP = "MainScreen";
@@ -147,16 +148,13 @@ public class Utils {
 	public static final String ADMIN_SCREEN_POP = "AdminScreen";
 	public static final String EXIT_POP = "Exit";
 
-
 	/*
 	 * Exceptions' messages
 	 */
 	public static final String ADDRESSE_INVALID_EMAIL_MESSAGE = "Invalid e-mail. \n Please click OK or ENTER to retry.";
 	public static final String MESSAGINGE_MESSAGE = "Unable to connect to the e-mail service.\n Please check your internet connection.";
 	public static final String IOE_CANT_READ_INPUT_FILE_MESSAGE = "Your file is corrupt or invalid.\n Please retry.";
-	
-	
-	
+
 	/**
 	 * Vocal recognition variables
 	 */
@@ -171,54 +169,53 @@ public class Utils {
 	 * path of user
 	 */
 	public static String pathImageUser = "";
+
 	/**
-	 * Useful log method. If user vocal command contains one of the two words below, it will be saved on log.
-	 * @param word1 -> Possible user word command 1
-	 * @param word2 -> Possible user word command 2
-	 * @param lightOnLog 
-	 * @throws SQLException 
+	 * Useful log method. If user vocal command contains one of the two words below,
+	 * it will be saved on log.
+	 * 
+	 * @param word1      -> Possible user word command 1
+	 * @param word2      -> Possible user word command 2
+	 * @param lightOnLog
+	 * @throws SQLException
 	 */
-	public static void commandLog(String word1, String word2, String command) throws SQLException
-	{
+	public static void commandLog(String word1, String word2, String command) throws SQLException {
 		if (Utils.resp.contains(word1) || Utils.resp.contains(word2))
-			saveOnLog( command);
+			saveOnLog(command);
 	}
-	
+
 	/**
-	 * It's the method which saves on log the actual state of user(Ex: user home access, etc...)
-	 * @throws SQLException 
+	 * It's the method which saves on log the actual state of user(Ex: user home
+	 * access, etc...)
+	 * 
+	 * @throws SQLException
 	 */
-	public static void saveOnLog(String command) throws SQLException
-	{
-			Controller.getController().getUserDAO().insertCommand(userLogged,command);
-		     resp = "";
-		     System.out.println("LOG");
+	public static void saveOnLog(String command) throws SQLException {
+		System.out.println(Utils.userLogged);
+		Controller.getController().getUserDAO().insertCommand(userLogged, command);
+		resp = "";
+		System.out.println("LOG");
 	}
-	
-	
+
 	public static void removeAfileInAFolder(File myfile) throws IOException {
-			Files.deleteIfExists(myfile.toPath());
+		Files.deleteIfExists(myfile.toPath());
 	}
-	
+
 	/**
 	 * 
 	 * @param original
 	 * @return
 	 */
-	public static BufferedImage matToBufferedImage(Mat original)
-	{
+	public static BufferedImage matToBufferedImage(Mat original) {
 		// init
 		BufferedImage image = null;
 		int width = original.width(), height = original.height(), channels = original.channels();
 		byte[] sourcePixels = new byte[width * height * channels];
 		original.get(0, 0, sourcePixels);
 
-		if (original.channels() > 1)
-		{
+		if (original.channels() > 1) {
 			image = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
-		}
-		else
-		{
+		} else {
 			image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
 		}
 		final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
@@ -226,21 +223,23 @@ public class Utils {
 
 		return image;
 	}
-	
+
 	/**
 	 * Sposta il file dalla cartella 'tmep_image' alla 'images'
 	 * 
 	 * @param file
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@SuppressWarnings("unused")
-	public static void moveNewUserToImageFolder(String fromfolder_path, String fromimage_path, String tofolder_path, String toimage_path) throws IOException {
+	public static void moveNewUserToImageFolder(String fromfolder_path, String fromimage_path, String tofolder_path,
+			String toimage_path) throws IOException {
 		// aggiungo il file nella cartella 'images'
-          System.out.println("fromfolder_path: "+fromfolder_path+" fromimage_path: "+fromimage_path+" tofolder_path: "+tofolder_path+" toimage_path: "+toimage_path);
-			Files.move(Paths.get(fromfolder_path+"/"+fromimage_path), Paths.get(tofolder_path+"/"+toimage_path));
-	
+		System.out.println("fromfolder_path: " + fromfolder_path + " fromimage_path: " + fromimage_path
+				+ " tofolder_path: " + tofolder_path + " toimage_path: " + toimage_path);
+		Files.move(Paths.get(fromfolder_path + "/" + fromimage_path), Paths.get(tofolder_path + "/" + toimage_path));
+
 	}
-	
+
 	/**
 	 * Metodo che prende come parametri Il Tipo di classe che ha all'interno i dati
 	 * che saranno nel file .json {@link Configuration}, e il path dove si trova il
@@ -259,53 +258,60 @@ public class Utils {
 		Gson gson = new Gson();
 		return gson.fromJson(bufferedReader, type);
 	}
-	
+
 	public static int lenghtUserNameForShowPopUp = 0;
 
 	public static void showPopUp(String text, Skin skin, Stage stage, final String screenCall) {
-		String text2 = text.substring(0, text.length()-lenghtUserNameForShowPopUp);
-		
+		String text2 = text.substring(0, text.length() - lenghtUserNameForShowPopUp);
+
 		Dialog dialog = new Dialog("", skin, "dialog") {
 			public void result(Object obj) {
-				System.out.println("text: "+text+" text2: "+text2);
+				System.out.println("text: " + text + " text2: " + text2);
 				if (obj.equals("true")) {
 					if (screenCall.equals(MAIN_SCREEN_POP)) {
 						Utils.countErrorTimes = 0;
 						Utils.treeTimesAccessError = false;
 						ScreenManager.getInstance().showScreen(new MainMenuScreenCreator());
-					}
-					else if(screenCall.equals(REGISTRATION_SCREEN_POP))
+					} else if (screenCall.equals(REGISTRATION_SCREEN_POP))
 						ScreenManager.getInstance().showScreen(new RegistrationCredentialsScreenCreator());
 					else if (screenCall.equals(GAME_SCREEN_POP))
 						ScreenManager.getInstance().showScreen(new GameScreenCreator());
 					else if (screenCall.equals(LOGIN_SCREEN_POP))
 						ScreenManager.getInstance().showScreen(new LoginScreenCreator());
-					else if (screenCall.equals(ADMIN_SCREEN_POP))
-					{
-						if(text.equals(BACK_TO_ADMIN_SCREEN))
-						{
+					else if (screenCall.equals(ADMIN_SCREEN_POP)) {
+						captured = false;
+						credentials.clear();
+						if (text.equals(CHANGE_USER_CREDENTIALS_SUCCESSFULLY_MESSAGE)) {
+							changeUserCredentials = false;
+						} else if (text.equals(BACK_TO_ADMIN_SCREEN)) {
 							if (Utils.captured)
 								Utils.backToRegistrationScreen = true;
 
 							Utils.changeUserCredentials = false;
+						} else if (text.equals(REGISTRATION_CREDENTIALS_SCREEN_BACK_POPUP)) {
+							changeUserCredentials = false;
+							backToRegistrationScreen = false;
 						}
+
 						ScreenManager.getInstance().showScreen(new AdministrationScreenCreator());
-					}
-					else if (screenCall.equals(EXIT_POP))
+					} else if (screenCall.equals(EXIT_POP))
 						Gdx.app.exit();
-				}
-				else {
+				} else {
 					if (text2.equals(ADMIN_REG_CRED_CHANGE_POPUP) && changeUserCredentials) {
 						changeUserCredentials = false;
 						System.out.println("NO");
-					}
-					else if(text.equals(BACK_TO_ADMIN_SCREEN))
-					{
+					} else if (text.equals(BACK_TO_ADMIN_SCREEN)) {
 						Controller.getController().getFaceController().setClosed();
+
+						if (!captured) {
+							Controller.getController().getFaceController().init();
+						}
+
+					} else if (text.equals(ACCESS_BACK_TO_MAIN_SCREEN_POP)) {
 						Controller.getController().getFaceController().init();
 					}
 				}
-				
+
 			}
 		};
 		dialog.text(text);
@@ -318,6 +324,7 @@ public class Utils {
 
 	public static void showMessageDialog(String text, Skin skin, Stage stage) {
 		System.err.println("MIAAAA");
+
 		Dialog dialog = new Dialog("", skin);
 		dialog.text(text);
 		dialog.button("Ok", "true");
@@ -327,9 +334,9 @@ public class Utils {
 	}
 
 	public static String getIdUserFromImage(String path) {
-		for(int i = path.length()-1, slashI = 0, pointI=path.length()-4; i >= 0; i--  ) {
-			if( path.charAt(i) == 's' ) {
-				slashI = i+2;
+		for (int i = path.length() - 1, slashI = 0, pointI = path.length() - 4; i >= 0; i--) {
+			if (path.charAt(i) == 's') {
+				slashI = i + 2;
 				path = path.substring(slashI, pointI);
 				break;
 			}

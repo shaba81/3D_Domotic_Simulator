@@ -114,7 +114,8 @@ public class ChangeFaceScreen extends AbstractScreen {
 			}
 		});
 
-		Controller.getController().getFaceController().init();
+		if( !Utils.captured )
+			Controller.getController().getFaceController().init();
 
 		this.mainTable.add(this.changeCredentialsButton);
 		this.mainTable.row();
@@ -158,7 +159,7 @@ public class ChangeFaceScreen extends AbstractScreen {
 			}
 
 			if (this.changeCredentials) {
-				Utils.changeUserCredentials = false;
+				this.changeCredentials = false;
 
 				if (Utils.captured) {
 					File file = new File("resources/images/" + Utils.credentials.get(4) + ".jpg");
@@ -176,26 +177,29 @@ public class ChangeFaceScreen extends AbstractScreen {
 					System.out.println("DOPO 0: " + Utils.credentials.get(0) + " 1: " + Utils.credentials.get(1)
 							+ " 2: " + Utils.credentials.get(2) + " 3: " + " resources/images/"
 							+ Utils.credentials.get(4) + ".jpg" + " 4: " + Utils.credentials.get(4));
-					Utils.showPopUp(Utils.CHANGE_USER_CREDENTIALS_SUCCESSFULLY_MESSAGE, skin, imgStage,
-							Utils.ADMIN_SCREEN_POP);
+					Controller.getController().getFaceController().setClosed();
+					Utils.showMessageDialog(Utils.CHANGE_USER_CREDENTIALS_SUCCESSFULLY_MESSAGE, skin, imgStage);
+					Utils.captured = false;
+					Utils.credentials.clear();
+					Utils.changeUserCredentials = false;
 					ScreenManager.getInstance().showScreen(new AdministrationScreenCreator());
-				} else
+				} else {
 					Utils.showMessageDialog(Utils.CANT_COME_BACK_WITHOUT_FACE_CAPTURE, skin, imgStage);
+				}
 			}
 
 			if (this.redo) {
-				Utils.captured = false;
-				Controller.getController().getFaceController().init();
 				this.redo = false;
+				Utils.captured = false;
 				Utils.backToRegistrationScreen = false;
+				Controller.getController().getFaceController().setClosed();
+				Controller.getController().getFaceController().init();
 			}
 
 			if (this.backAdmin) {
 				this.backAdmin = false;
-
-				Utils.showPopUp(Utils.BACK_TO_ADMIN_SCREEN, skin, imgStage, Utils.ADMIN_SCREEN_POP);
 				Controller.getController().getFaceController().setClosed();
-
+				Utils.showPopUp(Utils.BACK_TO_ADMIN_SCREEN, skin, imgStage, Utils.ADMIN_SCREEN_POP);
 			}
 
 			if (this.back) {

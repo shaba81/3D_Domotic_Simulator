@@ -116,15 +116,15 @@ public class FaceDetectionController {
 		if (this.capture.isOpened()) {
 			this.cameraActive = true;
 
+			Utils.stopCamera = false;
 			// grab a frame every 33 ms (30 frames/sec)
 			Runnable frameGrabber = new Runnable() {
 
 				@Override
 				public void run() {
-					while (!Utils.captured) {
+					while (!Utils.stopCamera) {
 						// effectively grab and process a single frame
 						try {
-							
 							Mat frame = grabFrame();
 							// QUI BISOGNA SALVARE L'IMMAGINE SU FILE, CHE SARA POI PRESA DA GDX PER FARLA A
 							// VIDEO
@@ -132,12 +132,9 @@ public class FaceDetectionController {
 								BufferedImage buffImg = Utils.matToBufferedImage(frame);
 								File outputfile = new File("resources/frame.jpg");
 
-								Utils.isSave = false;
-
 								ImageIO.write(buffImg, "jpg", outputfile);
 
 								utilis.Utils.capturing = true;
-								Utils.isSave = true;
 							}
 						} catch (Exception e) {
 							System.out.println("Vedi che hai sbagliato a scrivere");
@@ -268,6 +265,7 @@ public class FaceDetectionController {
 	 * Stop the acquisition from the camera and release all the resources
 	 */
 	private void stopAcquisition() {
+		Utils.stopCamera = true;
 		if (this.timer != null && !this.timer.isShutdown()) {
 			try {
 				// stop the timer
@@ -288,7 +286,8 @@ public class FaceDetectionController {
 	 * On application close, stop the acquisition from the camera
 	 */
 	public void setClosed() {
-		this.stopAcquisition();
+		if( !Utils.stopCamera )
+			this.stopAcquisition();
 	}
 
 //	public boolean isCaptured() {

@@ -83,7 +83,7 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 			this.txtTelephoneNumber = new TextField(Utils.credentials.get(1), skin);
 			this.txtNickName = new TextField(Utils.credentials.get(2), skin);
 		}
-		
+
 //		if(Utils.changeUserCredentials)
 //		{
 //		text = "Change credentials";
@@ -158,7 +158,15 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 				int result = Controller.getController().getUserDAO().userExist(Utils.credentials.get(0), Utils.credentials.get(1),
 						Utils.credentials.get(2));
 
-				String dialogText = this.errorOccurr(result);
+				int resultChange = -1;
+				if( Utils.changeUserCredentials ) {
+					resultChange = Controller.getController().getUserDAO().userChangeCredentials(Utils.credentials.get(4), Utils.credentials.get(0),
+						Utils.credentials.get(1), Utils.credentials.get(2));
+
+				System.out.println("RESULT CHANGE " +  resultChange);
+				}
+
+				String dialogText = this.errorOccurr(result, resultChange);
 
 //				if (!Utils.changeUserCredentials) {
 					if (dialogText != "")
@@ -199,7 +207,6 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 				}
 				else
 				{
-					Utils.changeUserCredentials = false;
 					Utils.showPopUp(Utils.REGISTRATION_CREDENTIALS_SCREEN_BACK_POPUP, skin, stage,
 							Utils.ADMIN_SCREEN_POP);
 				}
@@ -217,7 +224,7 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 		}
 	}
 
-	private String errorOccurr(int result) {
+	private String errorOccurr(int result, int resultChange) {
 		String resultText = "";
 		if (!Utils.changeUserCredentials) {
 			if (result == 1)
@@ -225,6 +232,13 @@ public class RegistrationCredentialsScreen extends AbstractScreen {
 			else if (result == 2)
 				resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_TELEPHONE_EXIST_POPUP;
 			else if (!Utils.credentials.get(2).equals("") && result == 3)
+				resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_NICKNAME_EXIST_POPUP;
+		} else {
+			if( resultChange == 1 )
+				resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_EMAIL_EXIST_POPUP;
+			else if (resultChange == 2)
+				resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_TELEPHONE_EXIST_POPUP;
+			else if ( resultChange == 3)
 				resultText = Utils.REGISTRATION_CREDENTIALS_SCREEN_NICKNAME_EXIST_POPUP;
 		}
 		if (Utils.credentials.get(0).equals("") || Utils.credentials.get(1).equals("")

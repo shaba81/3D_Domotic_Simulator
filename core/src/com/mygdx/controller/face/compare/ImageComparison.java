@@ -193,19 +193,19 @@ public class ImageComparison {
 	}
 
 	public boolean register() throws IOException {
-				String base = "resources/temp_image";
-				String base_image = "temp.jpg";
-				File fileA = new File(base + "/" + base_image);
+		String base = "resources/temp_image";
+		String base_image = "temp.jpg";
+		File fileA = new File(base + "/" + base_image);
 
-				Image im = ImageIO.read(fileA);
+		Image im = ImageIO.read(fileA);
 
-				if (this.isAnewUser(im, fileA.getPath())) {
-					System.out.println("REGISTRAZIONE AVVENUTA CON SUCCESSO!");
-					// this.moveNewUserToImageFolder(base,base_image,"resources/images","a"+this.cont+".jpg");
-					// this.deleteAnElementInAfolder("resources/images", "a"+this.cont+".jpg");
-					return true;
-				} else
-					System.out.println("REGISTRAZIONE NON RIUSCITA");
+		if (this.isAnewUser(im, fileA.getPath())) {
+			System.out.println("REGISTRAZIONE AVVENUTA CON SUCCESSO!");
+			// this.moveNewUserToImageFolder(base,base_image,"resources/images","a"+this.cont+".jpg");
+			// this.deleteAnElementInAfolder("resources/images", "a"+this.cont+".jpg");
+			return true;
+		} else
+			System.out.println("REGISTRAZIONE NON RIUSCITA");
 
 		return false;
 	}
@@ -216,29 +216,29 @@ public class ImageComparison {
 	 * 
 	 * @param user_email
 	 * @param file_user_image_path
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@SuppressWarnings("unused")
 	private void addUserImage(long user_id, String file_user_image_path) throws IOException {
-			String base = "resources/images/";
-			File file = new File(base + file_user_image_path);
-			Image user_image = ImageIO.read(file);
-			this.users_faces_files.put(user_id, file);
-			this.users_faces_images.put(user_id, user_image);
-		
+		String base = "resources/images/";
+		File file = new File(base + file_user_image_path);
+		Image user_image = ImageIO.read(file);
+		this.users_faces_files.put(user_id, file);
+		this.users_faces_images.put(user_id, user_image);
+
 	}
 
 	/**
 	 * Sposta il file dalla cartella 'tmep_image' alla 'images'
 	 * 
 	 * @param file
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public void moveNewUserToImageFolder(String toimage_path) throws IOException {
 		// aggiungo il file nella cartella 'images'
-			Files.move(Paths.get("resources/temp_image" + "/" + "temp.jpg"), Paths.get(toimage_path));
-			// this.cont++;
-		
+		Files.move(Paths.get("resources/temp_image" + "/" + "temp.jpg"), Paths.get(toimage_path));
+		// this.cont++;
+
 	}
 
 }

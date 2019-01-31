@@ -22,23 +22,23 @@ public class UserJDBC implements UserDAO {
 	private static BasicDataSource basicDataSource;
 
 	static {
-	
-			System.out.println("B");
-			String url = String.format("jdbc:%s://%s:%s/%s", Configuration.jdbc, Configuration.host, Configuration.port,
-					Configuration.database);
 
-			String username = Configuration.username;
-			String password = Configuration.password;
-			String driver = Configuration.driver;
+		System.out.println("B");
+		String url = String.format("jdbc:%s://%s:%s/%s", Configuration.jdbc, Configuration.host, Configuration.port,
+				Configuration.database);
 
-			basicDataSource = new BasicDataSource();
-			basicDataSource.setDriverClassName(driver);
-			basicDataSource.setUrl(url);
-			basicDataSource.setUsername(username);
-			basicDataSource.setPassword(password);
-			basicDataSource.setMaxIdle(0);
-			System.out.println("C");
-		
+		String username = Configuration.username;
+		String password = Configuration.password;
+		String driver = Configuration.driver;
+
+		basicDataSource = new BasicDataSource();
+		basicDataSource.setDriverClassName(driver);
+		basicDataSource.setUrl(url);
+		basicDataSource.setUsername(username);
+		basicDataSource.setPassword(password);
+		basicDataSource.setMaxIdle(0);
+		System.out.println("C");
+
 	}
 
 	private UserJDBC() {
@@ -89,10 +89,10 @@ public class UserJDBC implements UserDAO {
 			return false;
 
 		} finally {
-				if (statement != null)
-					statement.close();
-				if (conn != null)
-					conn.close();
+			if (statement != null)
+				statement.close();
+			if (conn != null)
+				conn.close();
 
 		}
 
@@ -177,12 +177,12 @@ public class UserJDBC implements UserDAO {
 
 			statement.executeUpdate();
 
-		}finally {
-				if (statement != null)
-					statement.close();
-				if (conn != null)
-					conn.close();
-			
+		} finally {
+			if (statement != null)
+				statement.close();
+			if (conn != null)
+				conn.close();
+
 		}
 	}
 
@@ -256,10 +256,10 @@ public class UserJDBC implements UserDAO {
 
 			connection.commit();
 			return false;
-		}  catch (SQLException e) {
+		} catch (SQLException e) {
 			connection.rollback();
 			throw e;
-		}finally {
+		} finally {
 			connection.setAutoCommit(true);
 			if (resultSet != null)
 				resultSet.close();
@@ -343,10 +343,10 @@ public class UserJDBC implements UserDAO {
 
 			return emailCredentialsAdmin;
 		} finally {
-				if (statement != null)
-					statement.close();
-				if (conn != null)
-					conn.close();
+			if (statement != null)
+				statement.close();
+			if (conn != null)
+				conn.close();
 		}
 	}
 
@@ -683,8 +683,8 @@ public class UserJDBC implements UserDAO {
 			statement = connection.prepareStatement(Configuration.registrationIsAvailable);
 
 			result = statement.executeQuery();
-			
-			if( result.next() ) {
+
+			if (result.next()) {
 				return true;
 			}
 
@@ -696,6 +696,71 @@ public class UserJDBC implements UserDAO {
 				result.close();
 		}
 
+	}
+
+	@SuppressWarnings("resource")
+	@Override
+	public int userChangeCredentials(String idUser, String email, String telephoneNumber, String nickName)
+			throws SQLException {
+
+		Connection connection = null;
+		PreparedStatement statement = null;
+		ResultSet result = null;
+
+		try {
+
+			connection = basicDataSource.getConnection();
+
+			/*
+			 * Check email
+			 */
+			statement = connection.prepareStatement(Configuration.userChangeCredentialsValidEmail);
+			statement.setString(1, idUser);
+			statement.setString(2, email);
+
+			result = statement.executeQuery();
+
+			if (result.next()) {
+				return 1;
+			}
+
+			/*
+			 * Check telephone number
+			 */
+			statement = null;
+			result = null;
+			statement = connection.prepareStatement(Configuration.userChangeCredentialsValidTelephone);
+			statement.setString(1, idUser);
+			statement.setString(2, telephoneNumber);
+
+			result = statement.executeQuery();
+
+			if (result.next()) {
+				return 2;
+			}
+
+			/*
+			 * Check nickname
+			 */
+			statement = null;
+			result = null;
+			statement = connection.prepareStatement(Configuration.userChangeCredentialsValidNickname);
+			statement.setString(1, idUser);
+			statement.setString(2, nickName);
+
+			result = statement.executeQuery();
+
+			if (result.next()) {
+				return 3;
+			}
+
+			return -1;
+		} finally {
+			if (statement != null)
+				statement.close();
+			if (result != null)
+				result.close();
+		}
 	}
 
 }
