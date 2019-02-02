@@ -206,7 +206,7 @@ public class GameScreen implements Screen {
 		inputManager = new InputManager(camera);
 
 		// Move the camera 5 units back along the z-axis and look at the origin
-		camera.position.set(0f, 15f, 50f);
+		camera.position.set(Utils.positionVector);
 		camera.lookAt(0f, 0f, 0f);
 
 		// Near and Far (plane) represent the minimum and maximum ranges of the camera
@@ -495,32 +495,39 @@ public class GameScreen implements Screen {
 		Gdx.input.setInputProcessor(inputManager);
 	}
 
-	public void OpenDoor() {
+	public void OpenDoorA() {
 
-		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+		if (inputManager.openDoorA) {
 
 			entranceDoorAnimationController.setAnimation("Plane.001|Door", 1, new AnimationListener() {
 				@Override
 				public void onEnd(AnimationController.AnimationDesc animation) {
-					// controller.queue("other anim",-1,1f,null,0f);
+					inputManager.openDoorA = false;
 				}
 
 				@Override
 				public void onLoop(AnimationController.AnimationDesc animation) {
 				}
 			});
+			inputManager.openDoorA = false;
+		}
 
+	}
+
+	public void OpenDoorB() {
+
+		if (inputManager.openDoorB) {
 			bathDoorAnimationController.setAnimation("Plane.001|Door", 1, new AnimationListener() {
 				@Override
 				public void onEnd(AnimationController.AnimationDesc animation) {
-					// controller.queue("other anim",-1,1f,null,0f);
+					inputManager.openDoorB = false;
 				}
 
 				@Override
 				public void onLoop(AnimationController.AnimationDesc animation) {
 				}
 			});
-
+			inputManager.openDoorB = false;
 		}
 
 	}
@@ -530,6 +537,7 @@ public class GameScreen implements Screen {
 			fanAnimationController.setAnimation("Armature|ArmatureAction", 1, new AnimationListener() {
 				@Override
 				public void onEnd(AnimationController.AnimationDesc animation) {
+					inputManager.activateFan = false;
 				}
 
 				@Override
@@ -599,6 +607,19 @@ public class GameScreen implements Screen {
 						if (checkRoom().equals("mainRoom")) {
 
 							command.speakerOn();
+						} else {
+							wrongCommandLocation();
+							System.out.println("non sei autorizzato");
+							wcl = false;
+							inputManager.doCommand = false;
+
+						}
+						return;
+					} else if (objectToActivate.equals("porta")) {
+						contWrongCommand = 0;
+						if (checkRoom().equals("mainRoom") || checkRoom().equals("bathroom")) {
+							command.openDoorB();
+							Utils.resp = ""; // DA METTERE NEL LOG
 						} else {
 							wrongCommandLocation();
 							System.out.println("non sei autorizzato");
@@ -700,7 +721,7 @@ public class GameScreen implements Screen {
 							inputManager.doCommand = false;
 							return;
 						}
-						
+
 					}
 
 					return;
@@ -871,7 +892,6 @@ public class GameScreen implements Screen {
 		return false;
 	}
 
-
 	// variabile per quando entra in casa
 	boolean entrata = true;
 
@@ -921,7 +941,8 @@ public class GameScreen implements Screen {
 			v.y = 0f;
 			v.x *= speed * timeElapsed;
 			v.z *= speed * timeElapsed;
-			camera.translate(v);
+			Utils.positionVector = v;
+			camera.translate(Utils.positionVector);
 			camera.update();
 			player.updatePosition(camera.position.x, camera.position.z);
 		}
@@ -932,7 +953,9 @@ public class GameScreen implements Screen {
 			v.z = -v.z;
 			v.x *= speed * timeElapsed;
 			v.z *= speed * timeElapsed;
-			camera.translate(v);
+
+			Utils.positionVector = v;
+			camera.translate(Utils.positionVector);
 			camera.update();
 			player.updatePosition(camera.position.x, camera.position.z);
 		}
@@ -942,7 +965,9 @@ public class GameScreen implements Screen {
 			v.rotate(Vector3.Y, 90);
 			v.x *= speed * timeElapsed;
 			v.z *= speed * timeElapsed;
-			camera.translate(v);
+
+			Utils.positionVector = v;
+			camera.translate(Utils.positionVector);
 			camera.update();
 			player.updatePosition(camera.position.x, camera.position.z);
 
@@ -953,7 +978,9 @@ public class GameScreen implements Screen {
 			v.rotate(Vector3.Y, -90);
 			v.x *= speed * timeElapsed;
 			v.z *= speed * timeElapsed;
-			camera.translate(v);
+
+			Utils.positionVector = v;
+			camera.translate(Utils.positionVector);
 			camera.update();
 			player.updatePosition(camera.position.x, camera.position.z);
 
@@ -1022,7 +1049,6 @@ public class GameScreen implements Screen {
 			}
 
 			walk(Gdx.graphics.getDeltaTime());
-			OpenDoor();
 
 			entranceDoorAnimationController.update(Gdx.graphics.getDeltaTime());
 			bathDoorAnimationController.update(Gdx.graphics.getDeltaTime());
@@ -1056,6 +1082,8 @@ public class GameScreen implements Screen {
 			if (inputManager.isSpeaking)
 				drawMic();
 
+			OpenDoorA();
+			OpenDoorB();
 			startTV();
 			turnLights();
 			startSpeakers();

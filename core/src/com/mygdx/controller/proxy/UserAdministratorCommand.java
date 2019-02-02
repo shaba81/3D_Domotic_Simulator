@@ -33,6 +33,20 @@ public class UserAdministratorCommand implements AbstractCommand {
 		GameScreen.getGameScreen().inputManager.activateSpeaker = true;
 		Utils.commandLog("stereo", "radio", Utils.RADIO_ON_LOG);
 	}
+	
+	@Override
+	public void openDoorA() throws SQLException {
+		GameScreen.getGameScreen().inputManager.openDoorA = true;
+		Utils.commandLog("porta A", "porta uno", Utils.FAN_ON_LOG);
+		
+	}
+
+	@Override
+	public void openDoorB() throws SQLException {
+		GameScreen.getGameScreen().inputManager.openDoorB = true;
+		//Utils.commandLog("porta B", "porta due", Utils.DOOR_ON_LOG);
+		
+	}
 
 	@Override
 	public void lightOff() throws SQLException {
@@ -69,5 +83,7 @@ public class UserAdministratorCommand implements AbstractCommand {
 		Utils.resp = "";
 
 	}
+
+	
 
 }
