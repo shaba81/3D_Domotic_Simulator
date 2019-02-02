@@ -31,11 +31,14 @@ import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationListener
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -155,6 +158,8 @@ public class GameScreen implements Screen {
 
 	private Texture micTexture;
 	private Image micImage;
+
+	private ImageButton exit;
 
 	private Label speakerMessage;
 	private Label helpMessage;
@@ -493,6 +498,7 @@ public class GameScreen implements Screen {
 
 		Gdx.input.setCursorCatched(true);
 		Gdx.input.setInputProcessor(inputManager);
+
 	}
 
 	public void OpenDoor() {
@@ -530,6 +536,7 @@ public class GameScreen implements Screen {
 			fanAnimationController.setAnimation("Armature|ArmatureAction", 1, new AnimationListener() {
 				@Override
 				public void onEnd(AnimationController.AnimationDesc animation) {
+					inputManager.activateFan = false;
 				}
 
 				@Override
@@ -540,7 +547,7 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	int contWrongCommand = 0;
+	public int contWrongCommand = 0;
 
 	public void executeCommand() {
 		if (checkRoom().equals("mainRoom") || checkRoom().equals("bathroom")) {
@@ -556,7 +563,7 @@ public class GameScreen implements Screen {
 				String commandTypeOpen2 = "Accendi";
 				String commandTypeClose1 = "Spegni";
 				String commandTypeClose2 = "Chiudi";
-
+				String commadExit = "Esci";
 				String helpCommand = "aiuto";
 				String commandTypeRaise = "Alza";
 
@@ -700,10 +707,29 @@ public class GameScreen implements Screen {
 							inputManager.doCommand = false;
 							return;
 						}
-						
+
 					}
 
 					return;
+
+				} else if (vocalCommand.toLowerCase().contains(commadExit.toLowerCase())) {
+					System.out.println("primo if");
+					printHelpCommand = false;
+					contWrongCommand = 0;
+					if (objectToActivate.equals("casa")) {
+						System.out.println("secondo if");
+						if (checkRoom().equals("mainRoom")) {
+							Utils.logout();
+							System.out.println("posso uscire dalla casa");
+						} else if (checkRoom().equals("bathroom")){
+							wrongCommandLocation();
+							System.out.println("non sei autorizzato");
+							Utils.resp = "";
+							wcl = false;
+							inputManager.doCommand = false;
+							return;
+						}
+					}
 
 				} else {
 					System.out.println("entro qui");
@@ -839,7 +865,7 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	boolean primo = true;
+	public boolean primo = true;
 
 	public void startSpeakers() {
 
@@ -870,7 +896,6 @@ public class GameScreen implements Screen {
 		}
 		return false;
 	}
-
 
 	// variabile per quando entra in casa
 	boolean entrata = true;
@@ -989,8 +1014,10 @@ public class GameScreen implements Screen {
 		return (modelBuilder.end());
 	}
 
-	int cont = 0;
-	int cont1 = 0;
+	public int cont = 0;
+	public int cont1 = 0;
+
+	public static Vector3 playerPosition;
 
 	@Override
 	public void render(float delta) {
@@ -1001,6 +1028,8 @@ public class GameScreen implements Screen {
 			Gdx.gl.glClearColor(1, 1, 1, 1);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 			spriteBatch.setProjectionMatrix(camera.combined);
+
+			playerPosition = player.getPosition();
 
 			checkRoom();
 			// playerIsColliding();

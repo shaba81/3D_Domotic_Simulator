@@ -43,6 +43,7 @@ public class InputManager implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
+		try {
 
 		if (keycode == Input.Keys.W) {
 			forward = true;
@@ -61,21 +62,35 @@ public class InputManager implements InputProcessor {
 		if (GameScreen.checkRoom().equals("mainRoom") || GameScreen.checkRoom().equals("bathroom")) {
 			if (GameScreen.checkRoom().equals("mainRoom")) {
 				if (keycode == Input.Keys.T) {
-					isTvOn = !isTvOn;
+					if (isTvOn) {
+						GameScreen.getGameScreen().getCommand().tvOff();
+					}else {
+						GameScreen.getGameScreen().getCommand().tvOn();
+					}
 				}
 				if (keycode == Input.Keys.L) {
-					isLightOn = !isLightOn;
+					if (isLightOn) {
+						GameScreen.getGameScreen().getCommand().lightOff();
+					}else {
+						GameScreen.getGameScreen().getCommand().lightOn();
+					}
 				}
 
 				if (keycode == Input.Keys.B) {
-					activateSpeaker = !activateSpeaker;
+					if (activateSpeaker) {
+						GameScreen.getGameScreen().getCommand().speakerOff();
+					}else {
+						GameScreen.getGameScreen().getCommand().speakerOn();
+					}
 				}
 
 			}
 
 			if (GameScreen.checkRoom().equals("bathroom")) {
 				if (keycode == Input.Keys.V) {
-					activateFan = !activateFan;
+					if (!activateFan) {
+						GameScreen.getGameScreen().getCommand().fanOn();
+					}
 				}
 			}
 
@@ -96,6 +111,13 @@ public class InputManager implements InputProcessor {
 		if (keycode == Input.Keys.N) {
 			nAccessButton = true;
 		}
+		return false;
+		
+		
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 		return false;
 	}
 

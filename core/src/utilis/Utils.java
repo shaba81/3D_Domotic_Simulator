@@ -18,12 +18,15 @@ import javax.imageio.ImageIO;
 import org.opencv.core.Mat;
 
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.google.gson.Gson;
 import com.mygdx.controller.Controller;
+import com.mygdx.controller.database.model.User;
+import com.mygdx.game.GameScreen;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.simulator.factory_methos_screens.AdministrationScreenCreator;
 import com.mygdx.simulator.factory_methos_screens.GameScreenCreator;
@@ -182,6 +185,40 @@ public class Utils {
 	public static void commandLog(String word1, String word2, String command) throws SQLException {
 		if (Utils.resp.contains(word1) || Utils.resp.contains(word2))
 			saveOnLog(command);
+	}
+
+	public static void logout() {
+		User user = new User();
+		user.setIdUser("-1");
+		GameScreen.getGameScreen().setUser(user);
+		stopCamera = true;
+		isFirstAccess = false;
+		capturing = false;
+		isAccess = true;
+		captured = false;
+		backToRegistrationScreen = false;
+		treeTimesAccessError = false;
+		songPlay = false;
+		changeUserCredentials = false;
+		
+		GameScreen.getGameScreen().cont = 0;
+		GameScreen.getGameScreen().cont1 = 0;
+		GameScreen.getGameScreen().hc = false;
+		GameScreen.getGameScreen(). wcl = false;
+		GameScreen.getGameScreen().primo = true;
+		GameScreen.getGameScreen().contWrongCommand = 0;
+		GameScreen.getGameScreen().inputManager.nAccessButton = false;
+		//comandi
+		GameScreen.getGameScreen().inputManager.isLightOn = false;
+		GameScreen.getGameScreen().inputManager.isTvOn = false;
+		GameScreen.getGameScreen().inputManager.activateFan = false;
+		GameScreen.getGameScreen().inputManager.activateSpeaker = false;
+		
+		countErrorTimes = 0;
+		pathImageUser = "";
+		resp = "";
+		userLogged = "-1";
+		credentials = new ArrayList<String>();
 	}
 
 	/**
