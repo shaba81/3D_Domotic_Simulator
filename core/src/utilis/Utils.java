@@ -18,6 +18,7 @@ import javax.imageio.ImageIO;
 import org.opencv.core.Mat;
 
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -51,7 +52,7 @@ public class Utils {
 	public static boolean treeTimesAccessError = false;
 	public static boolean songPlay = false;
 	public static boolean changeUserCredentials = false;
-
+public static Vector3 positionVector = new Vector3(0f, 15f, 50f);
 	public static int countErrorTimes = 0;
 
 	public static ArrayList<String> credentials = new ArrayList<String>();
