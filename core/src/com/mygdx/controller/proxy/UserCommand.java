@@ -30,6 +30,18 @@ public class UserCommand implements AbstractCommand {
 		uac.fanOn();
 
 	}
+	
+	@Override
+	public void openDoorA() throws SQLException {
+		new TextToSpeech("Mi dispiace il comando non è permesso a questo tipo di utente.");
+
+	}
+	
+	@Override
+	public void openDoorB() throws SQLException {
+		uac.openDoorB();
+
+	}
 
 	@Override
 	public void speakerOn() throws SQLException {

@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.controller.Controller;
+import com.mygdx.game.GameScreen;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.interfaces.AbstractScreen;
 import com.mygdx.simulator.email.EmailSender;
@@ -128,6 +129,7 @@ public class LoginScreen extends AbstractScreen {
 
 			if (back && Utils.isFirstAccess) {
 				back = false;
+				
 				Utils.showPopUp(Utils.SCREEN_BACK_GAME_POPUP, skin, stage, Utils.GAME_SCREEN_POP);
 			}
 

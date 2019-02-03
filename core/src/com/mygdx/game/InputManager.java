@@ -24,6 +24,8 @@ public class InputManager implements InputProcessor {
 	public boolean isLightOn = false;
 	public boolean isTvOn = false;
 	public boolean activateSpeaker = false;
+	public boolean openDoorA = false;
+	public boolean openDoorB = false;
 	public boolean nAccessButton;
 	float rotateSpeed = 0.05f;
 	private PerspectiveCamera camera;

@@ -1,9 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="assets/skin"/>
-	<classpathentry excluding="skin/" kind="src" path="assets"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="jars/jlayer-1.0.1.jar"/>
+	<classpathentry kind="src" output="bin/main" path="src">
+		<attributes>
+			<attribute name="gradle_scope" value="main"/>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="assets"/>
+	<classpathentry kind="src" path="resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="lib" path="jars/commons-dbcp2-2.5.0.jar"/>
+	<classpathentry kind="lib" path="jars/commons-logging-1.2-javadoc.jar"/>
+	<classpathentry kind="lib" path="jars/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="jars/commons-pool2-2.6.0-javadoc.jar"/>
+	<classpathentry kind="lib" path="jars/commons-pool2-2.6.0.jar"/>
+	<classpathentry kind="lib" path="jars/gson-2.8.2.jar"/>
+	<classpathentry kind="lib" path="jars/guava-22.0.jar"/>
+	<classpathentry kind="lib" path="jars/java-flac-encoder-0.3.8.jar"/>
+	<classpathentry kind="lib" path="jars/java-google-speech-api-V2.1.jar"/>
+	<classpathentry kind="lib" path="jars/javamail-1.4.5.jar"/>
+	<classpathentry kind="lib" path="jars/jfxrt.jar"/>
+	<classpathentry kind="lib" path="jars/json-20150729.jar"/>
+	<classpathentry kind="lib" path="jars/opencv-344.jar"/>
+	<classpathentry kind="lib" path="jars/postgresql-42.2.5.jre6.jar"/>
+	<classpathentry kind="lib" path="jars/tween-engine-api-sources.jar"/>
+	<classpathentry kind="lib" path="jars/tween-engine-api.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/OpenCV"/>
+	<classpathentry kind="output" path="bin/default"/>
 </classpath>
