@@ -94,6 +94,18 @@ public class InputManager implements InputProcessor {
 						GameScreen.getGameScreen().getCommand().fanOn();
 					}
 				}
+				
+				//CASSAFORTE
+//				if (keycode == Input.Keys.C) {
+//					if (saveBox) {
+//						GameScreen.getGameScreen().getCommand().saveBoxOff();
+//					}else {
+//						GameScreen.getGameScreen().getCommand().saveBoxOn();
+//					}
+//				}
+//				
+//				
+				
 			}
 
 			if (keycode == Input.Keys.H) {

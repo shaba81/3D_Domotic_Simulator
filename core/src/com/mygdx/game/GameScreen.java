@@ -635,7 +635,20 @@ public class GameScreen implements Screen {
 						}
 						return;
 					}
-					if (objectToActivate.equals("ventilatore") || objectToActivate.contains("aria")) {
+					else if (objectToActivate.equals("cassaforte")) {
+						contWrongCommand = 0;
+						if (checkRoom().equals("bathroom")) {
+							System.out.println("cassaforte aperta");
+							//CASSAFORTE APERTA
+						} else {
+							wrongCommandLocation();
+							System.out.println("non sei autorizzato");
+							wcl = false;
+							inputManager.doCommand = false;
+						}
+						return;
+					}
+					else if (objectToActivate.equals("ventilatore") || objectToActivate.contains("aria")) {
 						contWrongCommand = 0;
 						if (checkRoom().equals("bathroom")) {
 
@@ -680,7 +693,20 @@ public class GameScreen implements Screen {
 
 						}
 						return;
-					} else if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
+					} else if (objectToActivate.equals("cassaforte")) {
+						if (checkRoom().equals("bathroom")) {
+							// CHIUSURA CASSAFORTE
+							System.out.println("chiusura cassaforte");
+						} else {
+							wrongCommandLocation();
+							System.out.println("non sei autorizzato");
+							wcl = false;
+							inputManager.doCommand = false;
+
+						}
+						return;
+						
+					}else if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
 						if (checkRoom().equals("mainRoom")) {
 							command.speakerOff();
 						} else {
