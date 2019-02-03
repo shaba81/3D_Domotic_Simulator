@@ -84,6 +84,20 @@ public class UserAdministratorCommand implements AbstractCommand {
 
 	}
 
+	@Override
+	public void safeBoxOn() throws Exception {
+		GameScreen.getGameScreen().inputManager.safeBox = true;
+		
+	}
+
+	@Override
+	public void safeBoxClose() throws Exception {
+		GameScreen.getGameScreen().inputManager.safeBox = false;
+		
+	}
+
+
+
 	
 
 }

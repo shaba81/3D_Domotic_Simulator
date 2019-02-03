@@ -25,6 +25,7 @@ public class InputManager implements InputProcessor {
 	public boolean isTvOn = false;
 	public boolean activateSpeaker = false;
 	public boolean openDoorA = false;
+	public boolean safeBox = false;
 	public boolean openDoorB = false;
 	public boolean nAccessButton;
 	float rotateSpeed = 0.05f;
@@ -95,16 +96,16 @@ public class InputManager implements InputProcessor {
 					}
 				}
 				
-				//CASSAFORTE
-//				if (keycode == Input.Keys.C) {
-//					if (saveBox) {
-//						GameScreen.getGameScreen().getCommand().saveBoxOff();
-//					}else {
-//						GameScreen.getGameScreen().getCommand().saveBoxOn();
-//					}
-//				}
-//				
-//				
+
+				if (keycode == Input.Keys.C) {
+					if (safeBox) {
+						GameScreen.getGameScreen().getCommand().safeBoxClose();
+					}else {
+						GameScreen.getGameScreen().getCommand().safeBoxOn();
+					}
+				}
+				
+				
 				
 			}
 

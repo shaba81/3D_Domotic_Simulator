@@ -166,6 +166,7 @@ public class GameScreen implements Screen {
 	private Label tvMessage;
 	private Label lightMessage;
 	private Label bathRoomMessage;
+	private Label safeBox;
 	private Label mainRoomMessage;
 	private Label vocalMessage;
 	private String vocalCommand = "";
@@ -351,6 +352,9 @@ public class GameScreen implements Screen {
 		helpMessage = new Label("HELP COMMAND", skin);
 		helpMessage.setFontScale(2);
 		helpMessage.setColor(Color.MAGENTA);
+		safeBox = new Label("Safe box is open", skin);
+		safeBox.setFontScale(3);
+		safeBox.setColor(Color.DARK_GRAY);
 
 		// Finally we want some light, or we wont see our color. The environment gets
 		// passed in during
@@ -638,8 +642,9 @@ public class GameScreen implements Screen {
 					else if (objectToActivate.equals("cassaforte")) {
 						contWrongCommand = 0;
 						if (checkRoom().equals("bathroom")) {
-							System.out.println("cassaforte aperta");
-							//CASSAFORTE APERTA
+							command.safeBoxOn();
+							System.out.println("apertura cassaforte");
+							return;
 						} else {
 							wrongCommandLocation();
 							System.out.println("non sei autorizzato");
@@ -696,7 +701,9 @@ public class GameScreen implements Screen {
 					} else if (objectToActivate.equals("cassaforte")) {
 						if (checkRoom().equals("bathroom")) {
 							// CHIUSURA CASSAFORTE
+							command.safeBoxClose();
 							System.out.println("chiusura cassaforte");
+							return;
 						} else {
 							wrongCommandLocation();
 							System.out.println("non sei autorizzato");
@@ -859,6 +866,11 @@ public class GameScreen implements Screen {
 		}
 		if (inputManager.isLightOn) {
 			messagesTable.add(lightMessage);
+			messagesTable.row();
+		}
+		
+		if (inputManager.safeBox) {
+			messagesTable.add(safeBox);
 			messagesTable.row();
 		}
 

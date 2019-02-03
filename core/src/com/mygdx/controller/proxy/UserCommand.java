@@ -81,4 +81,17 @@ public class UserCommand implements AbstractCommand {
 		uac.help();
 	}
 
+
+	@Override
+	public void safeBoxOn() throws Exception {
+		uac.safeBoxOn();
+		
+	}
+
+	@Override
+	public void safeBoxClose() throws Exception {
+		uac.safeBoxClose();
+		
+	}
+
 }

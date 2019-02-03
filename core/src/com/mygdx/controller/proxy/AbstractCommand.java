@@ -14,5 +14,6 @@ public abstract interface AbstractCommand {
 	public void speakerOff() throws Exception;
 	public void help()throws Exception;
 	public void goToMainMenuScreen() throws Exception;
-	
+	public void safeBoxOn() throws Exception;
+	public void safeBoxClose() throws Exception;
 }
