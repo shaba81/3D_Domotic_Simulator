@@ -52,10 +52,12 @@ public class Utils {
 	public static boolean treeTimesAccessError = false;
 	public static boolean songPlay = false;
 	public static boolean changeUserCredentials = false;
-public static Vector3 positionVector = new Vector3(0f, 15f, 50f);
+	public static Vector3 positionVector = new Vector3(0f, 15f, 50f);
 	public static int countErrorTimes = 0;
 
 	public static ArrayList<String> credentials = new ArrayList<String>();
+
+	public static boolean doorIsOpen = false;
 
 	public static final Long ID_SUPPLY = (long) 1;
 	public static final String ID_ADMIN_USER = "5";
@@ -140,6 +142,12 @@ public static Vector3 positionVector = new Vector3(0f, 15f, 50f);
 	public static final String RADIO_OFF_LOG = "He asked to switch off the stereo.";
 	public static final String FAN_ON_LOG = "He asked to switch on the fan.";
 	public static final String FAN_OFF_LOG = "He asked to switch off the fan.";
+	public static final String HELP_LOG = "He asked help";
+	public static final String SAFEBOX_ON_LOG = "He asked to switch on the safebox";
+	public static final String SAFEBOX_OFF_LOG = "He asked to switch off the safebox";
+	public static final String DOORB_OPEN_LOG = "He asked to open door B";
+	public static final String DOORA_OPEN_LOG = "He asked to open door A";
+
 	public static final String CHANGE_USER_CREDENTIALS_SUCCESSFULLY = "User credentials have been changed successfully.";
 
 	/*
@@ -199,22 +207,25 @@ public static Vector3 positionVector = new Vector3(0f, 15f, 50f);
 		captured = false;
 		backToRegistrationScreen = false;
 		treeTimesAccessError = false;
-		songPlay = false;
+		if (!GameScreen.getGameScreen().primo) {
+			songPlay = true;
+		}
+
 		changeUserCredentials = false;
-		
-		GameScreen.getGameScreen().cont = 0;
-		GameScreen.getGameScreen().cont1 = 0;
-		GameScreen.getGameScreen().hc = false;
-		GameScreen.getGameScreen(). wcl = false;
-		GameScreen.getGameScreen().primo = true;
+
+//		GameScreen.getGameScreen().hc = true;
+//		GameScreen.getGameScreen(). wcl = true;
+//	    GameScreen.getGameScreen().primo = true;
 		GameScreen.getGameScreen().contWrongCommand = 0;
 		GameScreen.getGameScreen().inputManager.nAccessButton = false;
-		//comandi
+		// comandi
 		GameScreen.getGameScreen().inputManager.isLightOn = false;
 		GameScreen.getGameScreen().inputManager.isTvOn = false;
 		GameScreen.getGameScreen().inputManager.activateFan = false;
 		GameScreen.getGameScreen().inputManager.activateSpeaker = false;
-		
+		GameScreen.getGameScreen().inputManager.safeBox = false;
+		System.out.println("setto speaker a " + GameScreen.getGameScreen().inputManager.activateSpeaker);
+
 		countErrorTimes = 0;
 		pathImageUser = "";
 		resp = "";

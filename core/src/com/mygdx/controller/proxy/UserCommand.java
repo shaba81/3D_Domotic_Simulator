@@ -33,7 +33,8 @@ public class UserCommand implements AbstractCommand {
 	
 	@Override
 	public void openDoorA() throws SQLException {
-		new TextToSpeech("Mi dispiace il comando non è permesso a questo tipo di utente.");
+		uac.openDoorA();
+		//new TextToSpeech("Mi dispiace il comando non è permesso a questo tipo di utente.");
 
 	}
 	
@@ -77,7 +78,7 @@ public class UserCommand implements AbstractCommand {
 	}
 
 	@Override
-	public void help() {
+	public void help() throws SQLException {
 		uac.help();
 	}
 

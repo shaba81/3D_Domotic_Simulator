@@ -148,6 +148,8 @@ public class GameScreen implements Screen {
 	private ModelInstance speaker2Instance;
 	private Sound song1;
 
+	private char collidingWho;
+
 	private Texture tvScreenTexture;
 	private TextureRegion tvScreenRegion;
 	private Decal tvScreen;
@@ -211,9 +213,11 @@ public class GameScreen implements Screen {
 
 		inputManager = new InputManager(camera);
 
+		collidingWho = ' ';
+
 		// Move the camera 5 units back along the z-axis and look at the origin
 		camera.position.set(Utils.positionVector);
-		camera.lookAt(0f, 0f, 0f);
+		camera.lookAt(Utils.positionVector);
 
 		// Near and Far (plane) represent the minimum and maximum ranges of the camera
 		// in, um, units
@@ -356,6 +360,8 @@ public class GameScreen implements Screen {
 		safeBox.setFontScale(3);
 		safeBox.setColor(Color.DARK_GRAY);
 
+		
+		Utils.doorIsOpen = false;
 		// Finally we want some light, or we wont see our color. The environment gets
 		// passed in during
 		// the rendering process. Create one, then create an Ambient ( non-positioned,
@@ -513,6 +519,7 @@ public class GameScreen implements Screen {
 				@Override
 				public void onEnd(AnimationController.AnimationDesc animation) {
 					inputManager.openDoorA = false;
+					Utils.doorIsOpen = false;
 				}
 
 				@Override
@@ -520,6 +527,7 @@ public class GameScreen implements Screen {
 				}
 			});
 			inputManager.openDoorA = false;
+
 		}
 
 	}
@@ -531,6 +539,7 @@ public class GameScreen implements Screen {
 				@Override
 				public void onEnd(AnimationController.AnimationDesc animation) {
 					inputManager.openDoorB = false;
+					Utils.doorIsOpen = false;
 				}
 
 				@Override
@@ -592,7 +601,7 @@ public class GameScreen implements Screen {
 							command.lightOn();
 							return;
 						} else {
-							wrongCommandLocation();
+							wrongCommandLocation("accendere la luce");
 							System.out.println("non sei autorizzato");
 							wcl = false;
 							inputManager.doCommand = false;
@@ -605,7 +614,7 @@ public class GameScreen implements Screen {
 
 							command.tvOn();
 						} else {
-							wrongCommandLocation();
+							wrongCommandLocation("accendere la televisione");
 							System.out.println("non sei autorizzato");
 							wcl = false;
 							inputManager.doCommand = false;
@@ -618,7 +627,7 @@ public class GameScreen implements Screen {
 
 							command.speakerOn();
 						} else {
-							wrongCommandLocation();
+							wrongCommandLocation("accendere lo stereo");
 							System.out.println("non sei autorizzato");
 							wcl = false;
 							inputManager.doCommand = false;
@@ -628,38 +637,38 @@ public class GameScreen implements Screen {
 					} else if (objectToActivate.equals("porta")) {
 						contWrongCommand = 0;
 						if (checkRoom().equals("mainRoom") || checkRoom().equals("bathroom")) {
+							
 							command.openDoorB();
+							Utils.doorIsOpen= true;
 							Utils.resp = ""; // DA METTERE NEL LOG
 						} else {
-							wrongCommandLocation();
+							//wrongCommandLocation("aprire la posrt");
 							System.out.println("non sei autorizzato");
 							wcl = false;
 							inputManager.doCommand = false;
 
 						}
 						return;
-					}
-					else if (objectToActivate.equals("cassaforte")) {
+					} else if (objectToActivate.equals("cassaforte")) {
 						contWrongCommand = 0;
 						if (checkRoom().equals("bathroom")) {
 							command.safeBoxOn();
-							System.out.println("apertura cassaforte");
+							// System.out.println("apertura cassaforte");
 							return;
 						} else {
-							wrongCommandLocation();
+							wrongCommandLocation("aprire la cassaforte");
 							System.out.println("non sei autorizzato");
 							wcl = false;
 							inputManager.doCommand = false;
 						}
 						return;
-					}
-					else if (objectToActivate.equals("ventilatore") || objectToActivate.contains("aria")) {
+					} else if (objectToActivate.equals("ventilatore") || objectToActivate.contains("aria")) {
 						contWrongCommand = 0;
 						if (checkRoom().equals("bathroom")) {
 
 							command.fanOn();
 						} else {
-							wrongCommandLocation();
+							wrongCommandLocation("accendere il ventilatore");
 							System.out.println("non sei autorizzato");
 							wcl = false;
 							inputManager.doCommand = false;
@@ -680,7 +689,7 @@ public class GameScreen implements Screen {
 						if (checkRoom().equals("mainRoom")) {
 							command.lightOff();
 						} else {
-							wrongCommandLocation();
+							wrongCommandLocation("spegnere la luce");
 							System.out.println("non sei autorizzato");
 							wcl = false;
 							inputManager.doCommand = false;
@@ -691,7 +700,7 @@ public class GameScreen implements Screen {
 						if (checkRoom().equals("mainRoom")) {
 							command.tvOff();
 						} else {
-							wrongCommandLocation();
+							wrongCommandLocation("spegnere la televisione");
 							System.out.println("non sei autorizzato");
 							wcl = false;
 							inputManager.doCommand = false;
@@ -705,19 +714,19 @@ public class GameScreen implements Screen {
 							System.out.println("chiusura cassaforte");
 							return;
 						} else {
-							wrongCommandLocation();
+							wrongCommandLocation("chiudere la cassaforte");
 							System.out.println("non sei autorizzato");
 							wcl = false;
 							inputManager.doCommand = false;
 
 						}
 						return;
-						
-					}else if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
+
+					} else if (objectToActivate.equals("stereo") || objectToActivate.equals("radio")) {
 						if (checkRoom().equals("mainRoom")) {
 							command.speakerOff();
 						} else {
-							wrongCommandLocation();
+							wrongCommandLocation("spegnere lo stereo");
 							System.out.println("non sei autorizzato");
 							wcl = false;
 							inputManager.doCommand = false;
@@ -753,7 +762,7 @@ public class GameScreen implements Screen {
 							System.out.println("devo alzare il volume");
 							return;
 						} else {
-							wrongCommandLocation();
+							//wrongCommandLocation();
 							System.out.println("non sei autorizzato");
 							Utils.resp = "";
 							wcl = false;
@@ -773,18 +782,26 @@ public class GameScreen implements Screen {
 						System.out.println("secondo if");
 						if (checkRoom().equals("mainRoom")) {
 							Utils.logout();
+							command.openDoorA();
+							Utils.doorIsOpen= true;
 							System.out.println("posso uscire dalla casa");
-						} else if (checkRoom().equals("bathroom")){
-							wrongCommandLocation();
+							Utils.resp = "";
+							inputManager.doCommand = false;
+							return;
+						} else {
+							wrongCommandLocation("uscire dalla casa da questa stanza");
 							System.out.println("non sei autorizzato");
 							Utils.resp = "";
 							wcl = false;
 							inputManager.doCommand = false;
 							return;
 						}
+
 					}
+					return;
 
 				} else {
+					// se sbaglio il comando 3 volte parte il comando di aiuto
 					System.out.println("entro qui");
 					contWrongCommand += 1;
 					System.out.println(contWrongCommand);
@@ -809,10 +826,11 @@ public class GameScreen implements Screen {
 
 	public boolean wcl = false;
 
-	public void wrongCommandLocation() {
+	public void wrongCommandLocation(String commandType) {
 		if (!wcl) {
-			new TextToSpeech("non puoi dire questo comando");
+			new TextToSpeech("Ti trovi nella stanza sbagliata, non puoi " + commandType);
 			wcl = true;
+			Utils.resp = "";
 		}
 	}
 
@@ -839,7 +857,8 @@ public class GameScreen implements Screen {
 			}
 
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			// System.err.println(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -868,7 +887,7 @@ public class GameScreen implements Screen {
 			messagesTable.add(lightMessage);
 			messagesTable.row();
 		}
-		
+
 		if (inputManager.safeBox) {
 			messagesTable.add(safeBox);
 			messagesTable.row();
@@ -906,7 +925,8 @@ public class GameScreen implements Screen {
 				decalBatch.flush();
 			}
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			// System.err.println(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -919,7 +939,8 @@ public class GameScreen implements Screen {
 
 			}
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			// System.err.println(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -941,7 +962,8 @@ public class GameScreen implements Screen {
 				}
 			}
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			e.printStackTrace();
+			// System.err.println(e.getMessage());
 		}
 
 	}
@@ -956,18 +978,25 @@ public class GameScreen implements Screen {
 	}
 
 	// variabile per quando entra in casa
-	boolean entrata = true;
+	public boolean entrata = true;
 
 	public void showAvailableCommandsRoomA() {
+		
 
 		String nome = user.getNickName();
 		if (entrata) {
-			new TextToSpeech(
-					"Benvenuto " + nome + "In questa stanza potrai interagire con: la televisione, lo stereo, la luce");
+			if(nome.contains("ricca") || nome.contains("Ricca") || nome.contains("cuteri") || nome.contains("Cuteri") ||
+					nome.contains("bernardo") || nome.contains("Bernardo")) {
+				nome = "Professore " + nome;
+			}
+			
+			
+			new TextToSpeech("Benvenuto " + nome
+					+ ", in questa stanza potrai interagire con: la televisione, lo stereo, la luce o impartire il comando di aiuto");
 			entrata = false;
 		} else {
 
-			new TextToSpeech("In questa stanza potrai interagire con: la televisione, lo stereo, la luce");
+			new TextToSpeech("In questa stanza potrai interagire con: la televisione, lo stereo, la luce o impartire il comando di aiuto");
 		}
 
 	}
@@ -992,35 +1021,86 @@ public class GameScreen implements Screen {
 	}
 
 	public void walk(float timeElapsed) {
-		// if (!playerIsColliding()) {
 
 		float speed = inputManager.movementSpeed;
 		if ((inputManager.forward | inputManager.back) & (inputManager.right | inputManager.left)) {
+
 			speed /= Math.sqrt(2);
 		}
 
 		if (inputManager.forward) {
+
 			Vector3 v = camera.direction.cpy();
 			v.y = 0f;
 			v.x *= speed * timeElapsed;
 			v.z *= speed * timeElapsed;
-			Utils.positionVector = v;
-			camera.translate(Utils.positionVector);
-			camera.update();
-			player.updatePosition(camera.position.x, camera.position.z);
+
+			/*
+			 * NUOVO FINO A fine metodo
+			 */
+			GameEntity playerTemp = new GameEntity(camera.position.x, camera.position.z, 5f, 5f);
+			playerTemp.updatePosition(camera.position.x, camera.position.z);
+			System.out.println(Utils.doorIsOpen);
+			if (Utils.doorIsOpen) {
+				camera.translate(v);
+				camera.update();
+				player.updatePosition(camera.position.x, camera.position.z);
+			} else {
+				if (this.collidingWho != ' ' && this.collidingWho != 'f') {
+					Vector3 v1 = camera.direction.cpy();
+					v1.y = 0f;
+					v1.x *= (speed * timeElapsed) * 2;
+					v1.z *= (speed * timeElapsed) * 2;
+
+					camera.translate(v1);
+					camera.update();
+					this.collidingWho = ' ';
+				}
+
+				if (!playerIsColliding(playerTemp, 'f')) {
+
+					camera.translate(v);
+					camera.update();
+					player.updatePosition(camera.position.x, camera.position.z);
+				}
+			}
+
 		}
+
 		if (inputManager.back) {
 			Vector3 v = camera.direction.cpy();
 			v.y = 0f;
 			v.x = -v.x;
 			v.z = -v.z;
-			v.x *= speed * timeElapsed;
-			v.z *= speed * timeElapsed;
+			v.x *= (speed * timeElapsed);
+			v.z *= (speed * timeElapsed);
 
-			Utils.positionVector = v;
-			camera.translate(Utils.positionVector);
-			camera.update();
-			player.updatePosition(camera.position.x, camera.position.z);
+			/*
+			 * NUOVO
+			 */
+
+			if (Utils.doorIsOpen) {
+				camera.translate(v);
+				camera.update();
+				player.updatePosition(camera.position.x, camera.position.z);
+			} else {
+				GameEntity playerTemp = new GameEntity(camera.position.x, camera.position.z, 5f, 5f);
+				if (this.collidingWho != 'b') {
+					camera.translate(v);
+					camera.update();
+				}
+				playerTemp.updatePosition(camera.position.x, camera.position.z);
+
+				if (!playerIsColliding(playerTemp, 'b')) {
+					if (this.collidingWho == 'b') {
+						camera.translate(v);
+						camera.update();
+						this.collidingWho = ' ';
+					}
+
+					player.updatePosition(camera.position.x, camera.position.z);
+				}
+			}
 		}
 		if (inputManager.left) {
 			Vector3 v = camera.direction.cpy();
@@ -1029,39 +1109,136 @@ public class GameScreen implements Screen {
 			v.x *= speed * timeElapsed;
 			v.z *= speed * timeElapsed;
 
-			Utils.positionVector = v;
-			camera.translate(Utils.positionVector);
-			camera.update();
-			player.updatePosition(camera.position.x, camera.position.z);
+			/*
+			 * NUOVO
+			 */
+			if (Utils.doorIsOpen) {
+				camera.translate(v);
+				camera.update();
+				player.updatePosition(camera.position.x, camera.position.z);
+			} else {
+				GameEntity playerTemp = new GameEntity(camera.position.x, camera.position.z, 5f, 5f);
+				playerTemp.updatePosition(camera.position.x, camera.position.z);
+
+				if (this.collidingWho != ' ' && this.collidingWho != 'l') {
+					Vector3 v1 = camera.direction.cpy();
+					v1.y = 0f;
+					v1.rotate(Vector3.Y, 90);
+					v1.x *= (speed * timeElapsed) * 2;
+					v1.z *= (speed * timeElapsed) * 2;
+
+					camera.translate(v1);
+					camera.update();
+					this.collidingWho = ' ';
+				}
+
+				if (!playerIsColliding(playerTemp, 'l')) {
+					camera.translate(v);
+					camera.update();
+					player.updatePosition(camera.position.x, camera.position.z);
+
+				}
+			}
 
 		}
 		if (inputManager.right) {
+
 			Vector3 v = camera.direction.cpy();
 			v.y = 0f;
 			v.rotate(Vector3.Y, -90);
 			v.x *= speed * timeElapsed;
 			v.z *= speed * timeElapsed;
 
-			Utils.positionVector = v;
-			camera.translate(Utils.positionVector);
-			camera.update();
-			player.updatePosition(camera.position.x, camera.position.z);
+			/*
+			 * NUOVO
+			 */
 
+			if (Utils.doorIsOpen) {
+				camera.translate(v);
+				camera.update();
+				player.updatePosition(camera.position.x, camera.position.z);
+			} else {
+				GameEntity playerTemp = new GameEntity(camera.position.x, camera.position.z, 5f, 5f);
+
+				if (this.collidingWho != ' ' & this.collidingWho != 'r') {
+					camera.translate(v);
+					camera.update();
+				}
+				playerTemp.updatePosition(camera.position.x, camera.position.z);
+
+				if (!playerIsColliding(playerTemp, 'r')) {
+					camera.translate(v);
+					camera.update();
+					player.updatePosition(camera.position.x, camera.position.z);
+
+				}
+
+			}
 		}
 	}
 
-	// }
+	public boolean playerIsColliding(GameEntity playerTemp, char col) {
 
-//	public boolean playerIsColliding() {
+		for (GameEntity w : walls) {
+			if (playerTemp.isColliding(w)) {
+				this.collidingWho = col;
+				return true;
+			}
+
+		}
+		return false;
+
+	}
+
+//	public void walk(float timeElapsed) {
 //
-//		for (GameEntity w : walls) {
-//			if (player.isColliding(w)) {
-//				System.out.println("collido");
-//				return true;
-//			}
+//		float speed = inputManager.movementSpeed;
+//		if ((inputManager.forward | inputManager.back) & (inputManager.right | inputManager.left)) {
+//			speed /= Math.sqrt(2);
+//		}
+//
+//		if (inputManager.forward) {
+//			Vector3 v = camera.direction.cpy();
+//			v.y = 0f;
+//			v.x *= speed * timeElapsed;
+//			v.z *= speed * timeElapsed;
+//			camera.translate(v);
+//			camera.update();
+//			player.updatePosition(camera.position.x, camera.position.z);
+//		}
+//		if (inputManager.back) {
+//			Vector3 v = camera.direction.cpy();
+//			v.y = 0f;
+//			v.x = -v.x;
+//			v.z = -v.z;
+//			v.x *= speed * timeElapsed;
+//			v.z *= speed * timeElapsed;
+//			camera.translate(v);
+//			camera.update();
+//			player.updatePosition(camera.position.x, camera.position.z);
+//		}
+//		if (inputManager.left) {
+//			Vector3 v = camera.direction.cpy();
+//			v.y = 0f;
+//			v.rotate(Vector3.Y, 90);
+//			v.x *= speed * timeElapsed;
+//			v.z *= speed * timeElapsed;
+//			camera.translate(v);
+//			camera.update();
+//			player.updatePosition(camera.position.x, camera.position.z);
 //
 //		}
-//		return false;
+//		if (inputManager.right) {
+//			Vector3 v = camera.direction.cpy();
+//			v.y = 0f;
+//			v.rotate(Vector3.Y, -90);
+//			v.x *= speed * timeElapsed;
+//			v.z *= speed * timeElapsed;
+//			camera.translate(v);
+//			camera.update();
+//			player.updatePosition(camera.position.x, camera.position.z);
+//
+//		}
 //	}
 
 	private Model createPlaneModel(final float width, final float height, final Material material, final float u1,
@@ -1162,7 +1339,7 @@ public class GameScreen implements Screen {
 
 			if (inputManager.nAccessButton) {
 				inputManager.nAccessButton = false;
-
+				Utils.positionVector = camera.position;
 				if (Controller.getController().getUserDAO().isFirstRegistrationForThisForniture(Utils.ID_SUPPLY,
 						Utils.ID_ADMIN_USER)) {
 					Utils.isFirstAccess = true;

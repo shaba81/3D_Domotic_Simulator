@@ -37,16 +37,17 @@ public class UserAdministratorCommand implements AbstractCommand {
 	@Override
 	public void openDoorA() throws SQLException {
 		GameScreen.getGameScreen().inputManager.openDoorA = true;
-		Utils.commandLog("porta A", "porta uno", Utils.FAN_ON_LOG);
+		Utils.commandLog("porta A", "porta uno", Utils.DOORA_OPEN_LOG);
 		
 	}
 
 	@Override
 	public void openDoorB() throws SQLException {
 		GameScreen.getGameScreen().inputManager.openDoorB = true;
-		//Utils.commandLog("porta B", "porta due", Utils.DOOR_ON_LOG);
+		Utils.commandLog("porta B", "porta due", Utils.DOORB_OPEN_LOG);
 		
 	}
+	
 
 	@Override
 	public void lightOff() throws SQLException {
@@ -77,22 +78,24 @@ public class UserAdministratorCommand implements AbstractCommand {
 	}
 
 	@Override
-	public void help() {
+	public void help() throws SQLException {
 		GameScreen.getGameScreen().inputManager.help = true;
 		GameScreen.getGameScreen().hc = false;
 		Utils.resp = "";
-
+		Utils.commandLog("aiuto", "", Utils.HELP_LOG);
 	}
 
 	@Override
 	public void safeBoxOn() throws Exception {
 		GameScreen.getGameScreen().inputManager.safeBox = true;
+		Utils.commandLog("cassaforte", "", Utils.SAFEBOX_ON_LOG);
 		
 	}
 
 	@Override
 	public void safeBoxClose() throws Exception {
 		GameScreen.getGameScreen().inputManager.safeBox = false;
+		Utils.commandLog("cassaforte", "", Utils.SAFEBOX_OFF_LOG);
 		
 	}
 

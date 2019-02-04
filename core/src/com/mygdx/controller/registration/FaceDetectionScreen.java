@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.controller.Controller;
 import com.mygdx.controller.database.model.User;
 import com.mygdx.controller.face.FaceDetectionController;
+import com.mygdx.game.GameScreen;
 import com.mygdx.game.ScreenManager;
 import com.mygdx.interfaces.AbstractScreen;
 import com.mygdx.simulator.factory_methos_screens.GameScreenCreator;
@@ -177,6 +178,11 @@ public class FaceDetectionScreen extends AbstractScreen {
 					Controller.getController().getFaceController().setUserAndCommandAccess(pathOriginal, false);
 
 					ScreenManager.getInstance().showScreen(new GameScreenCreator());
+					Utils.doorIsOpen = true;
+					GameScreen.getGameScreen().inputManager.openDoorA = true;
+					GameScreen.getGameScreen().entrata = true;
+					GameScreen.getGameScreen().cont = 0;
+					GameScreen.getGameScreen().cont1 = 0;
 				} else {
 					System.out.println("non puoi accedere. Riprova");
 					Utils.captured = false;
@@ -220,8 +226,13 @@ public class FaceDetectionScreen extends AbstractScreen {
 								Controller.getController().getFaceController().setUserAndCommandAccess(pathImage, false);
 							}
 							Utils.credentials.clear();
-
+							
 							ScreenManager.getInstance().showScreen(new GameScreenCreator());
+							Utils.doorIsOpen = true;
+							GameScreen.getGameScreen().inputManager.openDoorA = true;
+							GameScreen.getGameScreen().entrata = true;
+							GameScreen.getGameScreen().cont = 0;
+							GameScreen.getGameScreen().cont1 = 0;
 						} else {
 							System.out.println("non puoi registrarti");
 //						Utils.resp = Utils.FAILURE_USER_REGISTRATION_LOG;
