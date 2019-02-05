@@ -184,14 +184,23 @@ public class Housim implements Screen {
 	private float floorWidth = 120;
 	private float floorHeight = 120;
 
-	private static Housim housim;
+	
 	private AbstractCommand command;
 
 	private Music music;
 	public boolean printHelpCommand = false;
 
-	public Housim() {
+	/*
+	 * SINGLETON
+	 */
+	private static Housim housim;
 
+	private Housim() {}
+
+	public static Housim getHousim() {
+		if (housim == null)
+			housim = new Housim();
+		return housim;
 	}
 
 	public void init() {
@@ -367,12 +376,6 @@ public class Housim implements Screen {
 		}
 
 		Utils.userLogged = user.getIdUser();
-	}
-
-	public static Housim getHousim() {
-		if (housim == null)
-			housim = new Housim();
-		return housim;
 	}
 
 	public void createRoom() {
