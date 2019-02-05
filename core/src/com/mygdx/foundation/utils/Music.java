@@ -21,7 +21,7 @@ public class Music {
 	public void start() {
 		Thread thread = new Thread(() -> {
 			try {
-				fileInputStream = new FileInputStream("resources/song1.mp3");
+				fileInputStream = new FileInputStream("resources/La guerra di Piero.mp3");
 				player = new Player(fileInputStream);
 				player.play();
 				Utils.songPlay = true;
