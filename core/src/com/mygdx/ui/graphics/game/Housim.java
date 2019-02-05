@@ -937,7 +937,7 @@ public class Housim implements Screen {
 
 	public void showAvailableCommandsRoomB() {
 
-		new TextToSpeech("In questa stanza potrai interagire con la cassaforte e il ventilatore");
+		new TextToSpeech("In questa stanza potrai interagire con la cassaforte e il ventilatore o impartire il comando di aiuto");
 
 	}
 

@@ -21,8 +21,7 @@ public class UserCommand implements AbstractCommand {
 
 	@Override
 	public void tvOn() throws SQLException {
-		Utils.saveOnLog(Utils.TV_ON_LOG);
-		CommandPermissionException.getCommandPermissionException().messageException("Mi dispiace il comando non è permesso a questo tipo di utente.");
+		uac.tvOn();
 	}
 
 	@Override
@@ -83,8 +82,8 @@ public class UserCommand implements AbstractCommand {
 
 	@Override
 	public void safeBoxOn() throws Exception {
-		uac.safeBoxOn();
-		
+		Utils.resp = "";
+		CommandPermissionException.getCommandPermissionException().messageException("Mi dispiace il comando non è permesso a questo tipo di utente.");
 	}
 
 	@Override
