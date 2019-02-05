@@ -16,12 +16,9 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 
 /**
- * Inferiore al 10% va bene... fin'ora. Stesso posto. stessa luce, stessa
- * telecamera. Stesso tutto
- * 
- * Il main da lanciare è quello della classe 'FaceDetection' del package
- * 'controller.face'
- * 
+ * Inferiore al 10% va bene. Stesso posto. stessa luce, stessa
+ * telecamera. Stesso tutto.
+ *  
  * @author anton
  *
  */
@@ -37,7 +34,7 @@ public class ImageComparison {
 		try {
 			this.users_faces_files = new HashMap<Long, File>();
 			this.users_faces_images = new HashMap<Long, Image>();
-			this.soloPERORA();
+			this.takeImagesFromFolder();
 		} catch (Exception e) {
 			System.out.println("Wrong path.");
 		}
@@ -50,7 +47,7 @@ public class ImageComparison {
 	 * 
 	 * @throws IOException
 	 */
-	private void soloPERORA() throws IOException {
+	private void takeImagesFromFolder() throws IOException {
 		File folder = new File("resources/images");
 		File[] listOfFiles = folder.listFiles();
 		long cont = 1;
