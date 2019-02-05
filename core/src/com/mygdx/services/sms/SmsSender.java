@@ -1,0 +1,137 @@
+
+package com.mygdx.services.sms;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mygdx.application.exception_manager.ExceptionsManager;
+import com.mygdx.foundation.utils.Configuration;
+
+/**
+ * Class that sends the text message.
+ * 
+ * @author anton
+ *
+ */
+public abstract class SmsSender {
+
+	/**
+	 * Methods that sends the email @throws
+	 * @throws IOException 
+	 */
+	public static void sendSms(String messageBody, String recipient) throws IOException {
+
+			String baseUrlSms = Configuration.baseUrlSms;
+			String messageQuality = Configuration.messageQuality;
+			String userNameSms = Configuration.userNameSms;
+			String userPasswordSms = Configuration.userPasswordSms;
+
+			String[] authKeys = login(baseUrlSms, userNameSms, userPasswordSms);
+
+			SendSMSRequest sendSMS = new SendSMSRequest();
+			sendSMS.setMessage(messageBody);
+			sendSMS.setMessageType(messageQuality);
+			sendSMS.addRecipient(recipient);
+
+			if (sendSMS(baseUrlSms, authKeys, sendSMS))
+				System.out.println("INVIATO");
+			else
+				System.err.println("NON INVIATO");
+	}
+
+	/**
+	 * Method that logs in and returns authle AuthKey (user_key,
+	 * Session_key) to send the text message. He picks them up by making a REST call
+	 * passing the credentials in GET.
+	 *
+	 * @param baseUrl basic url on which to login
+	 * @param username
+	 * @param password
+	 * @return AuthKey (user_key, Session_key)
+	 *
+	 * @throws IOException
+	 */
+	private static String[] login(String baseUrl, String username, String password) throws IOException {
+		URL url = new URL(baseUrl + "/login?username=" + username + "&password=" + password);
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+		conn.setRequestMethod("GET");
+
+		if (conn.getResponseCode() != 200) {
+			throw new RuntimeException("ERRORE: " + conn.getResponseCode());
+		}
+		BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		String response = "";
+		String output;
+		while ((output = br.readLine()) != null) {
+			response += output;
+		}
+		conn.disconnect();
+
+		String[] parts = response.split(";");
+
+		return parts;
+	}
+
+	/**
+	 * Method that effectively the Sms using (user_key, Session_key) del
+	 * method
+	 *
+	 * @see login via a REST call in POST.
+	 *
+	 * @param authKeys user_key and Session_key
+	 * @param sendSMS the object {@link SendSMSRequest}
+	 * @throws IOException
+	 */
+	private static boolean sendSMS(String baseUrl, String[] authKeys, SendSMSRequest sendSMS) throws IOException {
+		GsonBuilder builder = new GsonBuilder();
+		Gson gson = builder.create();
+
+		URL url = new URL(baseUrl + "/sms");
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+		conn.setRequestProperty("user_key", authKeys[0]);
+		conn.setRequestProperty("Session_key", authKeys[1]);
+
+		conn.setRequestMethod("POST");
+		conn.setRequestProperty("Accept", "application/json");
+		conn.setRequestProperty("Content-type", "application/json");
+		conn.setDoOutput(true);
+
+		String payload = gson.toJson(sendSMS);
+
+		OutputStream os = conn.getOutputStream();
+		os.write(payload.getBytes());
+		os.flush();
+
+		if (conn.getResponseCode() != 201) {
+			String error = "";
+			String output;
+			BufferedReader errorbuffer = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
+			while ((output = errorbuffer.readLine()) != null) {
+				error += output;
+			}
+			throw new RuntimeException("ERRORE HTTP");
+		}
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+		String response = "";
+		String output;
+		while ((output = br.readLine()) != null) {
+			response += output;
+		}
+		conn.disconnect();
+
+		SendSMSResponse responseObj = gson.fromJson(response, SendSMSResponse.class);
+
+		return responseObj.isValid();
+	}
+
+}
