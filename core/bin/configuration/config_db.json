@@ -1,9 +1,0 @@
-{
- "driver": "org.postgresql.Driver",
-  "jdbc": "postgresql",
-  "host": "ingsw.ddns.net",
-  "port": "5432",
-  "database": "ingsw",
-  "username": "ingswuser",
-  "password": "ingswuser112358"
-}
