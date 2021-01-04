@@ -1,8 +1,0 @@
-{
-  "baseUrlSms": "https://api.skebby.it/API/v1.0/REST/",
-  "messageQuality": "SI",
-  "userNameSms": "tagete",
-  "userPasswordSms": "pr08qwe03",
-  "messageBody": "Ciao Test sms per INGSW.",
-  "recipient": "+393275407014"
-}
